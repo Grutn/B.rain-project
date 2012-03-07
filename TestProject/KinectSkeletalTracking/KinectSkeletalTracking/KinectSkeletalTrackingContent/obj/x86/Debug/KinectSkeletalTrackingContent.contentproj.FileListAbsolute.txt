@@ -1,0 +1,1 @@
+C:\Users\Emil\B.rain-project\TestProject\KinectSkeletalTracking\KinectSkeletalTracking\KinectSkeletalTrackingContent\obj\x86\Debug\ResolveAssemblyReference.cache
