@@ -8,7 +8,7 @@
       <Processor>FontDescriptionProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\Emil\B.rain-project\TestProject\KinectSkeletalTracking\KinectSkeletalTracking\KinectSkeletalTracking\bin\x86\Debug\Content\SpriteFont.xnb</Output>
-      <Time>2012-03-07T19:37:44.9611643+01:00</Time>
+      <Time>2012-03-13T09:48:40.6577001+01:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
@@ -48,7 +48,7 @@
       </Assembly>
       <Assembly>
         <Key>C:\Windows\Microsoft.Net\assembly\GAC_32\Microsoft.Xna.Framework.Content.Pipeline\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Content.Pipeline.dll</Key>
-        <Value>2011-03-14T20:04:51.1332354+01:00</Value>
+        <Value>2012-01-30T10:39:04.64718+01:00</Value>
       </Assembly>
     </Assemblies>
   </Asset>
