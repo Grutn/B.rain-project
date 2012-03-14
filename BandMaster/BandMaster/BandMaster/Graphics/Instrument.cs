@@ -19,6 +19,7 @@ namespace BandMaster.Graphics
     {
         Rectangle _rectangle;
         Texture2D _texture;
+        SpriteBatch _spriteBatch;
         
 
         public Instrument(Game game)
@@ -30,7 +31,9 @@ namespace BandMaster.Graphics
         public Instrument(Game game, String texture, int with, int hight, Rectangle rec)
             : base(game)
         {
-            //_texture = Content. undone
+            _texture = game.Content.Load<Texture2D>(texture);
+            _rectangle = rec;
+            _spriteBatch = new SpriteBatch(game.GraphicsDevice);
         }
 
         /// <summary>
@@ -50,9 +53,15 @@ namespace BandMaster.Graphics
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            // TODO: Add your update code here
-
+            
             base.Update(gameTime);
+        }
+        public override void Draw(GameTime gameTime)
+        {
+            _spriteBatch.Begin();
+            _spriteBatch.Draw(_texture, _rectangle, Color.White);
+            _spriteBatch.End();
+            base.Draw(gameTime);
         }
     }
 }

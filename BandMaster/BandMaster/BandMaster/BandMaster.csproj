@@ -107,6 +107,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Graphics\Instrument.cs" />
     <Compile Include="Graphics\Stage.cs" />
     <Compile Include="Input\InputManager.cs" />
     <Compile Include="Logic\BandMasterMode.cs" />
