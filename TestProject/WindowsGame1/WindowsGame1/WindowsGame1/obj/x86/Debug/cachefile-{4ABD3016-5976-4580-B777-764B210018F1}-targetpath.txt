@@ -1,1 +1,2 @@
 Content\SpriteFont1.xnb
+Content\hand.xnb

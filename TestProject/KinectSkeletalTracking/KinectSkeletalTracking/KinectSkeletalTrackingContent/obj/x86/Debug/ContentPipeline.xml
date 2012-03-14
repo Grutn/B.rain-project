@@ -2,22 +2,13 @@
 <XnaContent xmlns:Pipeline="Microsoft.Xna.Framework.Content.Pipeline">
   <Asset Type="Pipeline:BuildItemCollection">
     <Item>
-      <Source>SpriteFont1.spritefont</Source>
-      <Name>SpriteFont1</Name>
+      <Source>SpriteFont.spritefont</Source>
+      <Name>SpriteFont</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\Users\Emil\B.rain-project\TestProject\WindowsGame1\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\SpriteFont1.xnb</Output>
-      <Time>2012-03-07T18:17:01.3111234+01:00</Time>
-    </Item>
-    <Item>
-      <Source>hand.png</Source>
-      <Name>hand</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\Emil\B.rain-project\TestProject\WindowsGame1\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\hand.xnb</Output>
-      <Time>2012-03-07T19:21:36.1397509+01:00</Time>
+      <Output>C:\Users\Emil\B.rain-project\TestProject\KinectSkeletalTracking\KinectSkeletalTracking\KinectSkeletalTracking\bin\x86\Debug\Content\SpriteFont.xnb</Output>
+      <Time>2012-03-13T09:48:40.6577001+01:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
@@ -25,10 +16,10 @@
       <TargetProfile>HiDef</TargetProfile>
       <BuildConfiguration>Debug</BuildConfiguration>
       <CompressContent>false</CompressContent>
-      <RootDirectory>C:\Users\Emil\B.rain-project\TestProject\WindowsGame1\WindowsGame1\WindowsGame1Content\</RootDirectory>
-      <LoggerRootDirectory>C:\Users\Emil\B.rain-project\TestProject\WindowsGame1\WindowsGame1\WindowsGame1\</LoggerRootDirectory>
-      <IntermediateDirectory>C:\Users\Emil\B.rain-project\TestProject\WindowsGame1\WindowsGame1\WindowsGame1Content\obj\x86\Debug\</IntermediateDirectory>
-      <OutputDirectory>C:\Users\Emil\B.rain-project\TestProject\WindowsGame1\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\</OutputDirectory>
+      <RootDirectory>C:\Users\Emil\B.rain-project\TestProject\KinectSkeletalTracking\KinectSkeletalTracking\KinectSkeletalTrackingContent\</RootDirectory>
+      <LoggerRootDirectory>C:\Users\Emil\B.rain-project\TestProject\KinectSkeletalTracking\KinectSkeletalTracking\KinectSkeletalTracking\</LoggerRootDirectory>
+      <IntermediateDirectory>C:\Users\Emil\B.rain-project\TestProject\KinectSkeletalTracking\KinectSkeletalTracking\KinectSkeletalTrackingContent\obj\x86\Debug\</IntermediateDirectory>
+      <OutputDirectory>C:\Users\Emil\B.rain-project\TestProject\KinectSkeletalTracking\KinectSkeletalTracking\KinectSkeletalTracking\bin\x86\Debug\Content\</OutputDirectory>
     </Settings>
     <Assemblies>
       <Assembly>
@@ -56,12 +47,8 @@
         <Value>2010-08-23T13:41:18+02:00</Value>
       </Assembly>
       <Assembly>
-        <Key>C:\Windows\Microsoft.Net\assembly\GAC_MSIL\Microsoft.Kinect\v4.0_1.0.0.0__31bf3856ad364e35\Microsoft.Kinect.dll</Key>
-        <Value>2012-02-28T20:20:43.2920069+01:00</Value>
-      </Assembly>
-      <Assembly>
         <Key>C:\Windows\Microsoft.Net\assembly\GAC_32\Microsoft.Xna.Framework.Content.Pipeline\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Content.Pipeline.dll</Key>
-        <Value>2011-03-14T20:04:51.1332354+01:00</Value>
+        <Value>2012-01-30T10:39:04.64718+01:00</Value>
       </Assembly>
     </Assemblies>
   </Asset>

@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KinectSkeletalTracking", "KinectSkeletalTracking\KinectSkeletalTracking\KinectSkeletalTracking.csproj", "{4DF225C1-2BE1-455E-A1E2-C8510A6B7EED}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "KinectSkeletalTrackingContent", "KinectSkeletalTracking\KinectSkeletalTrackingContent\KinectSkeletalTrackingContent.contentproj", "{7DF34215-9ACD-4FA1-940A-D82E23116050}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4DF225C1-2BE1-455E-A1E2-C8510A6B7EED}.Debug|x86.ActiveCfg = Debug|x86
+		{4DF225C1-2BE1-455E-A1E2-C8510A6B7EED}.Debug|x86.Build.0 = Debug|x86
+		{4DF225C1-2BE1-455E-A1E2-C8510A6B7EED}.Release|x86.ActiveCfg = Release|x86
+		{4DF225C1-2BE1-455E-A1E2-C8510A6B7EED}.Release|x86.Build.0 = Release|x86
+		{7DF34215-9ACD-4FA1-940A-D82E23116050}.Debug|x86.ActiveCfg = Debug|x86
+		{7DF34215-9ACD-4FA1-940A-D82E23116050}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
