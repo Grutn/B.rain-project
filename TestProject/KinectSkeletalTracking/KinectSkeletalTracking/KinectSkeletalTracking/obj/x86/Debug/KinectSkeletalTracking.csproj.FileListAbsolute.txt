@@ -5,3 +5,4 @@ C:\Users\Emil\B.rain-project\TestProject\KinectSkeletalTracking\KinectSkeletalTr
 C:\Users\Emil\B.rain-project\TestProject\KinectSkeletalTracking\KinectSkeletalTracking\KinectSkeletalTracking\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
 C:\Users\Emil\B.rain-project\TestProject\KinectSkeletalTracking\KinectSkeletalTracking\KinectSkeletalTracking\obj\x86\Debug\KinectSkeletalTracking.exe
 C:\Users\Emil\B.rain-project\TestProject\KinectSkeletalTracking\KinectSkeletalTracking\KinectSkeletalTracking\obj\x86\Debug\KinectSkeletalTracking.pdb
+C:\Users\Emil\B.rain-project\TestProject\KinectSkeletalTracking\KinectSkeletalTracking\KinectSkeletalTracking\bin\x86\Debug\Content\dot.xnb

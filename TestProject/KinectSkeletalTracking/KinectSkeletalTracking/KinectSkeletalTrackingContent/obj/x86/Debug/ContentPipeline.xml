@@ -10,6 +10,15 @@
       <Output>C:\Users\Emil\B.rain-project\TestProject\KinectSkeletalTracking\KinectSkeletalTracking\KinectSkeletalTracking\bin\x86\Debug\Content\SpriteFont.xnb</Output>
       <Time>2012-03-13T09:48:40.6577001+01:00</Time>
     </Item>
+    <Item>
+      <Source>dot.png</Source>
+      <Name>dot</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Emil\B.rain-project\TestProject\KinectSkeletalTracking\KinectSkeletalTracking\KinectSkeletalTracking\bin\x86\Debug\Content\dot.xnb</Output>
+      <Time>2012-03-14T14:59:11.9882567+01:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <TargetPlatform>Windows</TargetPlatform>
