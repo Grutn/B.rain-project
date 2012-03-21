@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -16,11 +17,15 @@ namespace BandMaster.Graphics
     /// This is a game component that implements IUpdateable.
     /// </summary>
     public class Stage : Microsoft.Xna.Framework.DrawableGameComponent
-    {
+    {   
+        List<Instrument> Band;
+        SpriteBatch StageSpriteBatch;
+        
+
         public Stage(Game game)
             : base(game)
         {
-            // TODO: Construct any child components here
+            StageSpriteBatch = new SpriteBatch(game.GraphicsDevice);
         }
 
         /// <summary>
@@ -43,6 +48,24 @@ namespace BandMaster.Graphics
             // TODO: Add your update code here
 
             base.Update(gameTime);
+        }
+
+        /* fiks it later
+        public void SetBand(Object something)
+        {
+            Band.RemoveRange(0,Band.Count);
+   
+        }
+        */
+        public override void  Draw(GameTime gameTime)
+        {   
+            StageSpriteBatch.Begin();
+            foreach (Instrument _instrument in Band)
+            {
+                _instrument.Draw(gameTime);
+            }
+            StageSpriteBatch.End();
+ 	        base.Draw(gameTime);
         }
     }
 }

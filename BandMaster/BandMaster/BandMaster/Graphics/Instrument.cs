@@ -14,7 +14,7 @@ namespace BandMaster.Graphics
 {
     /// <summary>
     /// This is a game component that implements IDrawble.
-    /// and desplays send 2D texure with rate of width*hight frames per second
+    /// It desplays 2D texure with rate of width*hight frames per second
     /// Author: Dimitry Kongevold (dimitryk@github.com)
     /// 
     /// WARNING: Throws and exeption
