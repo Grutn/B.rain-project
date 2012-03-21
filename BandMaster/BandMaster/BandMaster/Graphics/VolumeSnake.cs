@@ -52,7 +52,6 @@ namespace BandMaster.Graphics
             {
                 snake[i] = _position.X;
             }
-
             base.Initialize();
         }
 
@@ -64,25 +63,17 @@ namespace BandMaster.Graphics
         {
             if (gameTime.TotalGameTime.Milliseconds % 100 > 70)
             {
-
-
                 for (int i = snake.Length; i > 1; i--)
                 {
                     snake[i - 1] = snake[i - 2];
                 }
-                snake[0] = snake[0] + rand.Next(-5, 6);
+                //snake[0] = snake[0] + rand.Next(-5, 6);   //other imput here
             }
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
-
-
-
-
-
-
             SnakeSpriteBatch.Begin();
             SnakeSpriteBatch.Draw(SnakeTexture,
                 new Rectangle((int)(_position.Y), (int)snake[0], SnakeTexture.Width, SnakeTexture.Height),
@@ -100,8 +91,6 @@ namespace BandMaster.Graphics
                 new Vector2(SnakeTexture.Width / 2, SnakeTexture.Height / 2), SpriteEffects.None, 1f);
             }
             SnakeSpriteBatch.End();
-
-
             base.Draw(gameTime);
         }
     }
