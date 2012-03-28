@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Media;
 namespace BandMaster.Graphics
 {
     /// <summary>
-    /// This is a game component that implements IUpdateable.
+    /// This is a game component that implements DrawableGameComponent.
     /// </summary>
     public class Stage : Microsoft.Xna.Framework.DrawableGameComponent
     {   
@@ -22,6 +22,7 @@ namespace BandMaster.Graphics
         SpriteBatch StageSpriteBatch;
         Hashtable Instruments;
         Game _game;
+        int _hight;
 
         public Stage(Game game)
             : base(game)
@@ -52,28 +53,42 @@ namespace BandMaster.Graphics
             base.Update(gameTime);
         }
 
-
-        private void addInstrument(string _instrument)
+        private void addInstrument(string _instrument, Rectangle rec)
         {
             if (!(Instruments.ContainsKey(_instrument)))
             {
-                Instruments.Add(_instrument, new Instrument(_game));//better creater
+                Instruments.Add(_instrument, new Instrument(_game, _instrument, rec));
             }
+            Instrument Current = Instruments[_instrument] as Instrument;
+            Current.SetNewBounds(rec);
         }
-
-        /* fiks it later
-        public void SetBand(Object something)
+        /// <summary>
+        /// Set a band array based on a BandMaster.State.Song._Instruments Array
+        /// </summary>
+        /// <param name="_song"></param>
+        public void SetBand(BandMaster.State.Song _song)
         {
             Band.RemoveRange(0,Band.Count);
+            int _width = _game.GraphicsDevice.Viewport.Width/_song._Instruments.Length;
+            for(int i=0;i<_song._Instruments.Length;i++)
+            {
+                addInstrument(_song._Instruments[i], new Rectangle(_width*i, 0, _width, _hight));
+                Band.Add(Instruments[_song._Instruments[i]] as Instrument);
+            }
    
         }
-        */
+        /// <summary>
+        /// Simply Draws stage, and every Instrument in a band
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void  Draw(GameTime gameTime)
         {   
             StageSpriteBatch.Begin();
+            // TODO Draw band here
+
             foreach (Instrument _instrument in Band)
             {
-                if (_instrument.isVisible) _instrument.Draw(gameTime);
+                _instrument.Draw(gameTime);
             }
             StageSpriteBatch.End();
  	        base.Draw(gameTime);

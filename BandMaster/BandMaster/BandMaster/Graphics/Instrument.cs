@@ -27,7 +27,6 @@ namespace BandMaster.Graphics
         Texture2D _texture;
         SpriteBatch _spriteBatch;
         int _width, _hight, frameWidth, frameHight;
-        public bool isVisible;
         
 
         public Instrument(Game game)
@@ -35,7 +34,19 @@ namespace BandMaster.Graphics
         {
             // TODO: Construct any child components here
         }
-
+        /// <summary>
+        /// Creates an Instrument in given Rectangele
+        /// Texture must have frames structured in a pattern
+        /// of Width X Hight
+        ///
+        /// Exeptions:
+        ///     InvalidOperationException
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="texture"></param>
+        /// <param name="width"></param>
+        /// <param name="hight"></param>
+        /// <param name="rec"></param>
         public Instrument(Game game, String texture, int width, int hight, Rectangle rec)
             : base(game)
         {
@@ -49,6 +60,21 @@ namespace BandMaster.Graphics
             _width = width;
             _hight = hight;
             frameWidth = _texture.Width / _width;       
+            frameHight = _texture.Height / _hight;
+        }
+        public Instrument(Game game, String texture, Rectangle rec)
+            : base(game)
+        {
+            _texture = game.Content.Load<Texture2D>(texture);
+            //checks for consistancy between Sheet and given parrameters
+            if ((_texture.Height % hight != 0) | (_texture.Width % width != 0))
+                throw new InvalidOperationException("The texture and parrameters do not match");
+            //sets rest of variebles
+            _rectangle = rec;
+            _spriteBatch = new SpriteBatch(game.GraphicsDevice);
+            _width = 5;
+            _hight = 5;
+            frameWidth = _texture.Width / _width;
             frameHight = _texture.Height / _hight;
         }
 
@@ -81,15 +107,14 @@ namespace BandMaster.Graphics
             //_spriteBatch.Draw(_texture, _rectangle, Color.White);
             _spriteBatch.Draw(_texture, _rectangle,
                 new Rectangle(frameWidth * horisontalOffset, frameHight * verticallOffset, frameWidth, frameHight),
-                Color.White);
+                Color.White, 0, Vector2.Zero, SpriteEffects.None , 0);
             _spriteBatch.End();
             base.Draw(gameTime);
         }
 
-        public void SetNewBounds(int width, int hight)
+        public void SetNewBounds(Rectangle rec)
         {
-            _width = width;
-            _hight = hight;
+            _rectangle = rec;
         }
     }
 }
