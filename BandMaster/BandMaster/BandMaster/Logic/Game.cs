@@ -21,11 +21,15 @@ namespace BandMaster
 
         // Event OnSongChanged
         // Event 
+        InputManager input;
+        Texture2D texture = null;
 
         public Game()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            input = new InputManager(this);
         }
 
         /// <summary>
@@ -37,8 +41,14 @@ namespace BandMaster
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            input.OnVideoTextureReady += new EventHandler<VideoTextureReadyEventArgs>(InputOnTextureReady);
 
             base.Initialize();
+        }
+
+        void InputOnTextureReady(object sender, VideoTextureReadyEventArgs e)
+        {
+            texture = e.VideoTexture;
         }
 
         /// <summary>
@@ -60,6 +70,7 @@ namespace BandMaster
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+            input.Dispose();
         }
 
         /// <summary>
@@ -74,7 +85,7 @@ namespace BandMaster
                 this.Exit();
 
             // TODO: Add your update logic here
-
+            
             base.Update(gameTime);
         }
 
@@ -87,6 +98,12 @@ namespace BandMaster
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            if (texture != null)
+            {
+                spriteBatch.Draw(texture, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
+            }
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
