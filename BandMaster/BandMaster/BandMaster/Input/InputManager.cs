@@ -17,7 +17,7 @@ namespace BandMaster
         public event EventHandler<VideoTextureReadyEventArgs> OnVideoTextureReady;
         public event EventHandler<DepthTextureReadyEventArgs> OnDepthTextureReady;
         public event EventHandler<SkeletonTrackingReadyEventArgs> OnSkeletonTrackingReady;
-        // EventHandlers for changing 
+        // EventHandlers for changing hand velocity
         public event EventHandler<HandVelocityChangeEventArgs> OnHandVelocityChange;
 
         KinectManager kinect;
@@ -25,11 +25,30 @@ namespace BandMaster
         Skeleton[] currSkeleton = null;
         Skeleton[] lastSkeleton = null;
 
+        int velocityChange = 0;
+
         public InputManager(Game game) : base(game)
         {
-            // 
             kinect = new KinectManager(KinectStreams.ColorStream);
             kinect.AddEventHandler(ColorStreamEventHandler);
+        }
+
+        public InputManager(Game game, KinectStreams streams) : base(game)
+        {
+            kinect = new KinectManager(streams);
+
+            if ((streams & KinectStreams.ColorStream) != 0)
+            {
+                kinect.AddEventHandler(ColorStreamEventHandler);
+            }
+            if ((streams & KinectStreams.DepthStream) != 0)
+            {
+                kinect.AddEventHandler(DepthStreamEventHandler);
+            }
+            if ((streams & KinectStreams.SkeletonStream) != 0)
+            {
+                kinect.AddEventHandler(SkeletonStreamEventHandler);
+            }
         }
 
         /// <summary>
@@ -127,34 +146,30 @@ namespace BandMaster
             {
                 if (frame != null)
                 {
+                    // Set current frame to last frame
                     lastSkeleton = currSkeleton;
-
+                    // copy over data from the event arg
                     frame.CopySkeletonDataTo(currSkeleton);
 
                     OnSkeletonTrackingReady.Invoke(this, new SkeletonTrackingReadyEventArgs(currSkeleton, lastSkeleton));
-                }
-            }
-        }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SkeletonHandVelocityChangeEventHandler(object sender, SkeletonFrameReadyEventArgs e)
-        {
-            using (SkeletonFrame frame = e.OpenSkeletonFrame())
-            {
-                if (frame != null)
-                {
-                    lastSkeleton = currSkeleton;
+                    if (currSkeleton[0].Joints[JointType.HandRight] != lastSkeleton[0].Joints[JointType.HandRight])
+                    {
+                        // Get current and last position of right hand
+                        // TODO: implement for left hand use
+                        SkeletonPoint lastRightHand = lastSkeleton[0].Joints[JointType.HandRight].Position;
+                        SkeletonPoint currRightHand = currSkeleton[0].Joints[JointType.HandRight].Position;
 
-                    frame.CopySkeletonDataTo(currSkeleton);
+                        Vector3 currPos = new Vector3(lastRightHand.X, lastRightHand.Y, lastRightHand.Z);
+                        Vector3 lastPos = new Vector3(currRightHand.X, currRightHand.Y, currRightHand.Z);
 
-                    Joint lastRightHand = lastSkeleton[0].Joints[JointType.HandRight];
-                    Joint currRightHand = currSkeleton[0].Joints[JointType.HandRight];
+                        // If the change
+                        if ((currPos.X - lastPos.X) > 200)
+                        {
 
-                    OnHandVelocityChange.Invoke(this, new HandVelocityChangeEventArgs());
+                        }
+
+                    }
                 }
             }
         }
