@@ -1,0 +1,15 @@
+D:\eit\CSharpMidiToolkitV5_demo\Sanford.Multimedia.Midi\bin\Debug\Sanford.Multimedia.Midi.dll
+D:\eit\CSharpMidiToolkitV5_demo\Sanford.Multimedia.Midi\bin\Debug\Sanford.Multimedia.Midi.pdb
+D:\eit\CSharpMidiToolkitV5_demo\Sanford.Multimedia.Midi\bin\Debug\Sanford.Collections.dll
+D:\eit\CSharpMidiToolkitV5_demo\Sanford.Multimedia.Midi\bin\Debug\Sanford.Multimedia.dll
+D:\eit\CSharpMidiToolkitV5_demo\Sanford.Multimedia.Midi\bin\Debug\Sanford.Multimedia.Timers.dll
+D:\eit\CSharpMidiToolkitV5_demo\Sanford.Multimedia.Midi\bin\Debug\Sanford.Threading.dll
+D:\eit\CSharpMidiToolkitV5_demo\Sanford.Multimedia.Midi\obj\Debug\ResolveAssemblyReference.cache
+D:\eit\CSharpMidiToolkitV5_demo\Sanford.Multimedia.Midi\obj\Debug\Sanford.Multimedia.Midi.UI.DeviceDialog.resources
+D:\eit\CSharpMidiToolkitV5_demo\Sanford.Multimedia.Midi\obj\Debug\Sanford.Multimedia.Midi.UI.InputDeviceDialog.resources
+D:\eit\CSharpMidiToolkitV5_demo\Sanford.Multimedia.Midi\obj\Debug\Sanford.Multimedia.Midi.UI.OutputDeviceDialog.resources
+D:\eit\CSharpMidiToolkitV5_demo\Sanford.Multimedia.Midi\obj\Debug\Sanford.Multimedia.Midi.UI.PianoControlDialog.resources
+D:\eit\CSharpMidiToolkitV5_demo\Sanford.Multimedia.Midi\obj\Debug\ResGen.read.1.tlog
+D:\eit\CSharpMidiToolkitV5_demo\Sanford.Multimedia.Midi\obj\Debug\ResGen.write.1.tlog
+D:\eit\CSharpMidiToolkitV5_demo\Sanford.Multimedia.Midi\obj\Debug\Sanford.Multimedia.Midi.dll
+D:\eit\CSharpMidiToolkitV5_demo\Sanford.Multimedia.Midi\obj\Debug\Sanford.Multimedia.Midi.pdb
