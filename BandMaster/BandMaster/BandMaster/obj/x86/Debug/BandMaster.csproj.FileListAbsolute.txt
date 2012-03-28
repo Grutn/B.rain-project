@@ -4,3 +4,9 @@ D:\eit\b.rain\B.rain-project\BandMaster\BandMaster\BandMaster\obj\x86\Debug\Reso
 D:\eit\b.rain\B.rain-project\BandMaster\BandMaster\BandMaster\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
 D:\eit\b.rain\B.rain-project\BandMaster\BandMaster\BandMaster\obj\x86\Debug\BandMaster.exe
 D:\eit\b.rain\B.rain-project\BandMaster\BandMaster\BandMaster\obj\x86\Debug\BandMaster.pdb
+C:\Users\Emil\B.rain-project\BandMaster\BandMaster\BandMaster\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Emil\B.rain-project\BandMaster\BandMaster\BandMaster\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\Emil\B.rain-project\BandMaster\BandMaster\BandMaster\obj\x86\Debug\BandMaster.exe
+C:\Users\Emil\B.rain-project\BandMaster\BandMaster\BandMaster\obj\x86\Debug\BandMaster.pdb
+C:\Users\Emil\B.rain-project\BandMaster\BandMaster\BandMaster\bin\x86\Debug\BandMaster.exe
+C:\Users\Emil\B.rain-project\BandMaster\BandMaster\BandMaster\bin\x86\Debug\BandMaster.pdb
