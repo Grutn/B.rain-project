@@ -17,7 +17,8 @@ namespace BandMaster.Graphics
     /// It desplays 2D texure with rate of width*hight frames per second
     /// Author: Dimitry Kongevold (dimitryk@github.com)
     /// 
-    /// WARNING: Throws and exeption
+    /// Exeptions:
+    ///     InvalidOperationException
     /// 
     /// </summary>
     public class Instrument : Microsoft.Xna.Framework.DrawableGameComponent
@@ -26,6 +27,7 @@ namespace BandMaster.Graphics
         Texture2D _texture;
         SpriteBatch _spriteBatch;
         int _width, _hight, frameWidth, frameHight;
+        public bool isVisible;
         
 
         public Instrument(Game game)
@@ -82,6 +84,12 @@ namespace BandMaster.Graphics
                 Color.White);
             _spriteBatch.End();
             base.Draw(gameTime);
+        }
+
+        public void SetNewBounds(int width, int hight)
+        {
+            _width = width;
+            _hight = hight;
         }
     }
 }

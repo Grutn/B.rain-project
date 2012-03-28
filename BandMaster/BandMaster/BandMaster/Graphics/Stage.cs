@@ -20,11 +20,13 @@ namespace BandMaster.Graphics
     {   
         List<Instrument> Band;
         SpriteBatch StageSpriteBatch;
-        
+        Hashtable Instruments;
+        Game _game;
 
         public Stage(Game game)
             : base(game)
         {
+            _game = game;
             StageSpriteBatch = new SpriteBatch(game.GraphicsDevice);
         }
 
@@ -50,6 +52,15 @@ namespace BandMaster.Graphics
             base.Update(gameTime);
         }
 
+
+        private void addInstrument(string _instrument)
+        {
+            if (!(Instruments.ContainsKey(_instrument)))
+            {
+                Instruments.Add(_instrument, new Instrument(_game));//better creater
+            }
+        }
+
         /* fiks it later
         public void SetBand(Object something)
         {
@@ -62,7 +73,7 @@ namespace BandMaster.Graphics
             StageSpriteBatch.Begin();
             foreach (Instrument _instrument in Band)
             {
-                _instrument.Draw(gameTime);
+                if (_instrument.isVisible) _instrument.Draw(gameTime);
             }
             StageSpriteBatch.End();
  	        base.Draw(gameTime);
