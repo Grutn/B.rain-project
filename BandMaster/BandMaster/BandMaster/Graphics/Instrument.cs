@@ -43,10 +43,10 @@ namespace BandMaster.Graphics
         ///     InvalidOperationException
         /// </summary>
         /// <param name="game"></param>
-        /// <param name="texture"></param>
-        /// <param name="width"></param>
-        /// <param name="hight"></param>
-        /// <param name="rec"></param>
+        /// <param name="texture">The texture to load</param>
+        /// <param name="width">Number of frames in a texture</param>
+        /// <param name="hight">Number of frames in a texture</param>
+        /// <param name="rec">Place on the screen where instrument should be drawn</param>
         public Instrument(Game game, String texture, int width, int hight, Rectangle rec)
             : base(game)
         {
@@ -66,10 +66,6 @@ namespace BandMaster.Graphics
             : base(game)
         {
             _texture = game.Content.Load<Texture2D>(texture);
-            //checks for consistancy between Sheet and given parrameters
-            if ((_texture.Height % hight != 0) | (_texture.Width % width != 0))
-                throw new InvalidOperationException("The texture and parrameters do not match");
-            //sets rest of variebles
             _rectangle = rec;
             _spriteBatch = new SpriteBatch(game.GraphicsDevice);
             _width = 5;

@@ -23,6 +23,7 @@ namespace BandMaster.Graphics
         Hashtable Instruments;
         Game _game;
         int _hight;
+        Texture2D _stageText;
 
         public Stage(Game game)
             : base(game)
@@ -37,7 +38,7 @@ namespace BandMaster.Graphics
         /// </summary>
         public override void Initialize()
         {
-            // TODO: Add your initialization code here
+            _stageText = _game.Content.Load<Texture2D>("stage");//NB no file
 
             base.Initialize();
         }
@@ -84,7 +85,8 @@ namespace BandMaster.Graphics
         public override void  Draw(GameTime gameTime)
         {   
             StageSpriteBatch.Begin();
-            // TODO Draw band here
+            StageSpriteBatch.Draw(_stageText, _game.GraphicsDevice.Viewport.Bounds, null, Color.White, 0f,
+                Vector2.Zero, SpriteEffects.None, 1);
 
             foreach (Instrument _instrument in Band)
             {
