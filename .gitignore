@@ -1,5 +1,6 @@
 # exclude binary solution file
 *.suo
+*/*.suo
 
 # exclude bin and obj folders
 */bin/
