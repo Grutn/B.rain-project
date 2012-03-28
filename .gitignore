@@ -7,5 +7,5 @@
 */obj/
 
 # exclude binary files
-*.exe
-*.cache
+*/*.exe
+*/*.cache
