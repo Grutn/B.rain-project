@@ -1,2 +1,0 @@
-D:\eit\b.rain\B.rain-project\BandMaster\BandMaster\BandMasterContent\obj\x86\Debug\ResolveAssemblyReference.cache
-D:\skole\eit\b.rain\B.rain-project\BandMaster\BandMaster\BandMasterContent\obj\x86\Debug\ResolveAssemblyReference.cache

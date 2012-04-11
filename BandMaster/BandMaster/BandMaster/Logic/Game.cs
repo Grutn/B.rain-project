@@ -23,15 +23,21 @@ namespace BandMaster
 
         // Event OnSongChanged
         // Event 
+        InputManager input;
+        Texture2D texture = null;
 
         public Game()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
+<<<<<<< HEAD
             Midi.Player player = new Midi.Player(this);
             Components.Add(player);
             Services.AddService(typeof(Midi.Player), player);
+=======
+            input = new InputManager(this);
+>>>>>>> 070c8d4629c5834e8d50c519f7834ecf6bbbf54b
         }
 
         /// <summary>
@@ -42,7 +48,18 @@ namespace BandMaster
         /// </summary>
         protected override void Initialize()
         {
+<<<<<<< HEAD
+=======
+            // TODO: Add your initialization logic here
+            input.OnVideoTextureReady += new EventHandler<VideoTextureReadyEventArgs>(InputOnTextureReady);
+
+>>>>>>> 070c8d4629c5834e8d50c519f7834ecf6bbbf54b
             base.Initialize();
+        }
+
+        void InputOnTextureReady(object sender, VideoTextureReadyEventArgs e)
+        {
+            texture = e.VideoTexture;
         }
 
         /// <summary>
@@ -70,6 +87,7 @@ namespace BandMaster
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+            input.Dispose();
         }
 
         /// <summary>
@@ -84,7 +102,7 @@ namespace BandMaster
                 this.Exit();
 
             // TODO: Add your update logic here
-
+            
             base.Update(gameTime);
         }
 
@@ -97,6 +115,12 @@ namespace BandMaster
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            if (texture != null)
+            {
+                spriteBatch.Draw(texture, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
+            }
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
