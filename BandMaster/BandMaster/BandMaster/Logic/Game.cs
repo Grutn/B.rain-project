@@ -31,13 +31,10 @@ namespace BandMaster
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-<<<<<<< HEAD
             Midi.Player player = new Midi.Player(this);
             Components.Add(player);
             Services.AddService(typeof(Midi.Player), player);
-=======
             input = new InputManager(this);
->>>>>>> 070c8d4629c5834e8d50c519f7834ecf6bbbf54b
         }
 
         /// <summary>
@@ -48,12 +45,9 @@ namespace BandMaster
         /// </summary>
         protected override void Initialize()
         {
-<<<<<<< HEAD
-=======
             // TODO: Add your initialization logic here
             input.OnVideoTextureReady += new EventHandler<VideoTextureReadyEventArgs>(InputOnTextureReady);
 
->>>>>>> 070c8d4629c5834e8d50c519f7834ecf6bbbf54b
             base.Initialize();
         }
 

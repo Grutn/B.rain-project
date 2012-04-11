@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BandMaster.State
 {
-    class Song
+    public class Song
     {
         public String[] _Instruments;
     }
