@@ -126,8 +126,10 @@
     <Compile Include="Graphics\Instrument.cs" />
     <Compile Include="Graphics\Stage.cs" />
     <Compile Include="Graphics\VolumeSnake.cs" />
+    <Compile Include="Input\AlternativeInputManager.cs" />
     <Compile Include="Input\InputManager.cs" />
     <Compile Include="Input\KinectEventArgs.cs" />
+    <Compile Include="Input\KinectInputManager.cs" />
     <Compile Include="Input\KinectManager.cs" />
     <Compile Include="Logic\BandMasterMode.cs" />
     <Compile Include="Logic\Game.cs" />
