@@ -7,10 +7,10 @@
       <TargetProfile>HiDef</TargetProfile>
       <BuildConfiguration>Debug</BuildConfiguration>
       <CompressContent>false</CompressContent>
-      <RootDirectory>D:\eit\b.rain\B.rain-project\BandMaster\BandMaster\BandMasterContent\</RootDirectory>
-      <LoggerRootDirectory>D:\eit\b.rain\B.rain-project\BandMaster\BandMaster\BandMaster\</LoggerRootDirectory>
-      <IntermediateDirectory>D:\eit\b.rain\B.rain-project\BandMaster\BandMaster\BandMasterContent\obj\x86\Debug\</IntermediateDirectory>
-      <OutputDirectory>D:\eit\b.rain\B.rain-project\BandMaster\BandMaster\BandMaster\bin\x86\Debug\Content\</OutputDirectory>
+      <RootDirectory>D:\skole\eit\b.rain\B.rain-project\BandMaster\BandMaster\BandMasterContent\</RootDirectory>
+      <LoggerRootDirectory>D:\skole\eit\b.rain\B.rain-project\BandMaster\BandMaster\BandMaster\</LoggerRootDirectory>
+      <IntermediateDirectory>D:\skole\eit\b.rain\B.rain-project\BandMaster\BandMaster\BandMasterContent\obj\x86\Debug\</IntermediateDirectory>
+      <OutputDirectory>D:\skole\eit\b.rain\B.rain-project\BandMaster\BandMaster\BandMaster\bin\x86\Debug\Content\</OutputDirectory>
     </Settings>
     <Assemblies>
       <Assembly>

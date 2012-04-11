@@ -11,6 +11,8 @@ using Microsoft.Xna.Framework.Media;
 
 namespace BandMaster
 {
+    using Audio;
+
     /// <summary>
     /// This is the main type for your game
     /// </summary>
@@ -26,6 +28,10 @@ namespace BandMaster
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            Midi.Player player = new Midi.Player(this);
+            Components.Add(player);
+            Services.AddService(typeof(Midi.Player), player);
         }
 
         /// <summary>
@@ -36,8 +42,6 @@ namespace BandMaster
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
         }
 
@@ -50,7 +54,13 @@ namespace BandMaster
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            Midi.Player player = (Midi.Player)Services.GetService(typeof(Midi.Player));
+
+            player.Song = new Midi.Song();
+            player.Song.LoadAsync("song.mid", delegate() 
+            {
+                player.Play();
+            });
         }
 
         /// <summary>
