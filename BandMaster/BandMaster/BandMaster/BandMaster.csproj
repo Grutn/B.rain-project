@@ -97,10 +97,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Sanford.Multimedia.dll</HintPath>
     </Reference>
-    <Reference Include="Sanford.Multimedia.Midi, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Sanford.Multimedia.Midi\bin\Debug\Sanford.Multimedia.Midi.dll</HintPath>
-    </Reference>
     <Reference Include="Sanford.Multimedia.Timers, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Sanford.Multimedia.Timers.dll</HintPath>
@@ -144,6 +140,10 @@
     <Content Include="GameThumbnail.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Sanford.Multimedia.Midi\Sanford.Multimedia.Midi.csproj">
+      <Project>{4269C72A-8D3A-4737-8F89-72EAA33EA9E1}</Project>
+      <Name>Sanford.Multimedia.Midi</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BandMasterContent\BandMasterContent.contentproj">
       <Name>BandMasterContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>
