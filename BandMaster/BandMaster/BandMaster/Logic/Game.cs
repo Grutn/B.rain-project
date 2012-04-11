@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Media;
 namespace BandMaster
 {
     using Audio;
+    using Input;
 
     /// <summary>
     /// This is the main type for your game
@@ -23,7 +24,7 @@ namespace BandMaster
 
         // Event OnSongChanged
         // Event 
-        InputManager input;
+        IManageInput input;
         Texture2D texture = null;
 
         public Game()
@@ -31,10 +32,23 @@ namespace BandMaster
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
+            IManageInput inputManager;
+            try
+            {
+                inputManager = new KinectInputManager(this);
+            }
+            catch (Exception e)
+            {
+                inputManager = new AlternativeInputManager(this);
+            }
+
+            Components.Add(inputManager);
+            Services.AddService(typeof(IManageInput), inputManager);
+
+
             Midi.Player player = new Midi.Player(this);
             Components.Add(player);
             Services.AddService(typeof(Midi.Player), player);
-            input = new InputManager(this);
         }
 
         /// <summary>
@@ -46,7 +60,6 @@ namespace BandMaster
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            input.OnVideoTextureReady += new EventHandler<VideoTextureReadyEventArgs>(InputOnTextureReady);
 
             base.Initialize();
         }
@@ -81,7 +94,6 @@ namespace BandMaster
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
-            input.Dispose();
         }
 
         /// <summary>

@@ -6,13 +6,50 @@ using Microsoft.Xna.Framework;
 using Microsoft.Kinect;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace BandMaster
+namespace BandMaster.Input
 {
+    public enum Hand
+    {
+        Left,
+        Right
+    }
+    public class PlayerEvent : EventArgs
+    {
+        public Hand Hand;
+        public Vector3 Direction;
+        public Vector3 Position;
+        public Vector3 Velocity;
+    }
+    public interface IManageInput : IGameComponent
+    {
+        event EventHandler<PlayerEvent> OnPlayerEvent; // on kinect: all movements of hands; on keyboard: mouse movements
+        event EventHandler OnTempoHit; // on kinect: detect in kinectinput subclass; on keyboard: some key event
+        event EventHandler OnDynamicHit; // same as above
+    }
+
+    
+
+    public class AlternativeInputManager : GameComponent, IManageInput
+    {
+        public event EventHandler<PlayerEvent> OnPlayerEvent; // on kinect: all movements of hands; on keyboard: mouse movements
+        public event EventHandler OnTempoHit; // on kinect: detect in kinectinput subclass; on keyboard: some key event
+        public event EventHandler OnDynamicHit; // same as above
+
+        public AlternativeInputManager(Game game) : base(game)
+        {
+            // TODO: get keyboard events and fire our ebvents.
+        }
+    }
+
     /// <summary>
     /// 
     /// </summary>
-    class InputManager : GameComponent
+    public class KinectInputManager : GameComponent, IManageInput
     {
+        public event EventHandler<PlayerEvent> OnPlayerEvent; // on kinect: all movements of hands; on keyboard: mouse movements
+        public event EventHandler OnTempoHit; // on kinect: detect in kinectinput subclass; on keyboard: some key event
+        public event EventHandler OnDynamicHit; // same as above
+        
         // EventHandlers fire after some processing of the raw data from the kinect.
         public event EventHandler<VideoTextureReadyEventArgs> OnVideoTextureReady;
         public event EventHandler<DepthTextureReadyEventArgs> OnDepthTextureReady;
@@ -27,13 +64,13 @@ namespace BandMaster
 
         int velocityChange = 0;
 
-        public InputManager(Game game) : base(game)
+        public KinectInputManager(Game game) : base(game)
         {
             kinect = new KinectManager(KinectStreams.ColorStream);
             kinect.AddEventHandler(ColorStreamEventHandler);
         }
 
-        public InputManager(Game game, KinectStreams streams) : base(game)
+        public KinectInputManager(Game game, KinectStreams streams) : base(game)
         {
             kinect = new KinectManager(streams);
 
@@ -87,7 +124,7 @@ namespace BandMaster
                     Texture2D texture = new Texture2D(Game.GraphicsDevice, frame.Width, frame.Height);
                     texture.SetData(bitmap);
 
-                    OnVideoTextureReady.Invoke(this, new VideoTextureReadyEventArgs(texture));
+                    //OnVideoTextureReady.Invoke(this, new VideoTextureReadyEventArgs(texture));
                 }
             }
         }

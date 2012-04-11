@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace BandMaster
 {
-    class VideoTextureReadyEventArgs : EventArgs
+    public class VideoTextureReadyEventArgs : EventArgs
     {
         Texture2D videoTexture;
 
@@ -23,7 +23,7 @@ namespace BandMaster
         }
     }
 
-    class DepthTextureReadyEventArgs : EventArgs
+    public class DepthTextureReadyEventArgs : EventArgs
     {
         Texture2D depthTexture;
 
@@ -38,7 +38,7 @@ namespace BandMaster
         }
     }
 
-    class SkeletonTrackingReadyEventArgs : EventArgs
+    public class SkeletonTrackingReadyEventArgs : EventArgs
     {
         Skeleton[] current;
         Skeleton[] last;
@@ -66,7 +66,7 @@ namespace BandMaster
         }
     }
 
-    class HandVelocityChangeEventArgs : EventArgs
+    public class HandVelocityChangeEventArgs : EventArgs
     {
         Vector3 position;
         Vector3 velocity;
