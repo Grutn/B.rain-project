@@ -122,7 +122,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
+    <Compile Include="Graphics\Metronum.cs" />
+    <Compile Include="Graphics\Line.cs" />
+=======
     <Compile Include="Audio\Midi.cs" />
+>>>>>>> 2a6615c55e3e39e0cc5b29fd6f1bce294aea4597
     <Compile Include="Graphics\Instrument.cs" />
     <Compile Include="Graphics\Stage.cs" />
     <Compile Include="Graphics\VolumeSnake.cs" />
@@ -137,7 +142,7 @@
     <Compile Include="Logic\PauseMenuMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="State\Song.cs" />
+    <Compile Include="State\song.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

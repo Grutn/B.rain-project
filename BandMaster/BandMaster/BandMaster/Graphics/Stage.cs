@@ -8,7 +8,8 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
+
+using BandMaster.State;
 
 
 namespace BandMaster.Graphics
@@ -21,6 +22,7 @@ namespace BandMaster.Graphics
         List<Instrument> Band = new List<Instrument>();
         SpriteBatch StageSpriteBatch;
         Hashtable Instruments;
+        Line Lines;
         int _hight;
         Texture2D background;
 
@@ -28,6 +30,7 @@ namespace BandMaster.Graphics
             : base(game)
         {
 
+            Game.Services.AddService(typeof(SpriteBatch), StageSpriteBatch);
         }
 
         /// <summary>
@@ -78,6 +81,7 @@ namespace BandMaster.Graphics
             {
                 addInstrument(song.Instruments[i], new Rectangle(_width*i, 0, _width, _hight));
                 Band.Add(Instruments[song.Instruments[i]] as Instrument);
+                
             }
    
         }
@@ -89,13 +93,16 @@ namespace BandMaster.Graphics
         {   
             StageSpriteBatch.Begin();
             StageSpriteBatch.Draw(background, Game.GraphicsDevice.Viewport.Bounds, null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1);
-
             foreach (Instrument _instrument in Band)
             {
                 _instrument.Draw(gameTime);
             }
+            
+            Lines.Draw(gameTime);
+            
             StageSpriteBatch.End();
- 	        base.Draw(gameTime);
+ 	        
+            base.Draw(gameTime);
         }
     }
 }
