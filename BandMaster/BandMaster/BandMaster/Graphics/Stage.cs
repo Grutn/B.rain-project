@@ -30,7 +30,7 @@ namespace BandMaster.Graphics
             : base(game)
         {
 
-            Game.Services.AddService(typeof(SpriteBatch), StageSpriteBatch);
+
         }
 
         /// <summary>
@@ -39,8 +39,8 @@ namespace BandMaster.Graphics
         /// </summary>
         public override void Initialize()
         {
-            StageSpriteBatch = new SpriteBatch(Game.GraphicsDevice);
-
+            StageSpriteBatch = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
+            
             background = Game.Content.Load<Texture2D>("bg"); // NB no file
 
             //((BandMaster)Game).StateChanged += OnGameStateChanged;
@@ -98,7 +98,7 @@ namespace BandMaster.Graphics
                 _instrument.Draw(gameTime);
             }
             
-            Lines.Draw(gameTime);
+            if (Lines != null) Lines.Draw(gameTime);
             
             StageSpriteBatch.End();
  	        

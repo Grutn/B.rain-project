@@ -54,7 +54,7 @@ namespace BandMaster.Graphics
 
         public void ChangeSong(Song _song)
         {
-            Lines = _song._Lines;
+            Lines = _song.Lines;
         }
 
         public void ChangeSpeed(float increase)

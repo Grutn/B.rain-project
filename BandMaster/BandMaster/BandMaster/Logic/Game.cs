@@ -67,6 +67,9 @@ namespace BandMaster
         {
             // TODO: Add your initialization logic here
 
+            SpriteBatch sprites = new SpriteBatch(GraphicsDevice);
+            Services.AddService(typeof(SpriteBatch), sprites);
+
             base.Initialize();
         }
 
