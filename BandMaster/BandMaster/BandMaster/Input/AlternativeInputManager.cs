@@ -37,7 +37,7 @@ namespace BandMaster.Input
 
         private bool IsNewKeyPress(Keys key)
         {
-            return currState.IsKeyDown(key) && lastState.IsKeyDown(key);
+            return currState.IsKeyDown(key) && (!lastState.IsKeyDown(key));
         }
     }
 }
