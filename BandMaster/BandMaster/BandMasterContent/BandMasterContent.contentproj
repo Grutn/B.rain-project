@@ -51,6 +51,7 @@
       <Name>Splash</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
+      <SubType>Designer</SubType>
     </Compile>
     <None Include="song.mid">
       <Name>song</Name>

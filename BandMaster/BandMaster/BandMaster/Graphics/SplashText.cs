@@ -79,7 +79,7 @@ namespace BandMaster.Graphics
                 else
                 {
                     double alpha = 1.0 - (gameTime.TotalGameTime - item.Time).TotalSeconds / ttl.TotalSeconds;
-                    System.Console.Out.WriteLine(alpha);
+                    //System.Console.Out.WriteLine(alpha);
                     Vector2 halfsize = font.MeasureString(item.Text) / 2;
                     Vector2 center = new Vector2(
                         Game.GraphicsDevice.Viewport.Bounds.Center.X,
