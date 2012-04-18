@@ -32,7 +32,7 @@ namespace BandMaster
 
         #region Fields
 
-        private KinectSensor kinect;
+        private KinectSensor kinect = null;
         private string errorMessage = "";
 
         #endregion
@@ -160,8 +160,11 @@ namespace BandMaster
         /// </summary>
         public void Dispose()
         {
-            kinect.Stop();
-            kinect.Dispose();
+            if (kinect != null)
+            {
+                kinect.Stop();
+                kinect.Dispose();
+            }
         }
 
         #region EventHandlers

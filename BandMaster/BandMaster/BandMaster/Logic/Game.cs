@@ -17,7 +17,7 @@ namespace BandMaster
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class Game : Microsoft.Xna.Framework.Game
+    public class BandMaster : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -27,7 +27,7 @@ namespace BandMaster
         IManageInput input;
         Texture2D texture = null;
 
-        public Game()
+        public BandMaster()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -45,10 +45,16 @@ namespace BandMaster
             Components.Add(inputManager);
             Services.AddService(typeof(IManageInput), inputManager);
 
-
             Midi.Player player = new Midi.Player(this);
             Components.Add(player);
             Services.AddService(typeof(Midi.Player), player);
+
+            Components.Add(new Logic.BandMasterMode(this));
+            Components.Add(new Logic.MainMenuMode(this));
+            Components.Add(new Logic.PauseMenuMode(this));
+
+            Components.Add(new Graphics.Stage(this));
+        
         }
 
         /// <summary>

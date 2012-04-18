@@ -133,6 +133,8 @@
     <Compile Include="Input\KinectManager.cs" />
     <Compile Include="Logic\BandMasterMode.cs" />
     <Compile Include="Logic\Game.cs" />
+    <Compile Include="Logic\MainMenuMode.cs" />
+    <Compile Include="Logic\PauseMenuMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="State\Song.cs" />

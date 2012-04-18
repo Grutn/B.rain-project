@@ -7,6 +7,6 @@ namespace BandMaster.State
 {
     public class Song
     {
-        public String[] _Instruments;
+        public String[] Instruments;
     }
 }

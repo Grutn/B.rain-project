@@ -10,9 +10,11 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
 using BandMaster.Audio;
-
+using BandMaster.Input;
 namespace BandMaster.Logic
 {
+
+
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
@@ -34,10 +36,15 @@ namespace BandMaster.Logic
         {
             player = (Midi.Player)Game.Services.GetService(typeof(Midi.Player));
 
+            player.Tick += onTick;
+
+            IManageInput inputManager = (IManageInput)Game.Services.GetService(typeof(IManageInput));
+            inputManager.OnTempoHit += tempoHit;
+            tier.Start();
             base.Initialize();
         }
 
-       /* float lastHitTime = -1.0f;
+        float lastHitTime = -1.0f;
         float currentHitTime = 0.0f;
 
         int ticksToNextHit = 960;
@@ -70,7 +77,7 @@ namespace BandMaster.Logic
             player.Tempo = (v * newTempo + (1.0f - v) * lastTempo);
             lastTempo = newTempo;
             lastHitTime = currentHitTime;
-        }   */ 
+        }   
 
 
         /// <summary>

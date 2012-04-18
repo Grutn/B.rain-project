@@ -122,7 +122,8 @@ namespace BandMaster.Audio
                     return sequencer1.secPerHit; 
                 } 
                 set
-                { 
+                {
+                    if (value == 0) return;
                     sequencer1.secPerHit = value; 
                 } 
             }
@@ -135,8 +136,8 @@ namespace BandMaster.Audio
 
             public void Play() 
             {
-                //sequencer1.Start();
-                sequencer1.Continue();
+                sequencer1.Start();
+                //sequencer1.Continue();
 
                 if (!sequencer1.clock.IsRunning)
                 {
