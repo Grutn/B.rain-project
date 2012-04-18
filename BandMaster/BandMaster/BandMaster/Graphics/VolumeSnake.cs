@@ -19,9 +19,9 @@ namespace BandMaster.Graphics
     {
         SpriteBatch SnakeSpriteBatch;
         Vector2 _position;
-        Texture2D SnakeTexture;
+        Texture2D snakeTexture, snakeTextureBody;
         int _max, _min;
-        float speed;
+        float speed=5;
         float[] snake;
 
         public VolumeSnake(Game game)
@@ -30,11 +30,10 @@ namespace BandMaster.Graphics
             
         }
 
-        public VolumeSnake(Game game, Vector2 position, int max, int min, SpriteBatch drawer)
+        public VolumeSnake(Game game, Vector2 position, int max, int min)
             : base(game)
         {
-            SnakeSpriteBatch = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
-            SnakeTexture = game.Content.Load<Texture2D>("Snake");   //TODO
+            
             _position = position;
             _max = max;
             _min = min;
@@ -47,11 +46,14 @@ namespace BandMaster.Graphics
         /// </summary>
         public override void Initialize()
         {
-            snake = new float[8];
+            snake = new float[6];
             for (int i = 0; i < snake.Length; i++)
             {
                 snake[i] = _position.X;
             }
+            SnakeSpriteBatch = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
+            snakeTexture = Game.Content.Load<Texture2D>("snakeTry");
+            snakeTextureBody = Game.Content.Load<Texture2D>("snakeBody");
             base.Initialize();
         }
 
@@ -72,23 +74,32 @@ namespace BandMaster.Graphics
             base.Update(gameTime);
         }
 
+        public void changeVolume(float inc)
+        {
+            if (_position.Y + inc < _max && _position.Y + inc < _min) _position.Y += inc;
+        }
+
+
         public override void Draw(GameTime gameTime)
         {
-            SnakeSpriteBatch.Begin();
-            SnakeSpriteBatch.Draw(SnakeTexture,
-                new Rectangle((int)(_position.Y), (int)snake[0], SnakeTexture.Width, SnakeTexture.Height),
-                SnakeTexture.Bounds,
-                Color.White,
+            Color farge = new Color(255f, 0f, 0f, 255);
+
+            SnakeSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            SnakeSpriteBatch.Draw(snakeTexture,
+                new Rectangle((int)(_position.Y), (int)snake[0], snakeTexture.Width, snakeTexture.Height),
+                snakeTexture.Bounds,
+                Color.Red,
                 0f,
-                new Vector2(SnakeTexture.Width / 2, SnakeTexture.Height / 2), SpriteEffects.None, 1f);
+                new Vector2(snakeTexture.Width / 2, snakeTexture.Height / 2), SpriteEffects.None, 1f);
             for (int i = 1; i < snake.Length; i++)
             {
-                SnakeSpriteBatch.Draw(SnakeTexture,
-                new Rectangle((int)(_position.Y - i * speed), (int)snake[i], SnakeTexture.Width, SnakeTexture.Height),
-                SnakeTexture.Bounds,
-                Color.White,
+                SnakeSpriteBatch.Draw(snakeTextureBody,
+                new Rectangle((int)(_position.Y - i * speed), (int)snake[i], snakeTextureBody.Width, snakeTextureBody.Height),
+                snakeTextureBody.Bounds,
+                farge,
                 (float)Math.Tan(((snake[i - 1] - snake[i]) / speed)),
-                new Vector2(SnakeTexture.Width / 2, SnakeTexture.Height / 2), SpriteEffects.None, 1f);
+                new Vector2(snakeTextureBody.Width / 2, snakeTextureBody.Height / 2), SpriteEffects.None, 1f);
+                farge.A = (byte)(255 / i);
             }
             SnakeSpriteBatch.End();
             base.Draw(gameTime);
