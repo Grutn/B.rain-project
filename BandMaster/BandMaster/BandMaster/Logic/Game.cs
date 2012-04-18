@@ -24,7 +24,6 @@ namespace BandMaster
 
         // Event OnSongChanged
         // Event 
-        IManageInput input;
         Texture2D texture = null;
 
         public Game()
@@ -32,23 +31,23 @@ namespace BandMaster
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            IManageInput inputManager;
+            IManageInput input;
             try
             {
-                inputManager = new KinectInputManager(this);
+                input = new KinectInputManager(this);
             }
             catch (Exception e)
             {
-                inputManager = new AlternativeInputManager(this);
+                input = new AlternativeInputManager(this);
             }
 
-            Components.Add(inputManager);
-            Services.AddService(typeof(IManageInput), inputManager);
-
-
             Midi.Player player = new Midi.Player(this);
+            
             Components.Add(player);
+            Components.Add(input);
+
             Services.AddService(typeof(Midi.Player), player);
+            Services.AddService(typeof(IManageInput), input);
         }
 
         /// <summary>
@@ -62,11 +61,6 @@ namespace BandMaster
             // TODO: Add your initialization logic here
 
             base.Initialize();
-        }
-
-        void InputOnTextureReady(object sender, VideoTextureReadyEventArgs e)
-        {
-            texture = e.VideoTexture;
         }
 
         /// <summary>
