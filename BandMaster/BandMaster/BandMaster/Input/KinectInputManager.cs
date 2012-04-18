@@ -164,13 +164,19 @@ namespace BandMaster.Input
                     Vector3 direction = currActivePos - SkeletonPointToVector3(currSkeleton[0], elbow);
 
                     // Dispatch PlayerEvent for any movement
-                    OnPlayerEvent.Invoke(this, new PlayerEvent(hand, direction, currActivePos, currVelocity));
+                    if (OnPlayerEvent != null)
+                    {
+                        OnPlayerEvent.Invoke(this, new PlayerEvent(hand, direction, currActivePos, currVelocity));
+                    }
                     
                     // Check for change in velocity direction
                     if ((lastVelocity.X < 0 && currVelocity.X > 0) || (lastVelocity.X > 0 && currVelocity.X < 0))
                     {
                         // Dispatch OnTempoHit event for 
-                        OnTempoHit.Invoke(this, new PlayerEvent(hand, direction, currActivePos, currVelocity));
+                        if (OnTempoHit != null)
+                        {
+                            OnTempoHit.Invoke(this, new PlayerEvent(hand, direction, currActivePos, currVelocity));
+                        }
                     }
 
                     lastVelocity = currVelocity;
