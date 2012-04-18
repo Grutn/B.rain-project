@@ -31,7 +31,7 @@ namespace BandMaster
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            IManageInput input;
+            IManageInput inputManager;
             try
             {
                 inputManager = new KinectInputManager(this);
