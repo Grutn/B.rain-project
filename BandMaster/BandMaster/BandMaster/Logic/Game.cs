@@ -111,10 +111,6 @@ namespace BandMaster
             Song.LoadAsync("song.txt", delegate() { if (SongLoaded != null) SongLoaded(this, null); }); // PlayMode lytter på SongLoaded
         }
 
-        void InputOnTextureReady(object sender, VideoTextureReadyEventArgs e)
-        {
-        }
-
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
