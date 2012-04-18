@@ -17,7 +17,7 @@ namespace BandMaster
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class Game : Microsoft.Xna.Framework.Game
+    public class BandMaster : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -26,7 +26,7 @@ namespace BandMaster
         // Event 
         Texture2D texture = null;
 
-        public Game()
+        public BandMaster()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -34,20 +34,25 @@ namespace BandMaster
             IManageInput input;
             try
             {
-                input = new KinectInputManager(this);
+                inputManager = new KinectInputManager(this);
             }
             catch (Exception e)
             {
-                input = new AlternativeInputManager(this);
+                inputManager = new AlternativeInputManager(this);
             }
+			
+            Components.Add(inputManager);
+            Services.AddService(typeof(IManageInput), inputManager);
 
             Midi.Player player = new Midi.Player(this);
-            
             Components.Add(player);
-            Components.Add(input);
-
             Services.AddService(typeof(Midi.Player), player);
-            Services.AddService(typeof(IManageInput), input);
+
+            Components.Add(new Logic.BandMasterMode(this));
+            Components.Add(new Logic.MainMenuMode(this));
+            Components.Add(new Logic.PauseMenuMode(this));
+
+            Components.Add(new Graphics.Stage(this));
         }
 
         /// <summary>
@@ -59,6 +64,9 @@ namespace BandMaster
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+
+            SpriteBatch sprites = new SpriteBatch(GraphicsDevice);
+            Services.AddService(typeof(SpriteBatch), sprites);
 
             base.Initialize();
         }
