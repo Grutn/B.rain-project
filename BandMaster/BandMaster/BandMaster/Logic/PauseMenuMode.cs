@@ -15,7 +15,7 @@ namespace BandMaster.Logic
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class PauseMenuMode : Microsoft.Xna.Framework.GameComponent
+    public class PauseMenuMode : Microsoft.Xna.Framework.GameComponent, IMode
     {
         public PauseMenuMode(Game game)
             : base(game)

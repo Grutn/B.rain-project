@@ -24,16 +24,13 @@ namespace BandMaster.Graphics
         Hashtable Instruments;
         Line Lines;
         int _hight;
-        Texture2D background;
-        Song sn;
 
+        Texture2D background;
+        
         public Stage(Game game)
             : base(game)
         {
-            sn =new Song("dynamikk.txt");
-            Lines = new Line(game, new Vector2(300, 50));
-            Lines.ChangeSong(sn);
-
+            
         }
 
         /// <summary>
@@ -46,13 +43,17 @@ namespace BandMaster.Graphics
             
             background = Game.Content.Load<Texture2D>("bg"); // NB no file
 
-            Lines.Initialize();
-
             //((BandMaster)Game).StateChanged += OnGameStateChanged;
             //((BandMaster)Game).SongChanged += OnSongChanged;
 
             base.Initialize();
         }
+
+/*        public void 
+        public void OnSongChanged(object sender, )
+        {
+
+        }*/
 
         /// <summary>
         /// Allows the game component to update itself.
