@@ -126,6 +126,7 @@
     <Compile Include="Graphics\Line.cs" />
     <Compile Include="Audio\Midi.cs" />
     <Compile Include="Graphics\Instrument.cs" />
+    <Compile Include="Graphics\SplashText.cs" />
     <Compile Include="Graphics\Stage.cs" />
     <Compile Include="Graphics\VolumeSnake.cs" />
     <Compile Include="Input\AlternativeInputManager.cs" />

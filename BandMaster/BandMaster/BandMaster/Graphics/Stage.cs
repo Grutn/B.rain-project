@@ -49,11 +49,6 @@ namespace BandMaster.Graphics
             base.Initialize();
         }
 
-/*        public void 
-        public void OnSongChanged(object sender, )
-        {
-
-        }*/
 
         /// <summary>
         /// Allows the game component to update itself.
