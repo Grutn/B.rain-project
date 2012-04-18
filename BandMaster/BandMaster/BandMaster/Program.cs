@@ -10,7 +10,7 @@ namespace BandMaster
         /// </summary>
         static void Main(string[] args)
         {
-            using (Game game = new Game())
+            using (BandMaster game = new BandMaster())
             {
                 game.Run();
             }

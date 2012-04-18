@@ -28,7 +28,7 @@ namespace BandMaster.Input
             }
             if (IsNewKeyPress(Keys.F))
             {
-                OnDynamicHit(this, new PlayerEvent());
+                OnDynamicHit(this, new PlayerEvent(Hand.Right, Vector3.Zero, Vector3.Zero, Vector3.Zero));
             }
             
         }

@@ -56,7 +56,7 @@ namespace BandMaster.Graphics
                 throw new InvalidOperationException("The texture and parrameters do not match");
             //sets rest of variebles
             _rectangle = rec;
-            _spriteBatch = new SpriteBatch(game.GraphicsDevice);
+            _spriteBatch = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
             _width = width;
             _hight = hight;
             frameWidth = _texture.Width / _width;       

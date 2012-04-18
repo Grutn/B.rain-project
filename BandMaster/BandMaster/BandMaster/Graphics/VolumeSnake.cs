@@ -27,14 +27,14 @@ namespace BandMaster.Graphics
         public VolumeSnake(Game game)
             : base(game)
         {
-            // TODO: Construct any child components here
+            
         }
 
-        public VolumeSnake(Game game, Vector2 position, int max, int min)
+        public VolumeSnake(Game game, Vector2 position, int max, int min, SpriteBatch drawer)
             : base(game)
         {
-            SnakeSpriteBatch = new SpriteBatch(game.GraphicsDevice);
-            SnakeTexture = game.Content.Load<Texture2D>("Snake");
+            SnakeSpriteBatch = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
+            SnakeTexture = game.Content.Load<Texture2D>("Snake");   //TODO
             _position = position;
             _max = max;
             _min = min;
@@ -67,7 +67,7 @@ namespace BandMaster.Graphics
                 {
                     snake[i - 1] = snake[i - 2];
                 }
-                //snake[0] = snake[0] + rand.Next(-5, 6);   //other imput here
+                //snake[0] = snake[0] + rand.Next(-5, 6);   //TODO other imput here
             }
             base.Update(gameTime);
         }
