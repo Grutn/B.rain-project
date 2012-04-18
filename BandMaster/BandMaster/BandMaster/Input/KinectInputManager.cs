@@ -8,53 +8,119 @@ using Microsoft.Kinect;
 
 namespace BandMaster.Input
 {
+    /// <summary>
+    /// Used to define which streams to enable on the Kinect Device.
+    /// </summary>
+    public enum KinectStreams
+    {
+        None = 0,
+        ColorStream = 1,
+        DepthStream = 2,
+        SkeletonStream = 4,
+    }
+
      /// <summary>
     /// 
     /// </summary>
     public class KinectInputManager : GameComponent, IManageInput
     {
-        public event EventHandler<PlayerEvent> OnPlayerEvent; // on kinect: all movements of hands; on keyboard: mouse movements
-        public event EventHandler OnTempoHit; // on kinect: detect in kinectinput subclass; on keyboard: some key event
-        public event EventHandler OnDynamicHit; // same as above
+        public event EventHandler<PlayerEvent> OnPlayerEvent;   // on kinect: all movements of hands; on keyboard: mouse movements
+        public event EventHandler OnTempoHit;                   // on kinect: detect in kinectinput subclass; on keyboard: some key event
+        public event EventHandler OnDynamicHit;                 // same as above
 
-        // EventHandlers fire after some processing of the raw data from the kinect.
-        public event EventHandler<VideoTextureReadyEventArgs> OnVideoTextureReady;
-        public event EventHandler<DepthTextureReadyEventArgs> OnDepthTextureReady;
-        public event EventHandler<SkeletonTrackingReadyEventArgs> OnSkeletonTrackingReady;
-        // EventHandlers for changing hand velocity
-        public event EventHandler<HandVelocityChangeEventArgs> OnHandVelocityChange;
+        private KinectSensor kinect = null;
+        private string errorMessage = "";
 
-        KinectManager kinect;
+        private Skeleton[] currSkeleton = null;
+        private Skeleton[] lastSkeleton = null;
 
-        Skeleton[] currSkeleton = null;
-        Skeleton[] lastSkeleton = null;
+        private Vector3 lastVelocity;
 
-        int velocityChange = 0;
+        private JointType activeHand;
+        private JointType offHand;
 
-        public KinectInputManager(Game game)
-            : base(game)
+        public JointType ActiveHand
         {
-            kinect = new KinectManager(KinectStreams.ColorStream);
-            kinect.AddEventHandler(ColorStreamEventHandler);
+            set
+            {
+                activeHand = value;
+                // Change offhand by checking active hand
+                offHand = (activeHand == JointType.HandLeft) ? JointType.HandRight : JointType.HandLeft;
+            }
         }
 
-        public KinectInputManager(Game game, KinectStreams streams)
-            : base(game)
+        public KinectInputManager(Game game) : base(game)
         {
-            kinect = new KinectManager(streams);
+            activeHand = JointType.HandRight;
+            offHand = JointType.HandLeft;
 
-            if ((streams & KinectStreams.ColorStream) != 0)
+            // Check if there is no Kinect Sensor
+            if (KinectSensor.KinectSensors.Count == 0)
             {
-                kinect.AddEventHandler(ColorStreamEventHandler);
+                throw new NotImplementedException();
+                /*
+                 * errorMessage = "No Kinects detected";
+                return;
+                 * */
             }
-            if ((streams & KinectStreams.DepthStream) != 0)
+
+            // Get a kinect sensor
+            kinect = KinectSensor.KinectSensors[0];
+            
+            kinect.SkeletonStream.Enable();
+
+
+            kinect.Start();
+
+            /*
+            try
             {
-                kinect.AddEventHandler(DepthStreamEventHandler);
+                kinect.SkeletonStream.Enable();
+                
+                // Check if no stream has been started
+                if (kinectStreams == KinectStreams.None)
+                {
+                    errorMessage = "No streams initiated";
+                    return;
+                }
+                // Check if the color stream is to be enabled
+                if ((kinectStreams & KinectStreams.ColorStream) != 0)
+                {
+                    kinect.ColorStream.Enable();
+                }
+                // Check if the depth stream is to be enabled
+                if ((kinectStreams & KinectStreams.DepthStream) != 0)
+                {
+                    kinect.DepthStream.Enable();
+                }
+                // Check if the skeleton stream is to be enabled
+                if ((kinectStreams & KinectStreams.SkeletonStream) != 0)
+                {
+                    kinect.SkeletonStream.Enable();
+                }
+                 * 
             }
-            if ((streams & KinectStreams.SkeletonStream) != 0)
+            catch
             {
-                kinect.AddEventHandler(SkeletonStreamEventHandler);
+                throw new NotImplementedException();
+                
+                errorMessage = "Kinect initialize failed";
+                return;
             }
+
+            // Try to start the Kinect.
+            try
+            {
+                kinect.Start();
+            }
+            catch
+            {
+                throw new NotImplementedException();
+                errorMessage = "Camera start failed";
+                return;
+               
+            }
+            */
         }
 
         /// <summary>
@@ -62,9 +128,63 @@ namespace BandMaster.Input
         /// </summary>
         protected override void Dispose(bool disposing)
         {
-            kinect.Dispose();
+            if (kinect != null)
+            {
+                // Does this work in destructor?
+                kinect.Stop();
+                kinect.Dispose();
+            }
         }
 
+        private void SkeletonStreamEventHandler(object sender, SkeletonFrameReadyEventArgs e)
+        {
+            using (SkeletonFrame frame = e.OpenSkeletonFrame())
+            {
+                if (frame != null)
+                {
+                    // Set current frame to last frame
+                    lastSkeleton = currSkeleton;
+                    // copy over data from the event arg
+                    frame.CopySkeletonDataTo(currSkeleton);
+
+                    // Convert SkeletonPoints to Vector3
+                    Vector3 lastActivePos = SkeletonPointToVector3(lastSkeleton[0], activeHand);
+                    Vector3 currActivePos = SkeletonPointToVector3(currSkeleton[0], activeHand);
+
+                    Vector3 lastOffPos = SkeletonPointToVector3(lastSkeleton[0], offHand);
+                    Vector3 currOffPos = SkeletonPointToVector3(lastSkeleton[0], offHand);
+
+                    // Calculate change from last frame to the current one
+                    Vector3 currVelocity = lastActivePos - currActivePos;
+
+                    // Setup values for PlayerEvent
+                    Hand hand = (activeHand == JointType.HandRight) ? Hand.Right : Hand.Left;
+                    JointType elbow = (hand == Hand.Right) ? JointType.ElbowRight : JointType.ElbowLeft;
+
+                    Vector3 direction = currActivePos - SkeletonPointToVector3(currSkeleton[0], elbow);
+
+                    // Dispatch PlayerEvent for any movement
+                    OnPlayerEvent.Invoke(this, new PlayerEvent(hand, direction, currActivePos, currVelocity));
+                    
+                    // Check for change in velocity direction
+                    if ((lastVelocity.X < 0 && currVelocity.X > 0) || (lastVelocity.X > 0 && currVelocity.X < 0))
+                    {
+                        // Dispatch OnTempoHit event for 
+                        OnTempoHit.Invoke(this, new PlayerEvent(hand, direction, currActivePos, currVelocity));
+                    }
+
+                    lastVelocity = currVelocity;
+                }
+            }
+        }
+
+        private Vector3 SkeletonPointToVector3(Skeleton skeleton, JointType joint)
+        {
+            SkeletonPoint sPoint = skeleton.Joints[joint].Position;
+            return new Vector3(sPoint.X, sPoint.Y, sPoint.Z);
+        }
+
+        /*
         /// <summary>
         /// Sets the RGB data from the Kinect to a texture and fires an
         /// OnVideoTextureReady when it transfered the bitmap to a texture.
@@ -145,39 +265,6 @@ namespace BandMaster.Input
                 OnDepthTextureReady.Invoke(this, new DepthTextureReadyEventArgs(texture));
             }
         }
-
-        private void SkeletonStreamEventHandler(object sender, SkeletonFrameReadyEventArgs e)
-        {
-            using (SkeletonFrame frame = e.OpenSkeletonFrame())
-            {
-                if (frame != null)
-                {
-                    // Set current frame to last frame
-                    lastSkeleton = currSkeleton;
-                    // copy over data from the event arg
-                    frame.CopySkeletonDataTo(currSkeleton);
-
-                    OnSkeletonTrackingReady.Invoke(this, new SkeletonTrackingReadyEventArgs(currSkeleton, lastSkeleton));
-
-                    if (currSkeleton[0].Joints[JointType.HandRight] != lastSkeleton[0].Joints[JointType.HandRight])
-                    {
-                        // Get current and last position of right hand
-                        // TODO: implement for left hand use
-                        SkeletonPoint lastRightHand = lastSkeleton[0].Joints[JointType.HandRight].Position;
-                        SkeletonPoint currRightHand = currSkeleton[0].Joints[JointType.HandRight].Position;
-
-                        Vector3 currPos = new Vector3(lastRightHand.X, lastRightHand.Y, lastRightHand.Z);
-                        Vector3 lastPos = new Vector3(currRightHand.X, currRightHand.Y, currRightHand.Z);
-
-                        // If the change
-                        if ((currPos.X - lastPos.X) > 200)
-                        {
-
-                        }
-
-                    }
-                }
-            }
-        }
+         * */
     }
 }
