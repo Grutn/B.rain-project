@@ -22,8 +22,8 @@ namespace BandMaster.Graphics
         SpriteBatch LineSpriteBatch;
         Texture2D strait, upp1, upp2, upp3, down1, down2, down3;
         static Color[] colors={Color.Red, Color.LightBlue, Color.LavenderBlush, Color.MediumPurple, Color.Orange};
-        int elapsed = 0;
-        float offset = 0, CPS = 60, speed = 0;
+        int elapsed = 0,width = 0,hight = 0, of= 0;
+        float offset = 0, CPS = 60, speed = 1f, scale = 0.3f,scaleY = 0.3f;
 
 
 
@@ -31,14 +31,7 @@ namespace BandMaster.Graphics
             : base(game)
         {
             startpos = pos;
-            LineSpriteBatch = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
-            upp1 = game.Content.Load<Texture2D>("upp1");
-            upp2 = game.Content.Load<Texture2D>("upp2");//TODO textures
-            upp3 = game.Content.Load<Texture2D>("upp3");
-            strait = game.Content.Load<Texture2D>("strait");
-            down1 = game.Content.Load<Texture2D>("down1");
-            down2 = game.Content.Load<Texture2D>("down2");
-            down3 = game.Content.Load<Texture2D>("down3");
+            
         }
 
         /// <summary>
@@ -47,8 +40,17 @@ namespace BandMaster.Graphics
         /// </summary>
         public override void Initialize()
         {
-            // TODO: Add your initialization code here
-
+            LineSpriteBatch = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
+            
+            upp1 = Game.Content.Load<Texture2D>("opp1");
+            upp2 = Game.Content.Load<Texture2D>("opp2");//TODO textures
+            upp3 = Game.Content.Load<Texture2D>("opp3");
+            strait = Game.Content.Load<Texture2D>("strek");
+            down1 = Game.Content.Load<Texture2D>("ned1");
+            down2 = Game.Content.Load<Texture2D>("ned2");
+            down3 = Game.Content.Load<Texture2D>("ned3");
+            width = (int)(strait.Width * scaleY);
+            hight = (int)(strait.Height * scale);
             base.Initialize();
         }
 
@@ -67,55 +69,52 @@ namespace BandMaster.Graphics
         private void DrawLine(GameTime gameTime, int[] parts, Color Col)
         {
             elapsed = elapsed + gameTime.ElapsedGameTime.Milliseconds;
-            if (offset >= strait.Width)
+            if (elapsed >= 1000 / CPS)
             {
-                for (int i = parts.Length; i > 1; i--)
-                {
-                    parts[i - 1] = parts[i - 2];
-                }
-                parts[0] = parts[0];
-                offset = 0;
-            }
-
-            else if (elapsed >= 1000 / CPS)
-            {
-                startpos.X = startpos.X - strait.Width * (speed / 100f);
-                offset = offset + strait.Width * (speed / 100f);
+                startpos.X = startpos.X - width * (speed / 100f);
+                offset = offset + width * (speed / 100f);
                 elapsed = 0;
             }
-            LineSpriteBatch.Begin();
+            //LineSpriteBatch.Begin();
+            int inc = (int)(12 * scale);
             for (int i = 1; i < parts.Length; i++)
             {
                 switch (parts[i - 1] - parts[i])
                 {
                     case 0:
-                        LineSpriteBatch.Draw(strait, new Rectangle((int)startpos.X - strait.Width * i, (int)startpos.Y + 5 + parts[i] * strait.Height, strait.Width, strait.Height), Col);
+                        LineSpriteBatch.Draw(strait, new Rectangle((int)startpos.X + width * i, (int)startpos.Y + of + parts[i] * (int)(hight/3f), width, hight), Col);
                         break;
                     case 1:
-                        LineSpriteBatch.Draw(down1, new Rectangle((int)startpos.X - strait.Width * i, (int)startpos.Y + parts[i] * strait.Height, strait.Width, strait.Height), Col);
+                        of = inc;
+                        LineSpriteBatch.Draw(upp1, new Rectangle((int)startpos.X + width * i, (int)startpos.Y + parts[i-1] * (int)(hight / 3f), width, hight), Col);
                         break;
                     case 2:
-                        LineSpriteBatch.Draw(down2, new Rectangle((int)startpos.X - strait.Width * i, (int)startpos.Y + parts[i] * strait.Height, strait.Width, strait.Height), Col);
+                        of = inc;
+                        LineSpriteBatch.Draw(upp2, new Rectangle((int)startpos.X + width * i, (int)startpos.Y + parts[i-1] * (int)(hight / 3f), width, hight), Col);
                         break;
                     case 3:
-                        LineSpriteBatch.Draw(down3, new Rectangle((int)startpos.X - strait.Width * i, (int)startpos.Y + parts[i] * strait.Height, strait.Width, strait.Height), Col);
+                        of = inc;
+                        LineSpriteBatch.Draw(upp3, new Rectangle((int)startpos.X + width * i, (int)startpos.Y + parts[i-1] * (int)(hight / 3f), width, hight), Col);
                         break;
                     case -1:
-                        LineSpriteBatch.Draw(upp1, new Rectangle((int)startpos.X - strait.Width * i, (int)startpos.Y + parts[i] * strait.Height, strait.Width, strait.Height), Col);
+                        of = 0;
+                        LineSpriteBatch.Draw(down1, new Rectangle((int)startpos.X + width * i, (int)startpos.Y + parts[i] * (int)(hight / 3f), width, hight), Col);
                         break;
                     case -2:
-                        LineSpriteBatch.Draw(upp2, new Rectangle((int)startpos.X - strait.Width * i, (int)startpos.Y + parts[i] * strait.Height, strait.Width, strait.Height), Col);
+                        of = 0;
+                        LineSpriteBatch.Draw(down2, new Rectangle((int)startpos.X + width * i, (int)startpos.Y + parts[i] * (int)(hight / 3f), width, hight), Col);
                         break;
                     case -3:
-                        LineSpriteBatch.Draw(upp3, new Rectangle((int)startpos.X - strait.Width * i, (int)startpos.Y + parts[i] * strait.Height, strait.Width, strait.Height), Col);
+                        of = 0;
+                        LineSpriteBatch.Draw(down3, new Rectangle((int)startpos.X + width * i, (int)startpos.Y + parts[i] * (int)(hight / 3f), width, hight), Col);
                         break;
                     default:
-                        LineSpriteBatch.Draw(strait, new Rectangle((int)startpos.X - strait.Width * i, (int)startpos.Y + 5 + parts[i] * strait.Height, strait.Width, strait.Height), Col);
+                        LineSpriteBatch.Draw(strait, new Rectangle((int)startpos.X + width * i, (int)startpos.Y +of + parts[i] * (int)(hight / 3f), width, hight), Col);
                         break;
                 }
 
             }
-            LineSpriteBatch.End();
+            //LineSpriteBatch.End();
         }
 
         /// <summary>

@@ -25,11 +25,14 @@ namespace BandMaster.Graphics
         Line Lines;
         int _hight;
         Texture2D background;
+        Song sn;
 
         public Stage(Game game)
             : base(game)
         {
-
+            sn =new Song("dynamikk.txt");
+            Lines = new Line(game, new Vector2(300, 50));
+            Lines.ChangeSong(sn);
 
         }
 
@@ -42,6 +45,8 @@ namespace BandMaster.Graphics
             StageSpriteBatch = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
             
             background = Game.Content.Load<Texture2D>("bg"); // NB no file
+
+            Lines.Initialize();
 
             //((BandMaster)Game).StateChanged += OnGameStateChanged;
             //((BandMaster)Game).SongChanged += OnSongChanged;
