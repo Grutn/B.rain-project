@@ -24,11 +24,13 @@ namespace BandMaster.Input
 
             if (IsNewKeyPress(Keys.J))
             {
-                OnTempoHit(this, null);
+                if (OnTempoHit != null)
+                    OnTempoHit(this, null);
             }
             if (IsNewKeyPress(Keys.F))
             {
-                OnDynamicHit(this, new PlayerEvent(Hand.Right, Vector3.Zero, Vector3.Zero, Vector3.Zero));
+                if (OnDynamicHit != null)
+                    OnDynamicHit(this, new PlayerEvent());
             }
             
         }

@@ -52,6 +52,8 @@ namespace BandMaster
             Components.Add(new Logic.MainMenuMode(this));
             Components.Add(new Logic.PauseMenuMode(this));
 
+
+
             Components.Add(new Graphics.Stage(this));
         }
 
@@ -63,12 +65,12 @@ namespace BandMaster
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             SpriteBatch sprites = new SpriteBatch(GraphicsDevice);
             Services.AddService(typeof(SpriteBatch), sprites);
 
             base.Initialize();
+
+            
         }
 
         /// <summary>

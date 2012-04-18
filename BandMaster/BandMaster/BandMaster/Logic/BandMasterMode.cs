@@ -21,10 +21,12 @@ namespace BandMaster.Logic
     public class BandMasterMode : Microsoft.Xna.Framework.GameComponent
     {
         private Midi.Player player;
+        private IManageInput inputManager;
 
         public BandMasterMode(Game game)
             : base(game)
         {
+
             // TODO: Construct any child components here
         }
 
@@ -35,18 +37,42 @@ namespace BandMaster.Logic
         public override void Initialize()
         {
             player = (Midi.Player)Game.Services.GetService(typeof(Midi.Player));
+            inputManager = (IManageInput)Game.Services.GetService(typeof(IManageInput));
+            
+            Enabled = false;
 
-            player.Tick += onTick;
-
-            IManageInput inputManager = (IManageInput)Game.Services.GetService(typeof(IManageInput));
-            inputManager.OnTempoHit += tempoHit;
-            tier.Start();
             base.Initialize();
+        }
+
+
+        public void LoadSong()
+        {
+
+        }
+
+
+        protected override void OnEnabledChanged(object sender, EventArgs args)
+        {
+            base.OnEnabledChanged(sender, args);
+
+            if (Enabled)
+            {
+                inputManager.OnTempoHit += tempoHit;
+                player.Tick += onTick;
+                player.Play();
+                tier.Start();
+            }
+            else
+            {
+                inputManager.OnTempoHit -= tempoHit;
+                player.Tick -= onTick;
+                player.Stop();
+            }
+        
         }
 
         float lastHitTime = -1.0f;
         float currentHitTime = 0.0f;
-
         int ticksToNextHit = 960;
 
         void onTick(object sender, EventArgs e)
