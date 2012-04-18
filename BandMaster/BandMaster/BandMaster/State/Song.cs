@@ -6,7 +6,11 @@ using System.IO;
 
 namespace BandMaster.State
 {
+<<<<<<< HEAD
     class Songs
+=======
+    public class Song
+>>>>>>> 2a6615c55e3e39e0cc5b29fd6f1bce294aea4597
     {
         public String[] _Instruments;
         public List<int[]> Lines;

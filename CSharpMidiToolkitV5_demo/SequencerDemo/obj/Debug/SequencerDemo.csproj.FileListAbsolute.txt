@@ -1,0 +1,16 @@
+D:\eit\CSharpMidiToolkitV5_demo\SequencerDemo\bin\Debug\SequencerDemo.exe
+D:\eit\CSharpMidiToolkitV5_demo\SequencerDemo\bin\Debug\SequencerDemo.pdb
+D:\eit\CSharpMidiToolkitV5_demo\SequencerDemo\bin\Debug\Sanford.Collections.dll
+D:\eit\CSharpMidiToolkitV5_demo\SequencerDemo\bin\Debug\Sanford.Multimedia.dll
+D:\eit\CSharpMidiToolkitV5_demo\SequencerDemo\bin\Debug\Sanford.Multimedia.Midi.dll
+D:\eit\CSharpMidiToolkitV5_demo\SequencerDemo\bin\Debug\Sanford.Multimedia.Timers.dll
+D:\eit\CSharpMidiToolkitV5_demo\SequencerDemo\bin\Debug\Sanford.Threading.dll
+D:\eit\CSharpMidiToolkitV5_demo\SequencerDemo\bin\Debug\Sanford.Multimedia.Midi.pdb
+D:\eit\CSharpMidiToolkitV5_demo\SequencerDemo\obj\Debug\ResolveAssemblyReference.cache
+D:\eit\CSharpMidiToolkitV5_demo\SequencerDemo\obj\Debug\SequencerDemo.AboutDialog.resources
+D:\eit\CSharpMidiToolkitV5_demo\SequencerDemo\obj\Debug\SequencerDemo.Form1.resources
+D:\eit\CSharpMidiToolkitV5_demo\SequencerDemo\obj\Debug\SequencerDemo.Properties.Resources.resources
+D:\eit\CSharpMidiToolkitV5_demo\SequencerDemo\obj\Debug\ResGen.read.1.tlog
+D:\eit\CSharpMidiToolkitV5_demo\SequencerDemo\obj\Debug\ResGen.write.1.tlog
+D:\eit\CSharpMidiToolkitV5_demo\SequencerDemo\obj\Debug\SequencerDemo.exe
+D:\eit\CSharpMidiToolkitV5_demo\SequencerDemo\obj\Debug\SequencerDemo.pdb
