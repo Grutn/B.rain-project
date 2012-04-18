@@ -39,6 +39,8 @@ namespace BandMaster.Input
         private JointType activeHand;
         private JointType offHand;
 
+        private int skeletonIndex;
+
         public JointType ActiveHand
         {
             set
@@ -54,21 +56,14 @@ namespace BandMaster.Input
             activeHand = JointType.HandRight;
             offHand = JointType.HandLeft;
 
-            // Check if there is no Kinect Sensor
-            if (KinectSensor.KinectSensors.Count == 0)
-            {
-                throw new NotImplementedException();
-                /*
-                 * errorMessage = "No Kinects detected";
-                return;
-                 * */
-            }
+            skeletonIndex = 0;
 
             // Get a kinect sensor
             kinect = KinectSensor.KinectSensors[0];
             
             kinect.SkeletonStream.Enable();
 
+            kinect.SkeletonFrameReady += new EventHandler<SkeletonFrameReadyEventArgs>(SkeletonStreamEventHandler);
 
             kinect.Start();
 
@@ -130,9 +125,23 @@ namespace BandMaster.Input
         {
             if (kinect != null)
             {
-                // Does this work in destructor?
                 kinect.Stop();
                 kinect.Dispose();
+            }
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if (currSkeleton != null && currSkeleton[skeletonIndex].TrackingState != SkeletonTrackingState.Tracked)
+            {
+                for (int i = 0; i < currSkeleton.Length; ++i)
+                {
+                    if (currSkeleton[i].TrackingState == SkeletonTrackingState.Tracked)
+                    {
+                        System.Console.WriteLine("Index {0} Skeleton is tracked", i);
+                        skeletonIndex = i;
+                    }
+                }
             }
         }
 
@@ -142,26 +151,37 @@ namespace BandMaster.Input
             {
                 if (frame != null)
                 {
+                    if (currSkeleton == null)
+                    {
+                        currSkeleton = new Skeleton[frame.SkeletonArrayLength];
+                        lastSkeleton = new Skeleton[frame.SkeletonArrayLength];
+                    }
+
+                    Vector3 currVelocity = Vector3.Zero;
+                    Vector3 lastActivePos = Vector3.Zero;
+                    Vector3 lastOffPos = Vector3.Zero;
+                    Vector3 currActivePos = Vector3.Zero;
+                    Vector3 currOffPos = Vector3.Zero;
+
+
                     // Set current frame to last frame
                     lastSkeleton = currSkeleton;
                     // copy over data from the event arg
                     frame.CopySkeletonDataTo(currSkeleton);
+                    
+                    currActivePos = SkeletonPointToVector3(currSkeleton[skeletonIndex], activeHand);
+                    currOffPos = SkeletonPointToVector3(currSkeleton[skeletonIndex], offHand);
 
-                    // Convert SkeletonPoints to Vector3
-                    Vector3 lastActivePos = SkeletonPointToVector3(lastSkeleton[0], activeHand);
-                    Vector3 currActivePos = SkeletonPointToVector3(currSkeleton[0], activeHand);
+                    lastActivePos = SkeletonPointToVector3(lastSkeleton[skeletonIndex], activeHand);
+                    lastOffPos = SkeletonPointToVector3(lastSkeleton[skeletonIndex], offHand);
 
-                    Vector3 lastOffPos = SkeletonPointToVector3(lastSkeleton[0], offHand);
-                    Vector3 currOffPos = SkeletonPointToVector3(lastSkeleton[0], offHand);
-
-                    // Calculate change from last frame to the current one
-                    Vector3 currVelocity = lastActivePos - currActivePos;
+                    currVelocity = lastActivePos - currActivePos;
 
                     // Setup values for PlayerEvent
                     Hand hand = (activeHand == JointType.HandRight) ? Hand.Right : Hand.Left;
                     JointType elbow = (hand == Hand.Right) ? JointType.ElbowRight : JointType.ElbowLeft;
 
-                    Vector3 direction = currActivePos - SkeletonPointToVector3(currSkeleton[0], elbow);
+                    Vector3 direction = currActivePos - SkeletonPointToVector3(currSkeleton[skeletonIndex], elbow);
 
                     // Dispatch PlayerEvent for any movement
                     if (OnPlayerEvent != null)
@@ -170,7 +190,7 @@ namespace BandMaster.Input
                     }
                     
                     // Check for change in velocity direction
-                    if ((lastVelocity.X < 0 && currVelocity.X > 0) || (lastVelocity.X > 0 && currVelocity.X < 0))
+                    if (currVelocity.X < 0 && lastVelocity.X > 0)
                     {
                         // Dispatch OnTempoHit event for 
                         if (OnTempoHit != null)
