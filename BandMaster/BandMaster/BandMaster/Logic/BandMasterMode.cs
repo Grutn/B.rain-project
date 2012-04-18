@@ -112,7 +112,7 @@ namespace BandMaster.Logic
 
             float newTempo = currentHitTime - lastHitTime;
             float v = 0.9f;
-            player.Tempo = (v * newTempo + (1.0f - v) * lastTempo) / 10000;
+            player.Tempo = (v * newTempo + (1.0f - v) * lastTempo);
             lastTempo = newTempo;
             lastHitTime = currentHitTime;
         }   
