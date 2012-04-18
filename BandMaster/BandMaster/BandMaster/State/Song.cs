@@ -8,28 +8,26 @@ namespace BandMaster.State
 {
     public class Song
     {
+        public string Name;
+
+        public Audio.Midi.Song Midi;
+
         public String[] Instruments;
         public List<int[]> Lines;
-        int size;
 
-        public Song()
+        public Song() { }
+
+        public delegate void SimpleDelegate();
+        public void LoadAsync(String addres, SimpleDelegate loadCompleted)
         {
             Lines = new List<int[]>();
-        }
-        public Song(String addres)
-        {
-            Lines = new List<int[]>();
-            LoadSong(addres);
-
-        }
-
-        public void LoadSong(String addres)
-        {
+            int size;
+            string midifile;
             using (StreamReader file = new StreamReader("Content/" + addres))
             {
                 char[] delimiter = { ' ', ':' };
-                file.ReadLine();
-                file.ReadLine();
+                Name = file.ReadLine();
+                midifile = file.ReadLine();
                 Instruments = file.ReadLine().Split(delimiter);
                 int[] temp;
                 string[] columns;
@@ -69,6 +67,8 @@ namespace BandMaster.State
                     }
                 }
             }
+            Midi = new Audio.Midi.Song();
+            Midi.LoadAsync(midifile, delegate() { if (loadCompleted != null) loadCompleted(); });
         }
     }
 }

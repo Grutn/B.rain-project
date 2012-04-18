@@ -14,23 +14,41 @@ namespace BandMaster
     using Audio;
     using Input;
 
+
+    public interface IMode: IGameComponent
+    {
+
+    }
+
     /// <summary>
     /// This is the main type for your game
     /// </summary>
+    /// 
     public class BandMaster : Microsoft.Xna.Framework.Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        public IMode Play, Pause, Menu;
 
-        // Event OnSongChanged
-        // Event 
-        IManageInput input;
-        Texture2D texture = null;
+        // Mode and Song holds the state of the game.
+        // ModeChanged and SongChanged are events that the graphics components of the system will listen to.
+        // The idea is taht we should not know anything about the graphical representation of the game :)
+
+        private IMode mode;
+        public IMode Mode { get { return mode; } set {  mode = value; if (ModeChanged != null) ModeChanged(this, null); } }
+        public event EventHandler ModeChanged;
+
+        private State.Song song;
+        public State.Song Song { get { return song; } set { song = value; if (SongChanged != null) SongChanged(this, null); } }
+        public event EventHandler SongChanged;
+        public event EventHandler SongLoaded; 
 
         public BandMaster()
         {
-            graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+
+            // Services
+            
+            GraphicsDeviceManager graphics = new GraphicsDeviceManager(this);
 
             IManageInput inputManager;
             try
@@ -49,14 +67,21 @@ namespace BandMaster
             Components.Add(player);
             Services.AddService(typeof(Midi.Player), player);
 
-            Components.Add(new Logic.BandMasterMode(this));
-            Components.Add(new Logic.MainMenuMode(this));
-            Components.Add(new Logic.PauseMenuMode(this));
 
+            // Game modes
 
+            Play = new Logic.BandMasterMode(this);
+            Pause = new Logic.PauseMenuMode(this);
+            Menu = new Logic.MainMenuMode(this);
+
+            Components.Add(Play);
+            Components.Add(Pause);
+            Components.Add(Menu);
+
+            
+            // Graphics
 
             Components.Add(new Graphics.Stage(this));
-        
         }
 
         /// <summary>
@@ -67,17 +92,16 @@ namespace BandMaster
         /// </summary>
         protected override void Initialize()
         {
-            SpriteBatch sprites = new SpriteBatch(GraphicsDevice);
+            SpriteBatch sprites = new SpriteBatch(GraphicsDevice); 
             Services.AddService(typeof(SpriteBatch), sprites);
 
             base.Initialize();
 
-            
-        }
+            // Set initial mode (dette er senere satt fra sangvalg-menyen eller noe)
 
-        void InputOnTextureReady(object sender, VideoTextureReadyEventArgs e)
-        {
-            texture = e.VideoTexture;
+            Mode = Play; // sender ModeChanged  (bare nyttig for grafikken sin del)
+            Song = new State.Song(); // sender SongChanged (listners starter å vise loading) 
+            Song.LoadAsync("song.txt", delegate() { if (SongLoaded != null) SongLoaded(this, null); }); // PlayMode lytter på SongLoaded
         }
 
         /// <summary>
@@ -86,16 +110,7 @@ namespace BandMaster
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            Midi.Player player = (Midi.Player)Services.GetService(typeof(Midi.Player));
-
-            player.Song = new Midi.Song();
-            player.Song.LoadAsync("song.mid", delegate() 
-            {
-                player.Play();
-            });
         }
 
         /// <summary>
@@ -130,14 +145,6 @@ namespace BandMaster
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            // TODO: Add your drawing code here
-            spriteBatch.Begin();
-            if (texture != null)
-            {
-                spriteBatch.Draw(texture, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
-            }
-            spriteBatch.End();
 
             base.Draw(gameTime);
         }

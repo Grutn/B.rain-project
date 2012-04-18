@@ -123,8 +123,8 @@ namespace BandMaster.Audio
                 } 
                 set
                 {
-                    if (value == 0) return;
-                    sequencer1.secPerHit = value; 
+                    ///if (value == 0) return;
+                    sequencer1.secPerHit = 1.0f;// value; 
                 } 
             }
 
@@ -134,9 +134,13 @@ namespace BandMaster.Audio
                 throw new NotImplementedException("SetVolume");
             }
 
-            public void Play() 
+            public void Play()
             {
                 sequencer1.Start();
+            }
+            public void Continue() 
+            {
+                //sequencer1.Start();
                 //sequencer1.Continue();
 
                 if (!sequencer1.clock.IsRunning)

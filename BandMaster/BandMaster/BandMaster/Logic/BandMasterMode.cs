@@ -18,7 +18,7 @@ namespace BandMaster.Logic
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class BandMasterMode : Microsoft.Xna.Framework.GameComponent
+    public class BandMasterMode : Microsoft.Xna.Framework.GameComponent, IMode
     {
         private Midi.Player player;
         private IManageInput inputManager;
@@ -26,7 +26,6 @@ namespace BandMaster.Logic
         public BandMasterMode(Game game)
             : base(game)
         {
-
             // TODO: Construct any child components here
         }
 
@@ -41,15 +40,27 @@ namespace BandMaster.Logic
             
             Enabled = false;
 
+            ((BandMaster)Game).SongChanged += onSongChanged;
+            ((BandMaster)Game).SongLoaded += onSongLoaded;
+
             base.Initialize();
         }
 
 
-        public void LoadSong()
+        public void onSongChanged(object sender, EventArgs args)
         {
-
+            if (!Enabled) return;
+            Enabled = false;
+            player.Play();
+            tier.Start();
         }
-
+        public void onSongLoaded(object sender, EventArgs args)
+        {
+            player.Song = ((BandMaster)Game).Song.Midi;
+            player.Play();
+            tier.Start();
+            Enabled = true;   
+        }
 
         protected override void OnEnabledChanged(object sender, EventArgs args)
         {
@@ -60,13 +71,14 @@ namespace BandMaster.Logic
                 inputManager.OnTempoHit += tempoHit;
                 player.Tick += onTick;
                 player.Play();
-                tier.Start();
+                tier.Start();                
             }
             else
             {
                 inputManager.OnTempoHit -= tempoHit;
                 player.Tick -= onTick;
                 player.Stop();
+                tier.Stop();
             }
         
         }
@@ -95,12 +107,12 @@ namespace BandMaster.Logic
             ticksToNextHit = 960 - 1;
 
             // set tepo basert på tid siden sist click
-            player.Play();
+            player.Continue();
             currentHitTime = now;
 
             float newTempo = currentHitTime - lastHitTime;
             float v = 0.9f;
-            player.Tempo = (v * newTempo + (1.0f - v) * lastTempo);
+            player.Tempo = (v * newTempo + (1.0f - v) * lastTempo) / 10000;
             lastTempo = newTempo;
             lastHitTime = currentHitTime;
         }   

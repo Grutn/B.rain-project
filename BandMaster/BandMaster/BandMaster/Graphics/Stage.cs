@@ -25,15 +25,13 @@ namespace BandMaster.Graphics
         Line Lines;
         VolumeSnake snake;
         int _hight;
-        Texture2D background;
-        Song sn;
 
+        Texture2D background;
+        
         public Stage(Game game)
             : base(game)
         {
-            sn =new Song("dynamikk.txt");
             Lines = new Line(game, new Vector2(300, 50));
-            Lines.ChangeSong(sn);
             snake = new VolumeSnake(game, new Vector2(120, 50), 100, 100);
 
         }
@@ -56,6 +54,12 @@ namespace BandMaster.Graphics
 
             base.Initialize();
         }
+
+/*        public void 
+        public void OnSongChanged(object sender, )
+        {
+
+        }*/
 
         /// <summary>
         /// Allows the game component to update itself.

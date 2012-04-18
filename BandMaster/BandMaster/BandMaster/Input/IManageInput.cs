@@ -16,10 +16,20 @@ namespace BandMaster.Input
 
     public class PlayerEvent : EventArgs
     {
-        public Hand Hand;
-        public Vector3 Direction;
-        public Vector3 Position;
-        public Vector3 Velocity;
+        public Hand hand;
+        public Vector3 direction;
+        public Vector3 position;
+        public Vector3 velocity;
+
+        public PlayerEvent() { }
+
+        public PlayerEvent(Hand hand, Vector3 direction, Vector3 position, Vector3 velocity)
+        {
+            this.hand = hand;
+            this.direction = direction;
+            this.position = position;
+            this.velocity = velocity;
+        }
     }
 
     public interface IManageInput : IGameComponent
