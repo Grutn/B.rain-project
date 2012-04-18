@@ -24,13 +24,13 @@ namespace BandMaster.Graphics
         Hashtable Instruments;
         Line Lines;
         int _hight;
-        Texture2D background;
 
+        Texture2D background;
+        
         public Stage(Game game)
             : base(game)
         {
-
-
+            
         }
 
         /// <summary>
@@ -48,6 +48,12 @@ namespace BandMaster.Graphics
 
             base.Initialize();
         }
+
+/*        public void 
+        public void OnSongChanged(object sender, )
+        {
+
+        }*/
 
         /// <summary>
         /// Allows the game component to update itself.
