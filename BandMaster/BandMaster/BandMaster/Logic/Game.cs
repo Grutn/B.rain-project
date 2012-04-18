@@ -51,9 +51,6 @@ namespace BandMaster
             Components.Add(new Logic.BandMasterMode(this));
             Components.Add(new Logic.MainMenuMode(this));
             Components.Add(new Logic.PauseMenuMode(this));
-
-
-
             Components.Add(new Graphics.Stage(this));
         }
 
@@ -69,8 +66,6 @@ namespace BandMaster
             Services.AddService(typeof(SpriteBatch), sprites);
 
             base.Initialize();
-
-            
         }
 
         /// <summary>
