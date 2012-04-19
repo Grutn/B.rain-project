@@ -123,8 +123,8 @@ namespace BandMaster.Audio
                 } 
                 set
                 {
-                    ///if (value == 0) return;
-                    sequencer1.secPerHit = 1.0f;// value; 
+                    if (value == 0) return;
+                    sequencer1.secPerHit = value; 
                 } 
             }
 

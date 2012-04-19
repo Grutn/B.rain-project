@@ -100,6 +100,8 @@ namespace BandMaster.Logic
         System.Diagnostics.Stopwatch tier = new System.Diagnostics.Stopwatch();
         private void tempoHit(object sender, EventArgs e)
         {
+            ((Graphics.SplashText)Game.Services.GetService(typeof(Graphics.SplashText))).Write("Hit!", Color.White);
+
             float now = 0.001f * tier.ElapsedMilliseconds;
 
             // spol fram til nextTick
@@ -112,7 +114,7 @@ namespace BandMaster.Logic
 
             float newTempo = currentHitTime - lastHitTime;
             float v = 0.9f;
-            player.Tempo = (v * newTempo + (1.0f - v) * lastTempo) / 10000;
+            player.Tempo = (v * newTempo + (1.0f - v) * lastTempo);
             lastTempo = newTempo;
             lastHitTime = currentHitTime;
         }   

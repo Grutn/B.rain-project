@@ -42,10 +42,26 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MenuHover.spritefont">
+      <Name>MenuHover</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="Splash.spritefont">
+      <Name>Splash</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+      <SubType>Designer</SubType>
+    </Compile>
     <None Include="song.mid">
       <Name>song</Name>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Compile Include="Menu.spritefont">
+      <Name>Menu</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="bg.png">
@@ -75,7 +91,18 @@
   <ItemGroup>
     <Compile Include="4sqr.png">
       <Name>4sqr</Name>
+	  <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    <Compile Include="snakeTry.png">
+      <Name>snakeTry</Name>
       <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="snakeBody.png">
+      <Name>snakeBody</Name>
+	  <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>

@@ -26,6 +26,8 @@ namespace BandMaster
     /// 
     public class BandMaster : Microsoft.Xna.Framework.Game
     {
+        public SpriteFont MenuFont, MenuFontHover, SplashFont;
+
         public IMode Play, Pause, Menu;
 
         // Mode and Song holds the state of the game.
@@ -67,7 +69,6 @@ namespace BandMaster
             Components.Add(player);
             Services.AddService(typeof(Midi.Player), player);
 
-
             // Game modes
 
             Play = new Logic.BandMasterMode(this);
@@ -80,9 +81,14 @@ namespace BandMaster
 
             
             // Graphics
+            Graphics.SplashText splasher = new Graphics.SplashText(this);
+            Components.Add(splasher);
+            Services.AddService(typeof(Graphics.SplashText), splasher);
 
             Components.Add(new Graphics.Stage(this));
         }
+
+
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -92,6 +98,7 @@ namespace BandMaster
         /// </summary>
         protected override void Initialize()
         {
+
             SpriteBatch sprites = new SpriteBatch(GraphicsDevice); 
             Services.AddService(typeof(SpriteBatch), sprites);
 
@@ -110,7 +117,9 @@ namespace BandMaster
         /// </summary>
         protected override void LoadContent()
         {
-
+            MenuFont = Content.Load<SpriteFont>("Menu");
+            MenuFontHover = Content.Load<SpriteFont>("MenuHover");
+            SplashFont = Content.Load<SpriteFont>("Splash");
         }
 
         /// <summary>

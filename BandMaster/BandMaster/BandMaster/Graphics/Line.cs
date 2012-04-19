@@ -21,7 +21,7 @@ namespace BandMaster.Graphics
         Vector2 startpos;
         SpriteBatch LineSpriteBatch;
         Texture2D strait, upp1, upp2, upp3, down1, down2, down3;
-        static Color[] colors={Color.Red, Color.LightBlue, Color.LavenderBlush, Color.MediumPurple, Color.Orange};
+        static Color[] colors={Color.Red, Color.Blue, Color.Yellow, Color.MediumPurple, Color.Orange};
         int elapsed = 0,width = 0,hight = 0, of= 0;
         float offset = 0, CPS = 60, speed = 1f, scale = 0.3f,scaleY = 0.3f;
 
@@ -73,7 +73,7 @@ namespace BandMaster.Graphics
                 offset = offset + width * (speed / 100f);
                 elapsed = 0;
             }
-            //LineSpriteBatch.Begin();
+            LineSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
             int inc = (int)(12 * scale);
             for (int i = 1; i < parts.Length; i++)
             {
@@ -112,7 +112,7 @@ namespace BandMaster.Graphics
                 }
 
             }
-            //LineSpriteBatch.End();
+            LineSpriteBatch.End();
         }
 
         /// <summary>

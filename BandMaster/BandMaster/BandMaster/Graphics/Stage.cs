@@ -23,6 +23,7 @@ namespace BandMaster.Graphics
         SpriteBatch StageSpriteBatch;
         Hashtable Instruments;
         Line Lines;
+        VolumeSnake snake;
         int _hight;
 
         Texture2D background;
@@ -30,7 +31,9 @@ namespace BandMaster.Graphics
         public Stage(Game game)
             : base(game)
         {
-            
+            Lines = new Line(game, new Vector2(300, 50));
+            snake = new VolumeSnake(game, new Vector2(120, 50), 100, 100);
+
         }
 
         /// <summary>
@@ -43,17 +46,15 @@ namespace BandMaster.Graphics
             
             background = Game.Content.Load<Texture2D>("bg"); // NB no file
 
+            Lines.Initialize();
+            snake.Initialize();
+
             //((BandMaster)Game).StateChanged += OnGameStateChanged;
             //((BandMaster)Game).SongChanged += OnSongChanged;
 
             base.Initialize();
         }
 
-/*        public void 
-        public void OnSongChanged(object sender, )
-        {
-
-        }*/
 
         /// <summary>
         /// Allows the game component to update itself.
@@ -61,7 +62,7 @@ namespace BandMaster.Graphics
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            // TODO: Add your update code here
+            snake.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -96,17 +97,16 @@ namespace BandMaster.Graphics
         /// </summary>
         /// <param name="gameTime"></param>
         public override void  Draw(GameTime gameTime)
-        {   
+        {
             StageSpriteBatch.Begin();
             StageSpriteBatch.Draw(background, Game.GraphicsDevice.Viewport.Bounds, null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1);
             foreach (Instrument _instrument in Band)
             {
                 _instrument.Draw(gameTime);
             }
-            
-            if (Lines != null) Lines.Draw(gameTime);
-            
             StageSpriteBatch.End();
+            if (Lines != null) Lines.Draw(gameTime);
+            if (snake != null) snake.Draw(gameTime);
  	        
             base.Draw(gameTime);
         }
