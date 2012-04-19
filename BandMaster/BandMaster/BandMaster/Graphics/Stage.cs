@@ -45,7 +45,7 @@ namespace BandMaster.Graphics
             StageSpriteBatch = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
             
             background = Game.Content.Load<Texture2D>("Textures/bg"); // NB no file
-            stand = Game.Content.Load<Texture2D>("notestativ");
+            stand = Game.Content.Load<Texture2D>("Textures/notestativ");
             Lines.Initialize();
             snake.Initialize();
 
