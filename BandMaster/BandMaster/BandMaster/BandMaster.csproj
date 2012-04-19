@@ -122,24 +122,24 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Graphics\Metronum.cs" />
-    <Compile Include="Graphics\Line.cs" />
     <Compile Include="Audio\Midi.cs" />
     <Compile Include="Graphics\Instrument.cs" />
+    <Compile Include="Graphics\Line.cs" />
+    <Compile Include="Graphics\Metronum.cs" />
     <Compile Include="Graphics\SplashText.cs" />
     <Compile Include="Graphics\Stage.cs" />
     <Compile Include="Graphics\VolumeSnake.cs" />
     <Compile Include="Input\AlternativeInputManager.cs" />
     <Compile Include="Input\IManageInput.cs" />
+    <Compile Include="Input\KinectDebug.cs" />
     <Compile Include="Input\KinectInputManager.cs" />
-    <Compile Include="Input\KinectManager.cs" />
     <Compile Include="Logic\BandMasterMode.cs" />
     <Compile Include="Logic\Game.cs" />
     <Compile Include="Logic\MainMenuMode.cs" />
     <Compile Include="Logic\PauseMenuMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="State\song.cs" />
+    <Compile Include="State\Song.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

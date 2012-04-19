@@ -52,8 +52,8 @@ namespace BandMaster.Graphics
                 snake[i] = _position.X;
             }
             SnakeSpriteBatch = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
-            snakeTexture = Game.Content.Load<Texture2D>("snakeTry");
-            snakeTextureBody = Game.Content.Load<Texture2D>("snakeBody");
+            snakeTexture = Game.Content.Load<Texture2D>("Textures/snakeTry");
+            snakeTextureBody = Game.Content.Load<Texture2D>("Textures/snakeBody");
             base.Initialize();
         }
 

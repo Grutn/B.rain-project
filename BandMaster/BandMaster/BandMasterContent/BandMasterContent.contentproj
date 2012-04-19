@@ -64,19 +64,19 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="bg.png">
+    <Compile Include="Textures\bg.png">
       <Name>bg</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="notestativ.png">
+    <Compile Include="Textures\notestativ.png">
       <Name>notestativ</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="loading.png">
+    <Compile Include="Textures\loading.png">
       <Name>loading</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
@@ -89,53 +89,56 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="snakeTry.png">
+    <Compile Include="Textures\4sqr.png">
+      <Name>4sqr</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\snakeTry.png">
       <Name>snakeTry</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="snakeBody.png">
+    <Compile Include="Textures\snakeBody.png">
       <Name>snakeBody</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ned1.png">
+    <Compile Include="Textures\ned1.png">
       <Name>ned1</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="ned2.png">
+    <Compile Include="Textures\ned2.png">
       <Name>ned2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="ned3.png">
+    <Compile Include="Textures\ned3.png">
       <Name>ned3</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="opp1.png">
+    <Compile Include="Textures\opp1.png">
       <Name>opp1</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="opp2.png">
+    <Compile Include="Textures\opp2.png">
       <Name>opp2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="opp3.png">
+    <Compile Include="Textures\opp3.png">
       <Name>opp3</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="strek.png">
+    <Compile Include="Textures\strek.png">
       <Name>strek</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
