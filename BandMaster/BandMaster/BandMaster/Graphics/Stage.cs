@@ -26,7 +26,7 @@ namespace BandMaster.Graphics
         VolumeSnake snake;
         int _hight;
 
-        Texture2D background;
+        Texture2D background, stand;
         
         public Stage(Game game)
             : base(game)
@@ -44,8 +44,8 @@ namespace BandMaster.Graphics
         {
             StageSpriteBatch = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
             
-            background = Game.Content.Load<Texture2D>("bg"); // NB no file
-
+            background = Game.Content.Load<Texture2D>("bg"); 
+            stand = Game.Content.Load<Texture2D>("notestativ");
             Lines.Initialize();
             snake.Initialize();
 
@@ -99,7 +99,26 @@ namespace BandMaster.Graphics
         public override void  Draw(GameTime gameTime)
         {
             StageSpriteBatch.Begin();
-            StageSpriteBatch.Draw(background, Game.GraphicsDevice.Viewport.Bounds, null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1);
+
+            // find correct size (keeping aspect ratio) and extra pixels on top (for transition)
+            Rectangle dr = Game.GraphicsDevice.Viewport.Bounds;
+            Rectangle sr = background.Bounds;
+            float aspect = (float)sr.Height/(float)sr.Width;
+            dr.Height = (int)(aspect * dr.Width);
+            float extraTop = dr.Height - Game.GraphicsDevice.Viewport.Bounds.Height;
+
+            // calculate transition timer
+            double introTime = 0.0;
+            float fader = Math.Min(Math.Max((float)(gameTime.TotalGameTime.TotalSeconds-introTime)*1.2f, 0.0f), 1.0f);
+            fader = (float)Math.Sin((double)fader * Math.PI / 2.0); // ease out
+
+            int bgOffset = (int)(fader * extraTop);
+            StageSpriteBatch.Draw(background, new Rectangle(dr.X, dr.Y - bgOffset, dr.Width, dr.Height), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1);
+
+            int stOffset = (int)(-400 + fader * (extraTop + 400));
+            StageSpriteBatch.Draw(stand, new Rectangle(dr.X,dr.Y - stOffset, dr.Width,dr.Height), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1);
+
+
             foreach (Instrument _instrument in Band)
             {
                 _instrument.Draw(gameTime);

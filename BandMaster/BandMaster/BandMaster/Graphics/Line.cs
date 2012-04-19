@@ -17,7 +17,7 @@ namespace BandMaster.Graphics
     /// </summary>
     public class Line : Microsoft.Xna.Framework.DrawableGameComponent
     {
-        List<int[]> Lines;
+        List<int[]> Lines = new List<int[]>();
         Vector2 startpos;
         SpriteBatch LineSpriteBatch;
         Texture2D strait, upp1, upp2, upp3, down1, down2, down3;

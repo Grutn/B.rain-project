@@ -22,6 +22,8 @@ namespace BandMaster.Logic
     {
         private Midi.Player player;
         private IManageInput inputManager;
+        private Graphics.SplashText splasher; 
+        
 
         public BandMasterMode(Game game)
             : base(game)
@@ -37,7 +39,8 @@ namespace BandMaster.Logic
         {
             player = (Midi.Player)Game.Services.GetService(typeof(Midi.Player));
             inputManager = (IManageInput)Game.Services.GetService(typeof(IManageInput));
-            
+            splasher = (Graphics.SplashText)Game.Services.GetService(typeof(Graphics.SplashText));
+
             Enabled = false;
 
             ((BandMaster)Game).SongChanged += onSongChanged;
@@ -49,6 +52,7 @@ namespace BandMaster.Logic
 
         public void onSongChanged(object sender, EventArgs args)
         {
+            splasher.Write("Laster..", Color.White);
             if (!Enabled) return;
             Enabled = false;
             player.Play();
@@ -56,6 +60,7 @@ namespace BandMaster.Logic
         }
         public void onSongLoaded(object sender, EventArgs args)
         {
+            splasher.Write("Start!", Color.White);
             player.Song = ((BandMaster)Game).Song.Midi;
             player.Play();
             tier.Start();
@@ -96,11 +101,16 @@ namespace BandMaster.Logic
         }
 
         float lastTempo = 0.0f;
-
+        Random rand = new Random();
         System.Diagnostics.Stopwatch tier = new System.Diagnostics.Stopwatch();
         private void tempoHit(object sender, EventArgs e)
         {
-            ((Graphics.SplashText)Game.Services.GetService(typeof(Graphics.SplashText))).Write("Hit!", Color.White);
+            string[] texts = new string[] { "Bra!", "Raskere..", "Senk tepoet!", "Senk tempoet litt", "Perfekt!", "Ok", "Zzz..", "Veldig bra" };
+
+            if (rand.Next(0,5)==0)
+            {
+                splasher.Write(texts[rand.Next(0, (texts.Length - 1))], Color.White);
+            }
 
             float now = 0.001f * tier.ElapsedMilliseconds;
 

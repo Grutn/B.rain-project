@@ -43,7 +43,12 @@ namespace BandMaster
         public event EventHandler SongChanged;
         public event EventHandler SongLoaded; 
 
-        public BandMaster()
+//        public Event EventHandler 
+
+        private int width = 1280;
+        private int height = 720;
+
+        public BandMaster(): base()
         {
             Content.RootDirectory = "Content";
 
@@ -51,6 +56,9 @@ namespace BandMaster
             // Services
             
             GraphicsDeviceManager graphics = new GraphicsDeviceManager(this);
+
+            graphics.PreferredBackBufferHeight = height;
+            graphics.PreferredBackBufferWidth = width;
 
             IManageInput inputManager;
             try
