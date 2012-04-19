@@ -64,8 +64,6 @@ namespace BandMaster.Graphics
             speed += increase;
         }
 
-
-
         private void DrawLine(GameTime gameTime, int[] parts, Color Col)
         {
             elapsed = elapsed + gameTime.ElapsedGameTime.Milliseconds;
