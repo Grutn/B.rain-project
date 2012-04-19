@@ -42,13 +42,13 @@ namespace BandMaster.Graphics
         {
             LineSpriteBatch = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
             
-            upp1 = Game.Content.Load<Texture2D>("opp1");
-            upp2 = Game.Content.Load<Texture2D>("opp2");//TODO textures
-            upp3 = Game.Content.Load<Texture2D>("opp3");
-            strait = Game.Content.Load<Texture2D>("strek");
-            down1 = Game.Content.Load<Texture2D>("ned1");
-            down2 = Game.Content.Load<Texture2D>("ned2");
-            down3 = Game.Content.Load<Texture2D>("ned3");
+            upp1 = Game.Content.Load<Texture2D>("Textures/opp1");
+            upp2 = Game.Content.Load<Texture2D>("Textures/opp2");//TODO textures
+            upp3 = Game.Content.Load<Texture2D>("Textures/opp3");
+            strait = Game.Content.Load<Texture2D>("Textures/strek");
+            down1 = Game.Content.Load<Texture2D>("Textures/ned1");
+            down2 = Game.Content.Load<Texture2D>("Textures/ned2");
+            down3 = Game.Content.Load<Texture2D>("Textures/ned3");
             width = (int)(strait.Width * scaleY);
             hight = (int)(strait.Height * scale);
             base.Initialize();
@@ -121,18 +121,22 @@ namespace BandMaster.Graphics
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-
-
             base.Update(gameTime);
         }
+
         public override void Draw(GameTime gameTime)
         {
+            /*
+             * Commented out to allow debugging
+             * The Lines variable is never set and stops because of a null value
+            
             for (int i = 0; i < Lines.Count; i++)
             {
                 DrawLine(gameTime, Lines.ElementAt(i), colors[i % 5]);
-                
             }
             base.Draw(gameTime);
+            
+             */
         }
     }
 }
