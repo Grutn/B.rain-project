@@ -93,6 +93,7 @@
       <Name>4sqr</Name>
 	  <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+	</Compile>
     <Compile Include="snakeTry.png">
       <Name>snakeTry</Name>
       <Importer>TextureImporter</Importer>

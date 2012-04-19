@@ -139,11 +139,7 @@
     <Compile Include="Logic\PauseMenuMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
-<<<<<<< HEAD
     <Compile Include="State\Song.cs" />
-=======
-    <Compile Include="State\song.cs" />
->>>>>>> f3fca7067b18124bceba1fb0ea5fe4c46bada5b8
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
