@@ -30,7 +30,7 @@ namespace BandMaster.Input
         {
             ContentManager content = Game.Content;
 
-            blank4sqr = content.Load<Texture2D>("4sqr");
+            blank4sqr = content.Load<Texture2D>("Texture/4sqr");
         }
 
         public override void Update(GameTime gameTime)
