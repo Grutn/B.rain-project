@@ -10,28 +10,183 @@ using Microsoft.Xna.Framework.Input;
 using BandMaster.State;
 
 
+
 namespace BandMaster.Graphics
 {
+
+    public class Line : Microsoft.Xna.Framework.DrawableGameComponent
+    {
+        SpriteBatch sprites;
+        Audio.Midi.Player player;
+
+        Texture2D flare, seperator;
+
+        public Line(Game game)
+            : base(game)
+        {
+            Visible = false;
+            ((BandMaster)Game).SongLoaded += delegate(object a, EventArgs b)
+            {
+                Visible = true;
+            };
+        }
+
+        public override void Initialize()
+        {
+            sprites = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
+            player = (Audio.Midi.Player)Game.Services.GetService(typeof(Audio.Midi.Player));
+
+            flare = Game.Content.Load<Texture2D>("Textures/flare1");
+            seperator = Game.Content.Load<Texture2D>("Textures/seperator");
+
+        }
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+        }
+
+        float scurve(float from, float to, float var)
+        {
+            float v = (float)(Math.Cos((Math.PI * var) + Math.PI) * 0.5 + 0.5);
+            return from + v * (to - from);
+        }
+        float lerp(float from, float to, float var)
+        {
+            return from * (1 - var) + to * var; // this is just lerp, i'll look up scurve
+        }
+
+
+        Rectangle bounds = new Rectangle(150, 500, 800, 400);
+        float segmentWidth = 200.0f;
+        float segmentHeight = 100.0f;
+
+        float evaluateFadeoutFactor(float screenPos)
+        {
+            if (screenPos < bounds.Left + 50)
+                return Math.Max(0.0f, (float)(screenPos - bounds.Left) / 50.0f);
+            else if (screenPos > bounds.Right - 50)
+                return Math.Max(0.0f, (float)(bounds.Right - screenPos) / 50.0f);
+            else
+                return 1.0f;
+        }
+
+        void evaluateLineEffects(GameTime time, int songTime, Vector2 screenPos, out float offset, out float scale, out float glow)
+        {
+            offset = 0.0f;
+
+            scale = (float)Math.Pow(Math.Sin((double)screenPos.X * 0.01 - time.TotalGameTime.TotalSeconds * 4.0) * 0.5 + 0.5, 100.0) + 1.0f;
+            scale *= evaluateFadeoutFactor(screenPos.X);
+            glow = 0.0f;
+        }
+
+        void drawSegment(GameTime time, int songTimeFrom, int songTimeTo, Vector2 from, Vector2 to)
+        {
+            int spriteHeight = flare.Height/4;
+            int spriteWidth = flare.Width/4 ;
+
+            int particleDensity = 100;
+
+            float fadeout = evaluateFadeoutFactor(from.X);
+            sprites.Draw(seperator, new Rectangle((int)from.X, (int)bounds.Top, seperator.Width/2, (int)segmentHeight), new Color(fadeout,fadeout,fadeout));
+
+            float mid = from.X + (to.X - from.X) * 0.5f;
+            fadeout = evaluateFadeoutFactor(mid);
+            sprites.Draw(seperator, new Rectangle((int)mid, (int)bounds.Top+20, seperator.Width / 2, (int)segmentHeight-30), new Color(fadeout, fadeout, fadeout));
+
+            for (int i = 0; i < particleDensity; i++)
+            {
+                float var = (float)i / (float)particleDensity;
+
+                int songTime = (int)lerp(songTimeFrom, songTimeTo, var); 
+                Vector2 position;
+                position.X = lerp(from.X, to.X, var);
+                position.Y = var < 0.5? scurve(from.Y, to.Y, var*2.0f) : to.Y;
+
+                float fxOffset, fxScale, fxGlow;
+                evaluateLineEffects(time, songTime, position, out fxOffset, out fxScale, out fxGlow);
+                //fxScale = 1.0f;
+                position.X += fxOffset;
+                position.X -= fxScale * spriteWidth * 0.5f;
+                position.Y -= fxScale * spriteHeight * 0.5f;
+                //System.Console.Out.WriteLine(fxScale);
+                Rectangle rect = new Rectangle((int)position.X, (int)position.Y, (int)(spriteWidth*fxScale), (int)(spriteHeight*fxScale));
+
+                sprites.Draw(flare, rect, Color.White);//new Color(1.0f - 148.0f/255.0f, 1.0f - 38.0f/255.0f, 1.0f - 11.0f/255.0f) );
+            }
+
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            if (!Visible) return;
+
+            int[] parts = ((BandMaster)Game).Song.Lines[0];
+
+            float done = (float)player.Position / (float)player.Length;
+            // 0.0 => the beginning, start rendering on center
+            // 1.0 => the end, start rendering on center - length_of_line
+
+
+            float center = bounds.Center.X;
+            float lineLength = segmentWidth * parts.Length;
+            Vector2 startpos = new Vector2(center - (lineLength * done), bounds.Y+20);
+
+            int currentPart = (int)(done * (float)parts.Length); // this calculation should be moved
+            int windowSize = 10;
+            int fromPart = Math.Max(1, currentPart - windowSize);
+            int toPart = Math.Min(parts.Length, currentPart + windowSize);
+
+
+            // dst = dst * inv_src;
+
+            BlendState blend = new BlendState();
+            blend.ColorSourceBlend = Blend.Zero;
+            blend.ColorDestinationBlend = Blend.InverseSourceColor;
+            sprites.Begin(SpriteSortMode.Immediate, blend);
+
+      
+            for (int i = fromPart; i < toPart; i++)
+            {
+                int lastLevel = parts[i - 1];
+                int currentLevel = parts[i];
+                int delta = currentLevel - lastLevel; // delta c[-3,+3]
+
+                Vector2 from, to;
+                from.X = startpos.X + segmentWidth * i;
+                from.Y = startpos.Y + (float)lastLevel / 3.0f * segmentHeight;
+
+                to.X = from.X + segmentWidth;
+                to.Y = startpos.Y + (float)currentLevel / 3.0f * segmentHeight;
+
+                drawSegment(gameTime, 0, 0, from, to);
+            }
+
+            sprites.End();
+
+
+            base.Draw(gameTime);
+        }
+    }
+
+
+
+    /*
     /// <summary>
     /// This is a game component that implements DrawableGameComponent.
     /// </summary>
     public class Line : Microsoft.Xna.Framework.DrawableGameComponent
     {
-        List<int[]> Lines = new List<int[]>();
-        Vector2 startpos;
         SpriteBatch LineSpriteBatch;
-        Texture2D strait, upp1, upp2, upp3, down1, down2, down3;
+        Audio.Midi.Player player;
+        
+        Texture2D[] lineSegments;
+
         static Color[] colors={Color.Red, Color.Blue, Color.Yellow, Color.MediumPurple, Color.Orange};
-        int elapsed = 0,width = 0,hight = 0, of= 0;
-        float offset = 0, CPS = 60, speed = 1f, scale = 0.3f,scaleY = 0.3f;
-
-
 
         public Line(Game game, Vector2 pos)
             : base(game)
         {
-            startpos = pos;
-            
+            Visible = false;
         }
 
         /// <summary>
@@ -41,75 +196,54 @@ namespace BandMaster.Graphics
         public override void Initialize()
         {
             LineSpriteBatch = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
+            player = (Audio.Midi.Player)Game.Services.GetService(typeof(Audio.Midi.Player));
+
+            lineSegments = new Texture2D[] {
+                Game.Content.Load<Texture2D>("Textures/ned3"),
+                Game.Content.Load<Texture2D>("Textures/ned2"),
+                Game.Content.Load<Texture2D>("Textures/ned1"),
+                Game.Content.Load<Texture2D>("Textures/strek"),
+                Game.Content.Load<Texture2D>("Textures/opp1"),
+                Game.Content.Load<Texture2D>("Textures/opp2"),
+                Game.Content.Load<Texture2D>("Textures/opp3")
+            };
             
-            upp1 = Game.Content.Load<Texture2D>("Textures/opp1");
-            upp2 = Game.Content.Load<Texture2D>("Textures/opp2");//TODO textures
-            upp3 = Game.Content.Load<Texture2D>("Textures/opp3");
-            strait = Game.Content.Load<Texture2D>("Textures/strek");
-            down1 = Game.Content.Load<Texture2D>("Textures/ned1");
-            down2 = Game.Content.Load<Texture2D>("Textures/ned2");
-            down3 = Game.Content.Load<Texture2D>("Textures/ned3");
-            width = (int)(strait.Width * scaleY);
-            hight = (int)(strait.Height * scale);
+            ((BandMaster)Game).SongLoaded += delegate (object a, EventArgs b) 
+            {
+                Visible = true;
+            };
+
             base.Initialize();
         }
 
-        public void ChangeSong(Song _song)
-        {
-            Lines = _song.Lines;
-        }
 
-        public void ChangeSpeed(float increase)
+        private void DrawLine(int[] parts, Color Col)
         {
-            speed += increase;
-        }
 
-        private void DrawLine(GameTime gameTime, int[] parts, Color Col)
-        {
-            elapsed = elapsed + gameTime.ElapsedGameTime.Milliseconds;
-            if (elapsed >= 1000 / CPS)
-            {
-                startpos.X = startpos.X - width * (speed / 100f);
-                offset = offset + width * (speed / 100f);
-                elapsed = 0;
-            }
+            int spriteWidth = (int)(lineSegments[0].Width);
+            int spriteHeight = (int)(lineSegments[0].Height);
+
+            float done = (float)player.Position / (float)player.Length;
+            // 0.0 => the beginning, start rendering on center
+            // 1.0 => the end, start rendering on center - length_of_line
+
+            float center = Game.GraphicsDevice.Viewport.Bounds.Center.X;
+            float length_of_line = spriteWidth * parts.Length;
+            Vector2 startpos = new Vector2(center - (length_of_line * done), 200.0f);
+
             LineSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
-            int inc = (int)(12 * scale);
+
             for (int i = 1; i < parts.Length; i++)
             {
-                switch (parts[i - 1] - parts[i])
-                {
-                    case 0:
-                        LineSpriteBatch.Draw(strait, new Rectangle((int)startpos.X + width * i, (int)startpos.Y + of + parts[i] * (int)(hight/3f), width, hight), Col);
-                        break;
-                    case 1:
-                        of = inc;
-                        LineSpriteBatch.Draw(upp1, new Rectangle((int)startpos.X + width * i, (int)startpos.Y + parts[i-1] * (int)(hight / 3f), width, hight), Col);
-                        break;
-                    case 2:
-                        of = inc;
-                        LineSpriteBatch.Draw(upp2, new Rectangle((int)startpos.X + width * i, (int)startpos.Y + parts[i-1] * (int)(hight / 3f), width, hight), Col);
-                        break;
-                    case 3:
-                        of = inc;
-                        LineSpriteBatch.Draw(upp3, new Rectangle((int)startpos.X + width * i, (int)startpos.Y + parts[i-1] * (int)(hight / 3f), width, hight), Col);
-                        break;
-                    case -1:
-                        of = 0;
-                        LineSpriteBatch.Draw(down1, new Rectangle((int)startpos.X + width * i, (int)startpos.Y + parts[i] * (int)(hight / 3f), width, hight), Col);
-                        break;
-                    case -2:
-                        of = 0;
-                        LineSpriteBatch.Draw(down2, new Rectangle((int)startpos.X + width * i, (int)startpos.Y + parts[i] * (int)(hight / 3f), width, hight), Col);
-                        break;
-                    case -3:
-                        of = 0;
-                        LineSpriteBatch.Draw(down3, new Rectangle((int)startpos.X + width * i, (int)startpos.Y + parts[i] * (int)(hight / 3f), width, hight), Col);
-                        break;
-                    default:
-                        LineSpriteBatch.Draw(strait, new Rectangle((int)startpos.X + width * i, (int)startpos.Y +of + parts[i] * (int)(hight / 3f), width, hight), Col);
-                        break;
-                }
+                int lastLevel = parts[i - 1];
+                int currentLevel = parts[i];
+                int delta = currentLevel - lastLevel; // delta c[-3,+3]
+
+                int offsetX = spriteWidth * i;
+                int offsetY = (delta >= 0 ? lastLevel : currentLevel) * -(spriteHeight - 15) / 4;
+                Rectangle rect = new Rectangle((int)startpos.X + offsetX, (int)startpos.Y + offsetY, spriteWidth, spriteHeight);
+                Texture2D texture = lineSegments[delta + 3];
+                LineSpriteBatch.Draw(texture, rect, Col);
 
             }
             LineSpriteBatch.End();
@@ -126,17 +260,22 @@ namespace BandMaster.Graphics
 
         public override void Draw(GameTime gameTime)
         {
-            /*
-             * Commented out to allow debugging
-             * The Lines variable is never set and stops because of a null value
             
-            for (int i = 0; i < Lines.Count; i++)
+            
+            // XXX: this should not use game time!
+
+            if (!Visible) return;
+
+
+
+            //System.Console.Out.WriteLine(done);
+
+            for (int i = 0; i < ((BandMaster)Game).Song.Lines.Count; i++)
             {
-                DrawLine(gameTime, Lines.ElementAt(i), colors[i % 5]);
+                DrawLine(((BandMaster)Game).Song.Lines[i], colors[i % 5]);
             }
+
             base.Draw(gameTime);
-            
-             */
         }
-    }
+    }*/
 }

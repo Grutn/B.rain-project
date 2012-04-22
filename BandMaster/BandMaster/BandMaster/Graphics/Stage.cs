@@ -31,7 +31,7 @@ namespace BandMaster.Graphics
         public Stage(Game game)
             : base(game)
         {
-            Lines = new Line(game, new Vector2(300, 50));
+            Lines = new Line(game);
             snake = new VolumeSnake(game, new Vector2(120, 50), 100, 100);
 
         }

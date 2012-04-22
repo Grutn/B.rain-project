@@ -102,6 +102,15 @@ namespace BandMaster.Audio
             }
 
             // ticks
+            public int Length
+            {
+                get
+                {
+                    return sequencer1.Sequence.GetLength();
+                }
+            }
+
+            // ticks
             public int Position 
             { 
                 get 
