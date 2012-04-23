@@ -109,6 +109,10 @@ namespace BandMaster
             Components.Add(splasher);
             Services.AddService(typeof(Graphics.SplashText), splasher);
 
+            Graphics.FlyingNotes notes = new Graphics.FlyingNotes(this);
+            Components.Add(notes);
+            Services.AddService(typeof(Graphics.FlyingNotes), notes);
+
             Components.Add(new Graphics.Stage(this));
         }
 

@@ -23,11 +23,13 @@ namespace BandMaster.Graphics
     /// </summary>
     public class Instrument : Microsoft.Xna.Framework.DrawableGameComponent
     {
-        Rectangle _rectangle;
-        Texture2D _texture;
+
+        Texture2D texture;
         SpriteBatch _spriteBatch;
         int _width, _hight, frameWidth, frameHight;
-        
+
+
+        public Rectangle Bounds;
 
         public Instrument(Game game)
             : base(game)
@@ -47,31 +49,32 @@ namespace BandMaster.Graphics
         /// <param name="width">Number of frames in a texture</param>
         /// <param name="hight">Number of frames in a texture</param>
         /// <param name="rec">Place on the screen where instrument should be drawn</param>
-        public Instrument(Game game, String texture, int width, int hight, Rectangle rec)
+        /*public Instrument(Game game, String textureName, int width, int hight, Rectangle rec)
             : base(game)
         {
-            _texture = game.Content.Load<Texture2D>(texture);
+            texture = game.Content.Load<Texture2D>(textureName);
             //checks for consistancy between Sheet and given parrameters
-            if ((_texture.Height % hight != 0) | (_texture.Width % width != 0))
+            if ((texture.Height % hight != 0) | (texture.Width % width != 0))
                 throw new InvalidOperationException("The texture and parrameters do not match");
             //sets rest of variebles
             _rectangle = rec;
             _spriteBatch = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
             _width = width;
             _hight = hight;
-            frameWidth = _texture.Width / _width;       
-            frameHight = _texture.Height / _hight;
-        }
-        public Instrument(Game game, String texture, Rectangle rec)
+            frameWidth = texture.Width / _width;       
+            frameHight = texture.Height / _hight;
+        }*/
+        public Instrument(Game game, String textureName)
             : base(game)
         {
-            _texture = game.Content.Load<Texture2D>(texture);
-            _rectangle = rec;
+            texture = game.Content.Load<Texture2D>("Textures/"+textureName);
+            Bounds = new Rectangle(0, 0, texture.Width, texture.Height);
+
             _spriteBatch = new SpriteBatch(game.GraphicsDevice);
             _width = 5;
             _hight = 5;
-            frameWidth = _texture.Width / _width;
-            frameHight = _texture.Height / _hight;
+            frameWidth = texture.Width / _width;
+            frameHight = texture.Height / _hight;
         }
 
         /// <summary>
@@ -101,16 +104,13 @@ namespace BandMaster.Graphics
                 verticallOffset = (int)(gameTime.TotalGameTime.Milliseconds) / (1000 / _hight);
             _spriteBatch.Begin();
             //_spriteBatch.Draw(_texture, _rectangle, Color.White);
-            _spriteBatch.Draw(_texture, _rectangle,
-                new Rectangle(frameWidth * horisontalOffset, frameHight * verticallOffset, frameWidth, frameHight),
+            _spriteBatch.Draw(texture, Bounds,
+                /*new Rectangle(frameWidth * horisontalOffset, frameHight * verticallOffset, frameWidth, frameHight),*/
+                null,
                 Color.White, 0, Vector2.Zero, SpriteEffects.None , 0);
             _spriteBatch.End();
             base.Draw(gameTime);
         }
 
-        public void SetNewBounds(Rectangle rec)
-        {
-            _rectangle = rec;
-        }
     }
 }

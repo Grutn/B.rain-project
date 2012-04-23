@@ -126,6 +126,7 @@
     <Compile Include="Graphics\Instrument.cs" />
     <Compile Include="Graphics\Line.cs" />
     <Compile Include="Graphics\Metronum.cs" />
+    <Compile Include="Graphics\FlyingNotes.cs" />
     <Compile Include="Graphics\SplashText.cs" />
     <Compile Include="Graphics\Stage.cs" />
     <Compile Include="Graphics\VolumeSnake.cs" />
