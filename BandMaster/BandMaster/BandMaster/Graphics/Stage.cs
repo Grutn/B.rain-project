@@ -150,7 +150,7 @@ namespace BandMaster.Graphics
 
             int metOffset = (int)(800 - fader2 * 500);
             sprites.Draw(metronome, new Rectangle(Game.GraphicsDevice.Viewport.Width-256, metOffset, metronome.Width/2, metronome.Height/2), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1);
-            int tempoOff = (int)Helpers.Lerp(100.0f, 260.0f, Helpers.Clamp(midiPlayer.TempoDifference*0.5f+0.5f, 0.0f, 1.0f));
+            int tempoOff = (int)Helpers.Lerp(30.0f, 260.0f, Helpers.Clamp(midiPlayer.TempoDifference*0.5f+0.5f, 0.0f, 1.0f));
             sprites.Draw(metronomeSlider, new Rectangle(Game.GraphicsDevice.Viewport.Width - 256 + 76, metOffset + tempoOff, metronomeSlider.Width/2, metronomeSlider.Height/2), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1);
 
             // Instruments

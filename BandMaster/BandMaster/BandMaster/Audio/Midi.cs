@@ -172,6 +172,7 @@ namespace BandMaster.Audio
             {
                 sequencer1.clock.Stop();
             }
+            public bool IsRunning { get { return sequencer1.clock.IsRunning; } }
 
         }
 

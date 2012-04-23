@@ -147,25 +147,25 @@ namespace BandMaster.Logic
                 splasher.Write(dynamicSplash[badness], Color.Red);
             }*/
         }
+
+        
+
+
         private void tempoHit(object sender, EventArgs e)
         {
-            float now = 0.001f * tier.ElapsedMilliseconds;
-
+            
             // spol fram til nextTick
             midiPlayer.Position += ticksToNextHit;
             ticksToNextHit = 960 - 1;
 
             // set tepo basert på tid siden sist click
             midiPlayer.Continue();
-            currentHitTime = now;
 
-            float newTempo = currentHitTime - lastHitTime;
-            float v = 0.9f;
-            midiPlayer.Tempo = (v * newTempo + (1.0f - v) * lastTempo);
+            float now = 0.001f * tier.ElapsedMilliseconds;
+            midiPlayer.Tempo = now - lastHitTime;
+            lastHitTime = now;
 
-            float idealTempo = 1.0f;
-            float tempoDiff = midiPlayer.Tempo - idealTempo;
-
+            float tempoDiff = midiPlayer.TempoDifference;
             if (-0.05f < tempoDiff && tempoDiff <= 0.05f)
                 splasher.Write("Perfekt tempo!", Color.White);
             else if (-0.7f < tempoDiff && tempoDiff <= -0.2f)
@@ -179,9 +179,7 @@ namespace BandMaster.Logic
 
             Player player = ((BandMaster)Game).Player;
             player.Score = player.Score + (1.0 - Math.Abs(tempoDiff));
-            
-            lastTempo = newTempo;
-            lastHitTime = currentHitTime;
+
         }   
 
 
@@ -191,7 +189,10 @@ namespace BandMaster.Logic
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            // TODO: Add your update code here
+            float now = 0.001f * tier.ElapsedMilliseconds;
+
+            if (!midiPlayer.IsRunning)
+                midiPlayer.Tempo = now - lastHitTime;
 
             base.Update(gameTime);
         }
