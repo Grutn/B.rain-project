@@ -101,6 +101,8 @@ namespace BandMaster.Audio
                 }
             }
 
+
+
             // ticks
             public int Length
             {
@@ -121,6 +123,15 @@ namespace BandMaster.Audio
                 { 
                     sequencer1.Position = value;
                 } 
+            }
+
+            float idealTempo = 1.0f;
+            public float TempoDifference
+            {
+                get
+                {
+                    return Tempo - idealTempo;
+                }
             }
 
             // Tempo = secPerHit

@@ -10,10 +10,14 @@ using Microsoft.Xna.Framework.Input;
 using BandMaster.State;
 
 
-public class Helpers
+public class Helpers // TODO: MOVE THIS
 {
     public static Game Game;
 
+    public static float Clamp(float value, float min, float max)
+    {
+        return Math.Max(min, Math.Min(max, value));
+    }
     public static float Scurve(float from, float to, float var)
     {
         float v = (float)(Math.Cos((Math.PI * var) + Math.PI) * 0.5 + 0.5);

@@ -18,15 +18,18 @@ namespace BandMaster.Graphics
     /// This is a game component that implements DrawableGameComponent.
     /// </summary>
     public class Stage : Microsoft.Xna.Framework.DrawableGameComponent
-    {   
+    {
+        SpriteBatch sprites;
+        Audio.Midi.Player midiPlayer;
+
+
         List<Instrument> Band = new List<Instrument>();
-        SpriteBatch StageSpriteBatch;
         Hashtable Instruments;
         Line Lines;
         VolumeSnake snake;
         int _hight;
 
-        Texture2D background, stand, metronome;
+        Texture2D background, stand, metronome, metronomeSlider;
         
         public Stage(Game game)
             : base(game)
@@ -45,11 +48,14 @@ namespace BandMaster.Graphics
         /// </summary>
         public override void Initialize()
         {
-            StageSpriteBatch = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
-            
+            sprites = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
+            midiPlayer = (Audio.Midi.Player)Game.Services.GetService(typeof(Audio.Midi.Player));
+
+
             background = Game.Content.Load<Texture2D>("Textures/bg"); // NB no file
             stand = Game.Content.Load<Texture2D>("Textures/notestativ");
             metronome = Game.Content.Load<Texture2D>("Textures/metronome512");
+            metronomeSlider = Game.Content.Load<Texture2D>("Textures/metronome-slider");
             Lines.Initialize();
             //snake.Initialize();
 
@@ -113,7 +119,7 @@ namespace BandMaster.Graphics
         string laststr = "";
         public override void  Draw(GameTime gameTime)
         {
-            StageSpriteBatch.Begin();
+            sprites.Begin();
 
             // find correct size (keeping aspect ratio) and extra pixels on top (for transition)
             Rectangle dr = Game.GraphicsDevice.Viewport.Bounds;
@@ -130,25 +136,32 @@ namespace BandMaster.Graphics
             float fader2 = Math.Min(Math.Max((float)(gameTime.TotalGameTime.TotalSeconds-(introTime+0.5f))*1.2f, 0.0f), 1.0f);
             fader2 = (float)Math.Sin((double)fader2 * Math.PI / 2.0); // ease out
 
+            // Background
+
             int bgOffset = (int)(fader * extraTop);
-            StageSpriteBatch.Draw(background, new Rectangle(dr.X, dr.Y - bgOffset, dr.Width, dr.Height), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1);
+            sprites.Draw(background, new Rectangle(dr.X, dr.Y - bgOffset, dr.Width, dr.Height), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1);
+
+            // Stand
 
             int stOffset = (int)(-400 + fader * (extraTop + 400));
-            StageSpriteBatch.Draw(stand, new Rectangle(dr.X,dr.Y - stOffset, dr.Width,dr.Height), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1);
+            sprites.Draw(stand, new Rectangle(dr.X,dr.Y - stOffset, dr.Width,dr.Height), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1);
+
+            // Metronome
 
             int metOffset = (int)(800 - fader2 * 500);
-            StageSpriteBatch.Draw(metronome, new Rectangle(Game.GraphicsDevice.Viewport.Width-256, metOffset, metronome.Width/2, metronome.Height/2), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1);
+            sprites.Draw(metronome, new Rectangle(Game.GraphicsDevice.Viewport.Width-256, metOffset, metronome.Width/2, metronome.Height/2), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1);
+            int tempoOff = (int)Helpers.Lerp(100.0f, 260.0f, Helpers.Clamp(midiPlayer.TempoDifference*0.5f+0.5f, 0.0f, 1.0f));
+            sprites.Draw(metronomeSlider, new Rectangle(Game.GraphicsDevice.Viewport.Width - 256 + 76, metOffset + tempoOff, metronomeSlider.Width/2, metronomeSlider.Height/2), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1);
 
-            
-            // Draw instruments
+            // Instruments
 
             foreach (Instrument _instrument in Band)
             {
                 _instrument.Draw(gameTime);
             }
-            StageSpriteBatch.End();
+            sprites.End();
 
-            StageSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            sprites.Begin(SpriteSortMode.Immediate, BlendState.Additive);
 
             // Draw score
             SpriteFont font = ((BandMaster)Game).SplashFont;
@@ -156,9 +169,9 @@ namespace BandMaster.Graphics
             if (str != laststr)
                 scoreFlashTime = gameTime.TotalGameTime.TotalSeconds;
             float f = 1.0f - (float)Math.Min(0.8, Math.Max(0.0, (gameTime.TotalGameTime.TotalSeconds - scoreFlashTime)));
-            StageSpriteBatch.DrawString(font, str, new Vector2(dr.Right - font.MeasureString(str).X - 20, 0), new Color(f,f,f));
+            sprites.DrawString(font, str, new Vector2(dr.Right - font.MeasureString(str).X - 20, 0), new Color(f,f,f));
             laststr = str;
-            StageSpriteBatch.End();
+            sprites.End();
 
 
             if (Lines != null) Lines.Draw(gameTime);
