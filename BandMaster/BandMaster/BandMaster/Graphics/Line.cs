@@ -10,6 +10,55 @@ using Microsoft.Xna.Framework.Input;
 using BandMaster.State;
 
 
+public class Helpers
+{
+    public static Game Game;
+
+    public static float Scurve(float from, float to, float var)
+    {
+        float v = (float)(Math.Cos((Math.PI * var) + Math.PI) * 0.5 + 0.5);
+        return from + v * (to - from);
+    }
+    public static float Lerp(float from, float to, float var)
+    {
+        return from * (1 - var) + to * var;
+    }
+
+    public delegate void SimpleDelegate();
+    public class Waiter: GameComponent
+    {
+        bool started = false;
+        double start;
+        double delay;
+        SimpleDelegate callback;
+
+        public Waiter(Game game, double delay, SimpleDelegate callback) : 
+            base(game)
+        {
+            this.delay = delay;
+            this.callback = callback;
+            Game.Components.Add(this);
+        }
+        public override void  Update(GameTime gameTime)
+        {
+            if (!started)
+            {
+                started = true;
+                start = gameTime.TotalGameTime.TotalSeconds;
+            }
+            else if (gameTime.TotalGameTime.TotalSeconds - start >= delay)
+            {
+                Game.Components.Remove(this);
+                callback();
+            }
+ 	        base.Update(gameTime);
+        }
+    }
+    public static Waiter Wait(double seconds, SimpleDelegate then)
+    {
+        return new Waiter(Game, seconds, then);
+    }
+}
 
 namespace BandMaster.Graphics
 {
@@ -21,10 +70,17 @@ namespace BandMaster.Graphics
 
         Texture2D flare, seperator;
 
+        // settings
+        Rectangle bounds = new Rectangle(150, 500, 800, 400);
+        float segmentWidth = 200.0f;
+        float segmentHeight = 100.0f;
+
         public Line(Game game)
             : base(game)
         {
             Visible = false;
+
+
             ((BandMaster)Game).SongLoaded += delegate(object a, EventArgs b)
             {
                 Visible = true;
@@ -44,21 +100,6 @@ namespace BandMaster.Graphics
         {
             base.Update(gameTime);
         }
-
-        float scurve(float from, float to, float var)
-        {
-            float v = (float)(Math.Cos((Math.PI * var) + Math.PI) * 0.5 + 0.5);
-            return from + v * (to - from);
-        }
-        float lerp(float from, float to, float var)
-        {
-            return from * (1 - var) + to * var; // this is just lerp, i'll look up scurve
-        }
-
-
-        Rectangle bounds = new Rectangle(150, 500, 800, 400);
-        float segmentWidth = 200.0f;
-        float segmentHeight = 100.0f;
 
         float evaluateFadeoutFactor(float screenPos)
         {
@@ -83,35 +124,33 @@ namespace BandMaster.Graphics
         {
             int spriteHeight = flare.Height/4;
             int spriteWidth = flare.Width/4 ;
-
             int particleDensity = 100;
 
-            float fadeout = evaluateFadeoutFactor(from.X);
+            float fadeout = evaluateFadeoutFactor(from.X) * 0.5f;
             sprites.Draw(seperator, new Rectangle((int)from.X, (int)bounds.Top, seperator.Width/2, (int)segmentHeight), new Color(fadeout,fadeout,fadeout));
 
             float mid = from.X + (to.X - from.X) * 0.5f;
-            fadeout = evaluateFadeoutFactor(mid);
+            fadeout = evaluateFadeoutFactor(mid) * 0.5f;
             sprites.Draw(seperator, new Rectangle((int)mid, (int)bounds.Top+20, seperator.Width / 2, (int)segmentHeight-30), new Color(fadeout, fadeout, fadeout));
 
             for (int i = 0; i < particleDensity; i++)
             {
                 float var = (float)i / (float)particleDensity;
 
-                int songTime = (int)lerp(songTimeFrom, songTimeTo, var); 
+                int songTime = (int)Helpers.Lerp(songTimeFrom, songTimeTo, var); 
                 Vector2 position;
-                position.X = lerp(from.X, to.X, var);
-                position.Y = var < 0.5? scurve(from.Y, to.Y, var*2.0f) : to.Y;
+                position.X = Helpers.Lerp(from.X, to.X, var);
+                position.Y = var < 0.5? Helpers.Scurve(from.Y, to.Y, var*2.0f) : to.Y;
 
                 float fxOffset, fxScale, fxGlow;
                 evaluateLineEffects(time, songTime, position, out fxOffset, out fxScale, out fxGlow);
-                //fxScale = 1.0f;
                 position.X += fxOffset;
                 position.X -= fxScale * spriteWidth * 0.5f;
                 position.Y -= fxScale * spriteHeight * 0.5f;
-                //System.Console.Out.WriteLine(fxScale);
-                Rectangle rect = new Rectangle((int)position.X, (int)position.Y, (int)(spriteWidth*fxScale), (int)(spriteHeight*fxScale));
 
-                sprites.Draw(flare, rect, Color.White);//new Color(1.0f - 148.0f/255.0f, 1.0f - 38.0f/255.0f, 1.0f - 11.0f/255.0f) );
+                Rectangle rect = new Rectangle((int)position.X, (int)position.Y, (int)(spriteWidth*fxScale), (int)(spriteHeight*fxScale));
+                Color col = position.X < bounds.Center.X ? new Color(0.2f, 0.2f, 0.2f) : Color.White;
+                sprites.Draw(flare, rect, col);//new Color(1.0f - 148.0f/255.0f, 1.0f - 38.0f/255.0f, 1.0f - 11.0f/255.0f) );
             }
 
         }

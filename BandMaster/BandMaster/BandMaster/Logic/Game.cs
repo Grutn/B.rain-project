@@ -20,6 +20,18 @@ namespace BandMaster
 
     }
 
+
+    public class Player
+    {
+        public String Name;
+
+        double score;
+        public double Score { get { return score; } set { score = value; if (ScoreChanged != null) ScoreChanged(this, null); } }
+        public event EventHandler ScoreChanged;
+
+    }
+
+
     /// <summary>
     /// This is the main type for your game
     /// </summary>
@@ -33,6 +45,8 @@ namespace BandMaster
         // Mode and Song holds the state of the game.
         // ModeChanged and SongChanged are events that the graphics components of the system will listen to.
         // The idea is taht we should not know anything about the graphical representation of the game :)
+
+        public Player Player = new Player();
 
         private IMode mode;
         public IMode Mode { get { return mode; } set {  mode = value; if (ModeChanged != null) ModeChanged(this, null); } }
@@ -76,6 +90,8 @@ namespace BandMaster
             Midi.Player player = new Midi.Player(this);
             Components.Add(player);
             Services.AddService(typeof(Midi.Player), player);
+
+            Helpers.Game = this;
 
             // Game modes
 

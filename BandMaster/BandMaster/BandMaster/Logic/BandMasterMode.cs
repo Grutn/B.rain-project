@@ -20,11 +20,10 @@ namespace BandMaster.Logic
     /// </summary>
     public class BandMasterMode : Microsoft.Xna.Framework.GameComponent, IMode
     {
-        private Midi.Player player;
+        private Midi.Player midiPlayer;
         private IManageInput inputManager;
         private Graphics.SplashText splasher; 
         
-
         public BandMasterMode(Game game)
             : base(game)
         {
@@ -37,7 +36,7 @@ namespace BandMaster.Logic
         /// </summary>
         public override void Initialize()
         {
-            player = (Midi.Player)Game.Services.GetService(typeof(Midi.Player));
+            midiPlayer = (Midi.Player)Game.Services.GetService(typeof(Midi.Player));
             inputManager = (IManageInput)Game.Services.GetService(typeof(IManageInput));
             splasher = (Graphics.SplashText)Game.Services.GetService(typeof(Graphics.SplashText));
 
@@ -49,22 +48,34 @@ namespace BandMaster.Logic
             base.Initialize();
         }
 
-
         public void onSongChanged(object sender, EventArgs args)
         {
             splasher.Write("Laster..", Color.White);
             if (!Enabled) return;
             Enabled = false;
-            player.Play();
+            midiPlayer.Play();
             tier.Start();
         }
         public void onSongLoaded(object sender, EventArgs args)
         {
-            splasher.Write("Start!", Color.White);
-            player.Song = ((BandMaster)Game).Song.Midi;
-            player.Play();
-            tier.Start();
-            Enabled = true;   
+            midiPlayer.Song = ((BandMaster)Game).Song.Midi;
+
+            splasher.Write("3", Color.White);
+            Helpers.Wait(1.0, delegate()
+            {
+                splasher.Write("2", Color.White);
+                Helpers.Wait(1.0, delegate()
+                {
+                    splasher.Write("1", Color.White);
+                    Helpers.Wait(1.0, delegate()
+                    {
+                        splasher.Write("Start!", Color.White);
+                        midiPlayer.Play();
+                        tier.Start();
+                        Enabled = true;
+                    });
+                });
+            });
         }
 
         protected override void OnEnabledChanged(object sender, EventArgs args)
@@ -74,15 +85,15 @@ namespace BandMaster.Logic
             if (Enabled)
             {
                 inputManager.OnTempoHit += tempoHit;
-                player.Tick += onTick;
-                player.Play();
+                midiPlayer.Tick += onTick;
+                midiPlayer.Play();
                 tier.Start();                
             }
             else
             {
                 inputManager.OnTempoHit -= tempoHit;
-                player.Tick -= onTick;
-                player.Stop();
+                midiPlayer.Tick -= onTick;
+                midiPlayer.Stop();
                 tier.Stop();
             }
         
@@ -97,34 +108,78 @@ namespace BandMaster.Logic
             ticksToNextHit--;
 
             if (ticksToNextHit == 1)
-                player.Stop();
+                midiPlayer.Stop();
         }
 
         float lastTempo = 0.0f;
         Random rand = new Random();
         System.Diagnostics.Stopwatch tier = new System.Diagnostics.Stopwatch();
+
+        /*string[] tempoSplash = new string[] {
+            "Er du der?",
+            "Zzz..",
+            "Raskere",
+            "Perfekt tempo!",
+            "Litt saktere",
+            "Senk tempoet",
+            "Alt for raskt!"
+        };
+        string[] dynamicSplash = new string[] {
+            "Uffda",
+            "Ok",
+            "Bra!",
+            "Perfekt!"
+        };*/
+
+        private void dynamicHit(object sender, EventArgs e)
+        {
+            // TODO: calc score ..
+
+            //float score = ;
+
+            //splasher.Write("Dyn "+score, Color.White);
+/*            if (veldig bra)
+            {
+                splasher.Write(dynamicSplash[goodness], Color.White);
+            }
+            else if (veldig dårlig)
+            {
+                splasher.Write(dynamicSplash[badness], Color.Red);
+            }*/
+        }
         private void tempoHit(object sender, EventArgs e)
         {
-            string[] texts = new string[] { "Bra!", "Raskere..", "Senk tepoet!", "Senk tempoet litt", "Perfekt!", "Ok", "Zzz..", "Veldig bra" };
-
-            if (rand.Next(0,5)==0)
-            {
-                splasher.Write(texts[rand.Next(0, (texts.Length - 1))], Color.White);
-            }
-
             float now = 0.001f * tier.ElapsedMilliseconds;
 
             // spol fram til nextTick
-            player.Position += ticksToNextHit;
+            midiPlayer.Position += ticksToNextHit;
             ticksToNextHit = 960 - 1;
 
             // set tepo basert på tid siden sist click
-            player.Continue();
+            midiPlayer.Continue();
             currentHitTime = now;
 
             float newTempo = currentHitTime - lastHitTime;
             float v = 0.9f;
-            player.Tempo = (v * newTempo + (1.0f - v) * lastTempo);
+            midiPlayer.Tempo = (v * newTempo + (1.0f - v) * lastTempo);
+
+            float idealTempo = 1.0f;
+            float tempoDiff = midiPlayer.Tempo - idealTempo;
+
+            if (-0.05f < tempoDiff && tempoDiff <= 0.05f)
+                splasher.Write("Perfekt tempo!", Color.White);
+            else if (-0.7f < tempoDiff && tempoDiff <= -0.2f)
+                splasher.Write("Saktere!", Color.White);
+            else if (-2.0f < tempoDiff && tempoDiff <= -0.7f)
+                splasher.Write("Mye saktere!", Color.White);
+            else if ( 0.2f < tempoDiff && tempoDiff <= 0.7f)
+                splasher.Write("Raskere!", Color.White);
+            else if ( 0.7f < tempoDiff && tempoDiff <= 2.0f)
+                splasher.Write("Mye raskere!", Color.White);
+
+            Player player = ((BandMaster)Game).Player;
+            player.Score = player.Score + (1.0 - Math.Abs(tempoDiff));
+            
             lastTempo = newTempo;
             lastHitTime = currentHitTime;
         }   
