@@ -88,7 +88,7 @@ namespace BandMaster.Graphics
             Color col = position.X < bounds.Center.X || true? new Color(0.2f * Alpha.Value, 0.2f * Alpha.Value, 0.2f * Alpha.Value) : new Color(Alpha.Value, Alpha.Value, Alpha.Value);
 
 
-            sprites.Draw(flare, rect, fancy ? new Color((0.8f - 148.0f / 255.0f) * Alpha.Value, (0.8f - 38.0f / 255.0f) * Alpha.Value, (0.8f - 11.0f / 255.0f)) * Alpha.Value) : col);
+            sprites.Draw(flare, rect, fancy ? new Color((0.8f - 148.0f / 255.0f) * Alpha.Value, (0.8f - 38.0f / 255.0f) * Alpha.Value, (0.8f - 11.0f / 255.0f) * Alpha.Value) : col);
 
         }
         int spriteHeight, spriteWidth;
