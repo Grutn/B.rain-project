@@ -52,7 +52,7 @@ namespace BandMaster.Graphics
             midiPlayer = (Audio.Midi.Player)Game.Services.GetService(typeof(Audio.Midi.Player));
             notes = (FlyingNotes)Game.Services.GetService(typeof(FlyingNotes));
 
-            background = Game.Content.Load<Texture2D>("Textures/bg"); // NB no file
+            background = Game.Content.Load<Texture2D>("Textures/bg"); 
             stand = Game.Content.Load<Texture2D>("Textures/notestativ");
             metronome = Game.Content.Load<Texture2D>("Textures/metronome512");
             metronomeSlider = Game.Content.Load<Texture2D>("Textures/metronome-slider");

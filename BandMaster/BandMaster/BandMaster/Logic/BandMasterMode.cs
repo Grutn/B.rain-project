@@ -89,6 +89,7 @@ namespace BandMaster.Logic
             {
                 inputManager.OnTempoHit += tempoHit;
                 midiPlayer.Tick += onTick;
+                midiPlayer.Tick += updateDynamicLine;
                 midiPlayer.Play();
                 tier.Start();                
             }
@@ -96,6 +97,7 @@ namespace BandMaster.Logic
             {
                 inputManager.OnTempoHit -= tempoHit;
                 midiPlayer.Tick -= onTick;
+                midiPlayer.Tick -= updateDynamicLine;
                 midiPlayer.Stop();
                 tier.Stop();
             }
@@ -118,25 +120,31 @@ namespace BandMaster.Logic
         Random rand = new Random();
         System.Diagnostics.Stopwatch tier = new System.Diagnostics.Stopwatch();
 
-        /*string[] tempoSplash = new string[] {
-            "Er du der?",
-            "Zzz..",
-            "Raskere",
-            "Perfekt tempo!",
-            "Litt saktere",
-            "Senk tempoet",
-            "Alt for raskt!"
-        };
-        string[] dynamicSplash = new string[] {
+        /*string[] dynamicSplash = new string[] {
             "Uffda",
             "Ok",
             "Bra!",
             "Perfekt!"
         };*/
 
-        private void dynamicHit(object sender, EventArgs e)
+
+        public float[] PlayerDynamics = new float[800];
+        public int PlayerDynamicsEnd = 0;
+
+        int dynamic = 50;
+        private void updateDynamicLine(object sender, EventArgs e)
         {
-            // TODO: calc score ..
+            if (--dynamic != 0) return;
+            dynamic = 10; // do every 100th call
+            
+            Rectangle r = inputManager.Thresholds;
+            float y = Helpers.Clamp(((float)inputManager.LeftHand.Y - (float)r.Top)/(float)r.Height, 0.0f,1.0f);
+
+            PlayerDynamicsEnd++;
+            if (PlayerDynamicsEnd >= PlayerDynamics.Length) PlayerDynamicsEnd = 0;
+            int insert = PlayerDynamicsEnd + 1;
+            if (insert >= PlayerDynamics.Length) insert = 0;
+            PlayerDynamics[insert] = y;
 
             //float score = ;
 
@@ -159,6 +167,8 @@ namespace BandMaster.Logic
             
             // spol fram til nextTick
             midiPlayer.Position += ticksToNextHit;
+            for (int i = 0; i < ticksToNextHit; i++)
+                updateDynamicLine(this, null);
             ticksToNextHit = 960 - 1;
 
             // set tepo basert på tid siden sist click

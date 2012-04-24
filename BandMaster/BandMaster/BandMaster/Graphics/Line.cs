@@ -18,6 +18,7 @@ namespace BandMaster.Graphics
     {
         SpriteBatch sprites;
         Audio.Midi.Player player;
+        Input.IManageInput input;
 
         Texture2D flare, seperator;
 
@@ -33,7 +34,6 @@ namespace BandMaster.Graphics
         {
             Visible = false;
 
-
             ((BandMaster)Game).SongLoaded += delegate(object a, EventArgs b)
             {
                 Visible = true;
@@ -44,9 +44,12 @@ namespace BandMaster.Graphics
         {
             sprites = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
             player = (Audio.Midi.Player)Game.Services.GetService(typeof(Audio.Midi.Player));
+            input = (Input.IManageInput)Game.Services.GetService(typeof(Input.IManageInput));
 
             flare = Game.Content.Load<Texture2D>("Textures/flare1");
             seperator = Game.Content.Load<Texture2D>("Textures/seperator");
+            spriteHeight = flare.Height / 4;
+            spriteWidth = flare.Width / 4;
 
         }
         public override void Update(GameTime gameTime)
@@ -73,10 +76,25 @@ namespace BandMaster.Graphics
             glow = 0.0f;
         }
 
+        void drawDot(Vector2 position, GameTime time, int songTime, bool fancy = false)
+        {
+            float fxOffset, fxScale, fxGlow;
+            evaluateLineEffects(time, songTime, position, out fxOffset, out fxScale, out fxGlow);
+            position.X += fxOffset;
+            position.X -= fxScale * spriteWidth * 0.5f;
+            position.Y -= fxScale * spriteHeight * 0.5f;
+
+            Rectangle rect = new Rectangle((int)position.X, (int)position.Y, (int)(spriteWidth * fxScale), (int)(spriteHeight * fxScale));
+            Color col = position.X < bounds.Center.X || true? new Color(0.2f * Alpha.Value, 0.2f * Alpha.Value, 0.2f * Alpha.Value) : new Color(Alpha.Value, Alpha.Value, Alpha.Value);
+
+
+            sprites.Draw(flare, rect, fancy ? new Color((0.8f - 148.0f / 255.0f) * Alpha.Value, (0.8f - 38.0f / 255.0f) * Alpha.Value, (0.8f - 11.0f / 255.0f)) * Alpha.Value) : col);
+
+        }
+        int spriteHeight, spriteWidth;
         void drawSegment(GameTime time, int songTimeFrom, int songTimeTo, Vector2 from, Vector2 to)
         {
-            int spriteHeight = flare.Height/4;
-            int spriteWidth = flare.Width/4 ;
+
             int particleDensity = 100;
 
             float fadeout = evaluateFadeoutFactor(from.X) * 0.5f * Alpha.Value;
@@ -94,24 +112,17 @@ namespace BandMaster.Graphics
                 Vector2 position;
                 position.X = Helpers.Lerp(from.X, to.X, var);
                 position.Y = var < 0.5? Helpers.Scurve(from.Y, to.Y, var*2.0f) : to.Y;
-
-                float fxOffset, fxScale, fxGlow;
-                evaluateLineEffects(time, songTime, position, out fxOffset, out fxScale, out fxGlow);
-                position.X += fxOffset;
-                position.X -= fxScale * spriteWidth * 0.5f;
-                position.Y -= fxScale * spriteHeight * 0.5f;
-
-                Rectangle rect = new Rectangle((int)position.X, (int)position.Y, (int)(spriteWidth*fxScale), (int)(spriteHeight*fxScale));
-                Color col = position.X < bounds.Center.X ? new Color(0.2f * Alpha.Value, 0.2f * Alpha.Value, 0.2f * Alpha.Value) : new Color(Alpha.Value, Alpha.Value, Alpha.Value);
-                sprites.Draw(flare, rect, col);//new Color(1.0f - 148.0f/255.0f, 1.0f - 38.0f/255.0f, 1.0f - 11.0f/255.0f) );
+                drawDot(position, time, songTime);
             }
 
         }
 
+
+
         public override void Draw(GameTime gameTime)
         {
             if (!Visible) return;
-
+            
             int[] parts = ((BandMaster)Game).Song.Lines[0];
 
             float done = (float)player.Position / (float)player.Length;
@@ -150,6 +161,30 @@ namespace BandMaster.Graphics
 
                 drawSegment(gameTime, 0, 0, from, to);
             }
+
+            Logic.BandMasterMode bm = ((Logic.BandMasterMode)((BandMaster)Game).Play);
+
+            float samplesPerHit = 960.0f/10.0f;
+            float hitsPerSample = 1.0f/samplesPerHit;
+            float segmentsPerSample = hitsPerSample / 4.0f;
+            float pointDistance = segmentsPerSample * segmentWidth;// *1.35f;
+
+            int p = -bm.PlayerDynamics.Length;
+            int j = bm.PlayerDynamicsEnd + 1;
+            while (true)
+            {
+                if (j >= bm.PlayerDynamics.Length) j = 0;
+
+                Vector2 pos;
+                pos.X = center + p * pointDistance;
+                pos.Y = startpos.Y + (bm.PlayerDynamics[j]) * segmentHeight;
+                drawDot(pos, gameTime, 0, true);
+
+                if (j == bm.PlayerDynamicsEnd) break;
+                p++;
+                j++;
+            }
+
 
             sprites.End();
 
