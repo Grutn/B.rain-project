@@ -123,6 +123,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Audio\Midi.cs" />
+    <Compile Include="Graphics\HandVisualizer.cs" />
     <Compile Include="Graphics\Instrument.cs" />
     <Compile Include="Graphics\Line.cs" />
     <Compile Include="Graphics\Metronum.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="Graphics\SplashText.cs" />
     <Compile Include="Graphics\Stage.cs" />
     <Compile Include="Graphics\VolumeSnake.cs" />
+    <Compile Include="Helpers.cs" />
     <Compile Include="Input\AlternativeInputManager.cs" />
     <Compile Include="Input\IManageInput.cs" />
     <Compile Include="Input\KinectDebug.cs" />
@@ -138,6 +140,7 @@
     <Compile Include="Logic\Game.cs" />
     <Compile Include="Logic\MainMenuMode.cs" />
     <Compile Include="Logic\PauseMenuMode.cs" />
+    <Compile Include="Logic\TutorialMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="State\Song.cs" />

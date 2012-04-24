@@ -59,20 +59,23 @@ namespace BandMaster.Logic
         public void onSongLoaded(object sender, EventArgs args)
         {
             midiPlayer.Song = ((BandMaster)Game).Song.Midi;
-
-            splasher.Write("3", Color.White);
-            Helpers.Wait(1.0, delegate()
+            
+            Helpers.Wait(6.0, delegate()
             {
-                splasher.Write("2", Color.White);
+                splasher.Write("3", Color.White);
                 Helpers.Wait(1.0, delegate()
                 {
-                    splasher.Write("1", Color.White);
+                    splasher.Write("2", Color.White);
                     Helpers.Wait(1.0, delegate()
                     {
-                        splasher.Write("Start!", Color.White);
-                        midiPlayer.Play();
-                        tier.Start();
-                        Enabled = true;
+                        splasher.Write("1", Color.White);
+                        Helpers.Wait(1.0, delegate()
+                        {
+                            splasher.Write("Start!", Color.White);
+                            midiPlayer.Play();
+                            tier.Start();
+                            Enabled = true;
+                        });
                     });
                 });
             });

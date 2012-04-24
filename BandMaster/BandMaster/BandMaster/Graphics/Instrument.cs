@@ -9,7 +9,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
-
 namespace BandMaster.Graphics
 {
     /// <summary>
@@ -28,7 +27,7 @@ namespace BandMaster.Graphics
         SpriteBatch _spriteBatch;
         int _width, _hight, frameWidth, frameHight;
 
-
+        public Effector OffsetY = new Effector();
         public Rectangle Bounds;
 
         public Instrument(Game game)
@@ -104,7 +103,9 @@ namespace BandMaster.Graphics
                 verticallOffset = (int)(gameTime.TotalGameTime.Milliseconds) / (1000 / _hight);
             _spriteBatch.Begin();
             //_spriteBatch.Draw(_texture, _rectangle, Color.White);
-            _spriteBatch.Draw(texture, Bounds,
+            Rectangle r = Bounds;
+            r.Y += (int)OffsetY.Value;
+            _spriteBatch.Draw(texture, r,
                 /*new Rectangle(frameWidth * horisontalOffset, frameHight * verticallOffset, frameWidth, frameHight),*/
                 null,
                 Color.White, 0, Vector2.Zero, SpriteEffects.None , 0);

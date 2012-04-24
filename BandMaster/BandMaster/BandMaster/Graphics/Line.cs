@@ -10,59 +10,6 @@ using Microsoft.Xna.Framework.Input;
 using BandMaster.State;
 
 
-public class Helpers // TODO: MOVE THIS
-{
-    public static Game Game;
-
-    public static float Clamp(float value, float min, float max)
-    {
-        return Math.Max(min, Math.Min(max, value));
-    }
-    public static float Scurve(float from, float to, float var)
-    {
-        float v = (float)(Math.Cos((Math.PI * var) + Math.PI) * 0.5 + 0.5);
-        return from + v * (to - from);
-    }
-    public static float Lerp(float from, float to, float var)
-    {
-        return from * (1 - var) + to * var;
-    }
-
-    public delegate void SimpleDelegate();
-    public class Waiter: GameComponent
-    {
-        bool started = false;
-        double start;
-        double delay;
-        SimpleDelegate callback;
-
-        public Waiter(Game game, double delay, SimpleDelegate callback) : 
-            base(game)
-        {
-            this.delay = delay;
-            this.callback = callback;
-            Game.Components.Add(this);
-        }
-        public override void  Update(GameTime gameTime)
-        {
-            if (!started)
-            {
-                started = true;
-                start = gameTime.TotalGameTime.TotalSeconds;
-            }
-            else if (gameTime.TotalGameTime.TotalSeconds - start >= delay)
-            {
-                Game.Components.Remove(this);
-                callback();
-            }
- 	        base.Update(gameTime);
-        }
-    }
-    public static Waiter Wait(double seconds, SimpleDelegate then)
-    {
-        return new Waiter(Game, seconds, then);
-    }
-}
 
 namespace BandMaster.Graphics
 {
@@ -78,6 +25,8 @@ namespace BandMaster.Graphics
         Rectangle bounds = new Rectangle(150, 500, 800, 400);
         float segmentWidth = 200.0f;
         float segmentHeight = 100.0f;
+
+        public Effector Alpha = new Effector();
 
         public Line(Game game)
             : base(game)
@@ -130,11 +79,11 @@ namespace BandMaster.Graphics
             int spriteWidth = flare.Width/4 ;
             int particleDensity = 100;
 
-            float fadeout = evaluateFadeoutFactor(from.X) * 0.5f;
+            float fadeout = evaluateFadeoutFactor(from.X) * 0.5f * Alpha.Value;
             sprites.Draw(seperator, new Rectangle((int)from.X, (int)bounds.Top, seperator.Width/2, (int)segmentHeight), new Color(fadeout,fadeout,fadeout));
 
             float mid = from.X + (to.X - from.X) * 0.5f;
-            fadeout = evaluateFadeoutFactor(mid) * 0.5f;
+            fadeout = evaluateFadeoutFactor(mid) * 0.5f * Alpha.Value;
             sprites.Draw(seperator, new Rectangle((int)mid, (int)bounds.Top+20, seperator.Width / 2, (int)segmentHeight-30), new Color(fadeout, fadeout, fadeout));
 
             for (int i = 0; i < particleDensity; i++)
@@ -153,7 +102,7 @@ namespace BandMaster.Graphics
                 position.Y -= fxScale * spriteHeight * 0.5f;
 
                 Rectangle rect = new Rectangle((int)position.X, (int)position.Y, (int)(spriteWidth*fxScale), (int)(spriteHeight*fxScale));
-                Color col = position.X < bounds.Center.X ? new Color(0.2f, 0.2f, 0.2f) : Color.White;
+                Color col = position.X < bounds.Center.X ? new Color(0.2f * Alpha.Value, 0.2f * Alpha.Value, 0.2f * Alpha.Value) : new Color(Alpha.Value, Alpha.Value, Alpha.Value);
                 sprites.Draw(flare, rect, col);//new Color(1.0f - 148.0f/255.0f, 1.0f - 38.0f/255.0f, 1.0f - 11.0f/255.0f) );
             }
 
@@ -179,8 +128,6 @@ namespace BandMaster.Graphics
             int fromPart = Math.Max(1, currentPart - windowSize);
             int toPart = Math.Min(parts.Length, currentPart + windowSize);
 
-
-            // dst = dst * inv_src;
 
             BlendState blend = new BlendState();
             blend.ColorSourceBlend = Blend.Zero;

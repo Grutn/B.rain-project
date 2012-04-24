@@ -25,22 +25,22 @@ namespace BandMaster.Graphics
 
         List<Instrument> Band = new List<Instrument>();
 
-        Line Lines;
-        VolumeSnake snake;
-        int _hight;
+        Line line;
 
         Texture2D background, stand, metronome, metronomeSlider;
         
         public Stage(Game game)
             : base(game)
         {
-            Lines = new Line(game);
-            //snake = new VolumeSnake(game, new Vector2(120, 50), 100, 100);
-
+            line = new Line(game);
+            
         }
 
         double score = 0.0;
         double scoreLP = 0.0;
+
+        Effector stagePos = new Effector(0.0f);
+        Effector metronomePos = new Effector(0.0f);
 
         /// <summary>
         /// Allows the game component to perform any initialization it needs to before starting
@@ -56,16 +56,15 @@ namespace BandMaster.Graphics
             stand = Game.Content.Load<Texture2D>("Textures/notestativ");
             metronome = Game.Content.Load<Texture2D>("Textures/metronome512");
             metronomeSlider = Game.Content.Load<Texture2D>("Textures/metronome-slider");
-            Lines.Initialize();
+            line.Initialize();
 
             //((BandMaster)Game).StateChanged += OnGameStateChanged;
-
 
             midiPlayer.NotePlayed += delegate(Object o, EventArgs a)
             {
                 int instr = (int)o;
                 Point c = Band[instr].Bounds.Center;
-                notes.Emit(new Vector2(c.X,c.Y));
+                notes.Emit(new Vector2(c.X,c.Y - 100));
             };
 
             ((BandMaster)Game).SongLoaded += delegate(Object s, EventArgs a)
@@ -84,18 +83,41 @@ namespace BandMaster.Graphics
                 }
 
                 // find a suitable scale for our band
-                Rectangle stageBounds = new Rectangle(200, -60, Game.GraphicsDevice.Viewport.Width - 400, 500);
+                Rectangle stageBounds = new Rectangle(200, 20, Game.GraphicsDevice.Viewport.Width - 400, 500);
                 float bandScale = stageBounds.Width / bandWidth;
 
                 // place and scale our band
                 int x = 0, y = 100;
+
                 foreach (Instrument instrument in Band)
                 {
                     int w = (int)((float)instrument.Bounds.Width * bandScale);
                     int h = (int)((float)instrument.Bounds.Height * bandScale);
                     instrument.Bounds = new Rectangle(stageBounds.X + x, stageBounds.Y + y, w, h);
+                    instrument.OffsetY.Value = -800.0f;
                     x += w;
+
                 }
+
+                // Deus ex machina effect
+                for (int i = 0; i < Band.Count; i++)
+                {
+                    Effector inst = Band[i].OffsetY;
+                    Helpers.Wait(0.4 * i, delegate() { inst.EaseOut(1.0, -800.0f, 0.0f); });
+                }
+
+                // Animate stage
+                Helpers.Wait(2.5, delegate()
+                {
+                    stagePos.EaseOut(1.2);
+                    Helpers.Wait(1.0, delegate()
+                    {
+                        metronomePos.EaseOut(1.2, 0,1, delegate()
+                        {
+                            line.Alpha.Lerp(0.5, 0.0f, 1.0f);
+                        });
+                    });
+                });
             };
 
             ((BandMaster)Game).Player.ScoreChanged += delegate(Object s, EventArgs a)
@@ -105,17 +127,12 @@ namespace BandMaster.Graphics
 
             base.Initialize();
         }
-
-
-
         /// <summary>
         /// Allows the game component to update itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            //snake.Update(gameTime);
-
             float l = 0.1f;
             scoreLP = score * l + scoreLP * (1.0f - l);
 
@@ -132,7 +149,6 @@ namespace BandMaster.Graphics
         string laststr = "";
         public override void  Draw(GameTime gameTime)
         {
-
             // find correct size (keeping aspect ratio) and extra pixels on top (for transition)
             Rectangle dr = Game.GraphicsDevice.Viewport.Bounds;
             Rectangle sr = background.Bounds;
@@ -141,36 +157,34 @@ namespace BandMaster.Graphics
             float extraTop = dr.Height - Game.GraphicsDevice.Viewport.Bounds.Height;
 
             // calculate transition timer
-            double introTime = 0.0;
-            float fader = Math.Min(Math.Max((float)(gameTime.TotalGameTime.TotalSeconds - introTime) * 1.2f, 0.0f), 1.0f);
-            fader = (float)Math.Sin((double)fader * Math.PI / 2.0); // ease out
 
-            float fader2 = Math.Min(Math.Max((float)(gameTime.TotalGameTime.TotalSeconds - (introTime + 0.5f)) * 1.2f, 0.0f), 1.0f);
-            fader2 = (float)Math.Sin((double)fader2 * Math.PI / 2.0); // ease out
-
+            int bgOffset = (int)(stagePos.Value * extraTop);
 
             sprites.Begin();
             {
                 // Background
-                int bgOffset = (int)(fader * extraTop);
+
                 sprites.Draw(background, new Rectangle(dr.X, dr.Y - bgOffset, dr.Width, dr.Height), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1);
             }
             sprites.End();
 
             // Instruments
             foreach (Instrument instrument in Band)
+            {
+                instrument.Bounds.Y -= bgOffset;
                 instrument.Draw(gameTime);
-
+                instrument.Bounds.Y += bgOffset;
+            }
             sprites.Begin();
             {
                 // Stand
 
-                int stOffset = (int)(-400 + fader * (extraTop + 400));
+                int stOffset = (int)(-400 + stagePos.Value * (extraTop + 400));
                 sprites.Draw(stand, new Rectangle(dr.X, dr.Y - stOffset, dr.Width, dr.Height), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1);
 
                 // Metronome
 
-                int metOffset = (int)(800 - fader2 * 500);
+                int metOffset = (int)(800 - metronomePos.Value * 500);
                 sprites.Draw(metronome, new Rectangle(Game.GraphicsDevice.Viewport.Width - 256, metOffset, metronome.Width / 2, metronome.Height / 2), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1);
                 int tempoOff = (int)Helpers.Lerp(30.0f, 260.0f, Helpers.Clamp(midiPlayer.TempoDifference * 0.5f + 0.5f, 0.0f, 1.0f));
                 sprites.Draw(metronomeSlider, new Rectangle(Game.GraphicsDevice.Viewport.Width - 256 + 76, metOffset + tempoOff, metronomeSlider.Width / 2, metronomeSlider.Height / 2), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1);
@@ -192,7 +206,7 @@ namespace BandMaster.Graphics
             sprites.End();
 
 
-            if (Lines != null) Lines.Draw(gameTime);
+            if (line != null) line.Draw(gameTime);
             //if (snake != null) snake.Draw(gameTime);
 
             base.Draw(gameTime);
