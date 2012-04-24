@@ -114,6 +114,8 @@ namespace BandMaster
             Components.Add(notes);
             Services.AddService(typeof(Graphics.FlyingNotes), notes);
 
+            Components.Add(new Graphics.HandVisualizer(this));
+
             Components.Add(new Graphics.Stage(this));
         }
 

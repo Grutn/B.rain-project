@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 namespace BandMaster
 {
 
-    public class Helpers // TODO: MOVE THIS
+    public class Helpers 
     {
         public static Game Game;
 
