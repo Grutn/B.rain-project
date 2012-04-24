@@ -118,7 +118,7 @@ namespace BandMaster.Graphics
             Vector2 startpos = new Vector2(center - (lineLength * done), bounds.Y+20);
 
             int windowSize = 10;
-            int fromPart = Math.Max(1, currentPart - windowSize);
+            int fromPart = Math.Max(0, currentPart - windowSize);
             int toPart = Math.Min(parts.Length, currentPart + windowSize);
 
 
