@@ -59,6 +59,7 @@ namespace BandMaster
             }
             catch (Exception e)
             {
+                System.Diagnostics.Debug.WriteLine(e.Message.ToString());
                 inputManager = new AlternativeInputManager(this);
             }
 

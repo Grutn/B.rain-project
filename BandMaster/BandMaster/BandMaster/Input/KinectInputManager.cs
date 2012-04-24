@@ -8,9 +8,6 @@ using Microsoft.Kinect;
 
 namespace BandMaster.Input
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class KinectInputManager : GameComponent, IManageInput
     {
         #region EventHandlers
@@ -24,25 +21,24 @@ namespace BandMaster.Input
         #region Fields
 
         private KinectSensor kinect = null;
-        private string errorMessage = "";
 
         // Variables for holding last and current events Skeleton collection
         private Skeleton[] currSkeleton = null;
-        private Skeleton[] lastSkeleton = null;
-
-        private Vector3[] activePos;
-        private Vector3[] offPos;
-
-        private int posIndex = 0;
 
         private JointType activeHand;
         private JointType offHand;
+
+        private bool isRightHit;
+
+        // Right and Left Threshold for tempo hit
+        float right;
+        float left;
 
         private int skeletonIndex;
 
         private const int numDataPoints = 10;
         
-        // Debug variable for drawing
+        // Debugging variables
         private KinectDebug debug = null;
 
         #endregion
@@ -59,9 +55,53 @@ namespace BandMaster.Input
             get { return currSkeleton; }
         }
 
-        public Skeleton[] LastSkeleton
+        public bool IsRightHit
         {
-            get { return lastSkeleton; }
+            get { return isRightHit; }
+            set { isRightHit = value; }
+        }
+
+        public Vector2 CurrActivePos
+        {
+            get
+            {
+                ColorImagePoint point = kinect.MapSkeletonPointToColor(currSkeleton[skeletonIndex].Joints[activeHand].Position, ColorImageFormat.RgbResolution640x480Fps30);
+                return new Vector2(point.X, point.Y);
+            }
+        }
+
+        public int RightLine
+        {
+            get
+            {
+                SkeletonPoint shoulderRight = currSkeleton[skeletonIndex].Joints[JointType.HipRight].Position;
+                SkeletonPoint sPoint = new SkeletonPoint
+                {
+                    X = right,
+                    Y = shoulderRight.Y,
+                    Z = shoulderRight.Z
+                };
+
+                ColorImagePoint point = kinect.MapSkeletonPointToColor(sPoint, ColorImageFormat.RgbResolution640x480Fps30);
+                return point.X;
+            }
+        }
+
+        public int LeftLine
+        {
+            get
+            {
+                SkeletonPoint shoulderRight = currSkeleton[skeletonIndex].Joints[JointType.HipRight].Position;
+                SkeletonPoint sPoint = new SkeletonPoint
+                {
+                    X = left,
+                    Y = shoulderRight.Y,
+                    Z = shoulderRight.Z
+                };
+
+                ColorImagePoint point = kinect.MapSkeletonPointToColor(sPoint, ColorImageFormat.RgbResolution640x480Fps30);
+                return point.X;
+            }
         }
 
         public JointType ActiveHand
@@ -89,8 +129,7 @@ namespace BandMaster.Input
             activeHand = JointType.HandRight;
             offHand = JointType.HandLeft;
 
-            activePos = new Vector3[numDataPoints];
-            offPos = new Vector3[numDataPoints];
+            IsRightHit = true;
 
             skeletonIndex = 0;
 
@@ -116,6 +155,8 @@ namespace BandMaster.Input
         /// </summary>
         protected override void Dispose(bool disposing)
         {
+            // If the kinect has been instantiated and started
+            // it must be stopped and disposed to shut down the camera
             if (kinect != null)
             {
                 kinect.Stop();
@@ -129,10 +170,13 @@ namespace BandMaster.Input
             {
                 for (int i = 0; i < currSkeleton.Length; ++i)
                 {
+                    // Are any skeletons being tracked
                     if (currSkeleton[i].TrackingState == SkeletonTrackingState.Tracked)
                     {
+                        // Set the tracked skeleton index to the tracked skeleton
                         System.Console.WriteLine("Index {0} Skeleton is tracked", i);
                         skeletonIndex = i;
+                        break;
                     }
                 }
             }
@@ -144,58 +188,60 @@ namespace BandMaster.Input
             {
                 if (frame != null)
                 {
+                    // If skeleton not instantiated
                     if (currSkeleton == null)
                     {
                         currSkeleton = new Skeleton[frame.SkeletonArrayLength];
-                        lastSkeleton = new Skeleton[frame.SkeletonArrayLength];
                     }
 
                     // Initialize and zero local variables
-                    Vector3 currVelocity    = Vector3.Zero;
-                    Vector3 lastActivePos   = Vector3.Zero;
-                    Vector3 lastOffPos      = Vector3.Zero;
                     Vector3 currActivePos   = Vector3.Zero;
                     Vector3 currOffPos      = Vector3.Zero;
 
-
-                    // Set current frame to last frame
-                    lastSkeleton = currSkeleton;
                     // copy over data from the event arg
                     frame.CopySkeletonDataTo(currSkeleton);
+
+                    //shoulderRight.X + (shoulderRight.X - shoulderCenter.X)
+                    Vector3 hipRight = SkeletonPointToVector3(currSkeleton[skeletonIndex], JointType.HipRight);
+                    Vector3 hipCenter = SkeletonPointToVector3(currSkeleton[skeletonIndex], JointType.HipCenter);
+
+                    left = hipRight.X + (hipRight.X - hipCenter.X);
+                    right = left + 2.0f * (hipRight.X - hipCenter.X);
                     
+                    // Current position of active hand and offhand
                     currActivePos = SkeletonPointToVector3(currSkeleton[skeletonIndex], activeHand);
                     currOffPos    = SkeletonPointToVector3(currSkeleton[skeletonIndex], offHand);
 
-                    lastActivePos = SkeletonPointToVector3(lastSkeleton[skeletonIndex], activeHand);
-                    lastOffPos    = SkeletonPointToVector3(lastSkeleton[skeletonIndex], offHand);
-
-                    currVelocity  = lastActivePos - currActivePos;
-
-                    // Setup values for PlayerEvent
-                    Hand hand = (activeHand == JointType.HandRight) ? Hand.Right : Hand.Left;
-                    JointType elbow = (hand == Hand.Right) ? JointType.ElbowRight : JointType.ElbowLeft;
-
-                    Vector3 direction = currActivePos - SkeletonPointToVector3(currSkeleton[skeletonIndex], elbow);
-
                     // Dispatch PlayerEvent for any movement
-                    if (OnPlayerEvent != null)
+                    // Check if OnPlayerEvent has value and no point in sending data where position is zero, as this doesn't happen
+                    if (OnPlayerEvent != null && currActivePos != Vector3.Zero)
                     {
-                        OnPlayerEvent.Invoke(this, new PlayerEvent(hand, direction, currActivePos, currVelocity));
-                    }
-                    
-                    // Check for change in velocity direction
-                    if (true)
-                    {
-                        // Dispatch OnTempoHit event for 
-                        if (OnTempoHit != null)
+                        OnPlayerEvent.Invoke(this, new PlayerEvent());
+
+                        bool isRight =  IsRightHit && currActivePos.X < left;
+                        bool isLeft  = !IsRightHit && currActivePos.X > right;
+
+                        if (isRight || isLeft)
                         {
-                            OnTempoHit.Invoke(this, new PlayerEvent(hand, direction, currActivePos, currVelocity));
+                            IsRightHit = false;
+                            // Dispatch OnTempoHit event for 
+                            if (OnTempoHit != null)
+                            {
+                                OnTempoHit.Invoke(this, new PlayerEvent());
+                            }
                         }
                     }
                 }
             }
         }
 
+        /// <summary>
+        /// Extracts the joint from a skeleton and converts
+        /// the positional data to Vector3
+        /// </summary>
+        /// <param name="skeleton">Skeleton from which to extract joint</param>
+        /// <param name="joint">Joint to convert</param>
+        /// <returns></returns>
         private Vector3 SkeletonPointToVector3(Skeleton skeleton, JointType joint)
         {
             SkeletonPoint sPoint = skeleton.Joints[joint].Position;

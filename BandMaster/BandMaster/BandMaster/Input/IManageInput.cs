@@ -16,6 +16,7 @@ namespace BandMaster.Input
 
     public class PlayerEvent : EventArgs
     {
+        public int timestamp;
         public Hand hand;
         public Vector3 direction;
         public Vector3 position;
