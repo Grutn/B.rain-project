@@ -143,7 +143,7 @@ namespace BandMaster.Logic
             double start = ((double)currentPart * partLength); // prosent av sangen hvor denne parten starter
 
             //int ticksPerPart = (960 * 4);
-            int ticksPerPart = (int)Math.Ceiling((float)midiPlayer.Length / (float) parts.Length);
+            int ticksPerPart = (int)Math.Floor((float)midiPlayer.Length / (float) parts.Length);
             int currentPartStartTicks = (int)Math.Floor((double)time / (double)ticksPerPart) * ticksPerPart;
             double segmentDone = (double)(time - currentPartStartTicks) / (double)ticksPerPart; 
 
@@ -167,17 +167,12 @@ namespace BandMaster.Logic
             if (insert >= PlayerDynamics.Length) insert = 0;
             PlayerDynamics[insert] = y;
 
-            //float score = ;
-
-            //splasher.Write("Dyn "+score, Color.White);
-/*            if (veldig bra)
+            if ( Math.Abs(y - GetCorrectDynamics(midiPlayer.Position)) < 0.1f)
             {
-                splasher.Write(dynamicSplash[goodness], Color.White);
+                Player player = ((BandMaster)Game).Player;
+                player.Score = player.Score + 0.02f;
             }
-            else if (veldig dårlig)
-            {
-                splasher.Write(dynamicSplash[badness], Color.Red);
-            }*/
+            // TODO: evnt skriv noe om en veeeldig lavpassa score hvis indeks av hvor bra det er har endra seg
         }
 
         
