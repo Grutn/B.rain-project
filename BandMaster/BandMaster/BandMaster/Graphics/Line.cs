@@ -19,8 +19,9 @@ namespace BandMaster.Graphics
         SpriteBatch sprites;
         Audio.Midi.Player player;
         Input.IManageInput input;
+        Logic.BandMasterMode bm;
 
-        Texture2D flare, seperator;
+        Texture2D flare, seperator, starOn, starOff;
 
         // settings
         Rectangle bounds = new Rectangle(150, 500, 800, 400);
@@ -46,8 +47,13 @@ namespace BandMaster.Graphics
             player = (Audio.Midi.Player)Game.Services.GetService(typeof(Audio.Midi.Player));
             input = (Input.IManageInput)Game.Services.GetService(typeof(Input.IManageInput));
 
+            bm = ((Logic.BandMasterMode)((BandMaster)Game).Play);
+
             flare = Game.Content.Load<Texture2D>("Textures/flare1");
             seperator = Game.Content.Load<Texture2D>("Textures/seperator");
+            starOn = Game.Content.Load<Texture2D>("Textures/star_on");
+            starOff = Game.Content.Load<Texture2D>("Textures/star_off");
+
             spriteHeight = flare.Height / 4;
             spriteWidth = flare.Width / 4;
 
@@ -91,33 +97,10 @@ namespace BandMaster.Graphics
             sprites.Draw(flare, rect, fancy ? new Color((0.8f - 148.0f / 255.0f) * Alpha.Value, (0.8f - 38.0f / 255.0f) * Alpha.Value, (0.8f - 11.0f / 255.0f) * Alpha.Value) : col);
 
         }
+
+        float lineTop, lineBottom;
+
         int spriteHeight, spriteWidth;
-        void drawSegment(GameTime time, int songTimeFrom, int songTimeTo, Vector2 from, Vector2 to)
-        {
-
-            int particleDensity = 100;
-
-            float fadeout = evaluateFadeoutFactor(from.X) * 0.5f * Alpha.Value;
-            sprites.Draw(seperator, new Rectangle((int)from.X, (int)bounds.Top, seperator.Width/2, (int)segmentHeight), new Color(fadeout,fadeout,fadeout));
-
-            float mid = from.X + (to.X - from.X) * 0.5f;
-            fadeout = evaluateFadeoutFactor(mid) * 0.5f * Alpha.Value;
-            sprites.Draw(seperator, new Rectangle((int)mid, (int)bounds.Top+20, seperator.Width / 2, (int)segmentHeight-30), new Color(fadeout, fadeout, fadeout));
-
-            for (int i = 0; i < particleDensity; i++)
-            {
-                float var = (float)i / (float)particleDensity;
-
-                int songTime = (int)Helpers.Lerp(songTimeFrom, songTimeTo, var); 
-                Vector2 position;
-                position.X = Helpers.Lerp(from.X, to.X, var);
-                position.Y = var < 0.5? Helpers.Scurve(from.Y, to.Y, var*2.0f) : to.Y;
-                drawDot(position, time, songTime);
-            }
-
-        }
-
-
 
         public override void Draw(GameTime gameTime)
         {
@@ -126,17 +109,16 @@ namespace BandMaster.Graphics
             int[] parts = ((BandMaster)Game).Song.Lines[0];
 
             float done = (float)player.Position / (float)player.Length;
-            // 0.0 => the beginning, start rendering on center
-            // 1.0 => the end, start rendering on center - length_of_line
+            int currentPart = (int)(done * (float)parts.Length);
+            int timePerPart = (int)Math.Ceiling((float)player.Length / (float) parts.Length);
 
+            float lineLength = segmentWidth * parts.Length;
 
             float center = bounds.Center.X;
-            float lineLength = segmentWidth * parts.Length;
             Vector2 startpos = new Vector2(center - (lineLength * done), bounds.Y+20);
 
-            int currentPart = (int)(done * (float)parts.Length); // this calculation should be moved
             int windowSize = 10;
-            int fromPart = Math.Max(1, currentPart - windowSize);
+            int fromPart = Math.Max(0, currentPart - windowSize);
             int toPart = Math.Min(parts.Length, currentPart + windowSize);
 
 
@@ -145,24 +127,41 @@ namespace BandMaster.Graphics
             blend.ColorDestinationBlend = Blend.InverseSourceColor;
             sprites.Begin(SpriteSortMode.Immediate, blend);
 
-      
+            lineTop = startpos.Y;
+            lineBottom = startpos.Y + segmentHeight;
+
             for (int i = fromPart; i < toPart; i++)
             {
-                int lastLevel = parts[i - 1];
-                int currentLevel = parts[i];
-                int delta = currentLevel - lastLevel; // delta c[-3,+3]
+                int songTimeFrom = i * timePerPart;
+                int songTimeTo = songTimeFrom + timePerPart;
 
-                Vector2 from, to;
-                from.X = startpos.X + segmentWidth * i;
-                from.Y = startpos.Y + (float)lastLevel / 3.0f * segmentHeight;
+                float from, to;
+                from = startpos.X + segmentWidth * i;
+                to = from + segmentWidth;
 
-                to.X = from.X + segmentWidth;
-                to.Y = startpos.Y + (float)currentLevel / 3.0f * segmentHeight;
+                // Seperators (need to fade out you know)
+                float fadeout = evaluateFadeoutFactor(from) * 0.5f * Alpha.Value;
+                sprites.Draw(seperator, new Rectangle((int)from, (int)bounds.Top, seperator.Width / 2, (int)segmentHeight), new Color(fadeout, fadeout, fadeout));
+                float mid = from + (to - from) * 0.5f;
+                fadeout = evaluateFadeoutFactor(mid) * 0.5f * Alpha.Value;
+                sprites.Draw(seperator, new Rectangle((int)mid, (int)bounds.Top + 20, seperator.Width / 2, (int)segmentHeight - 30), new Color(fadeout, fadeout, fadeout));
 
-                drawSegment(gameTime, 0, 0, from, to);
+                // Segments
+
+                int particleDensity = 100;
+                for (int d = 0; d < particleDensity; d++)
+                {
+                    float segmentDone = (float)d / (float)particleDensity;
+
+                    int songTime = (int)Helpers.Lerp(songTimeFrom, songTimeTo, segmentDone);
+                    Vector2 position;
+                    position.X = Helpers.Lerp(from, to, segmentDone);
+                    position.Y = lineTop + bm.GetCorrectDynamics(songTime) * (lineBottom-lineTop);
+                    drawDot(position, gameTime, songTime);
+                }
             }
 
-            Logic.BandMasterMode bm = ((Logic.BandMasterMode)((BandMaster)Game).Play);
+            
 
             float samplesPerHit = 960.0f/10.0f;
             float hitsPerSample = 1.0f/samplesPerHit;
@@ -175,24 +174,33 @@ namespace BandMaster.Graphics
             {
                 if (j >= bm.PlayerDynamics.Length) j = 0;
 
+                float h = bm.PlayerDynamics[j];
                 Vector2 pos;
                 pos.X = center + p * pointDistance;
-                pos.Y = startpos.Y + (bm.PlayerDynamics[j]) * segmentHeight;
-                drawDot(pos, gameTime, 0, true);
+                pos.Y = startpos.Y + h * segmentHeight;
+                if (h>=0.0f)
+                    drawDot(pos, gameTime, 0, true);
 
                 if (j == bm.PlayerDynamicsEnd) break;
                 p++;
                 j++;
             }
 
-
             sprites.End();
 
+            sprites.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            {
+                Rectangle r = input.Thresholds;
+                float h = Helpers.Clamp(((float)input.LeftHand.Y - (float)r.Top) / (float)r.Height, 0.0f, 1.0f);
+                bool good = Math.Abs(h - (float)bm.GetCorrectDynamics(player.Position)) < 0.1;
+                if (Alpha.Value > 0.99f) sprites.Draw(good? starOn : starOff, new Rectangle((int)center - (int)starOn.Width/2, (int)(startpos.Y + h * segmentHeight) - starOn.Height/2, starOn.Width, starOn.Height), Color.White);
+            }
+            sprites.End();
 
             base.Draw(gameTime);
         }
     }
-
+    
 
 
     /*

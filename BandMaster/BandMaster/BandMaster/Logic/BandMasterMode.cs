@@ -45,7 +45,10 @@ namespace BandMaster.Logic
             ((BandMaster)Game).SongChanged += onSongChanged;
             ((BandMaster)Game).SongLoaded += onSongLoaded;
 
-            base.Initialize();
+            for (int i = 0; i < PlayerDynamics.Length; i++)
+                PlayerDynamics[i] = -1.0f;
+
+                base.Initialize();
         }
 
         public void onSongChanged(object sender, EventArgs args)
@@ -132,6 +135,24 @@ namespace BandMaster.Logic
         public float[] PlayerDynamics = new float[800];
         public int PlayerDynamicsEnd = 0;
 
+        public float GetCorrectDynamics(int time)
+        {
+            int[] parts = ((BandMaster)Game).Song.Lines[0];
+            double done = (double)time / (double)midiPlayer.Length; // prosent av sangen hvor vi er
+            int currentPart = (int)Math.Floor(done * (double)parts.Length); // part-indexen for den parten vi er i
+            double partLength = (double)midiPlayer.Length / (double)parts.Length; // hvor mange ticks har man per part
+            double start = ((double)currentPart * partLength); // prosent av sangen hvor denne parten starter
+
+            //int ticksPerPart = (960 * 4);
+            int ticksPerPart = (int)Math.Floor((float)midiPlayer.Length / (float) parts.Length);
+            int currentPartStartTicks = (int)Math.Floor((double)time / (double)ticksPerPart) * ticksPerPart;
+            double segmentDone = (double)(time - currentPartStartTicks) / (double)ticksPerPart; 
+
+            double lastHeight = (double)parts[currentPart == 0 ? currentPart : currentPart - 1] / 4.0f;
+            double currentHeight = (double)parts[currentPart] / 4.0f;
+            return segmentDone<0.5 ? Helpers.Scurve((float)lastHeight, (float)currentHeight, (float)segmentDone*2.0f) : (float) currentHeight;
+        }
+
         int dynamic = 50;
         private void updateDynamicLine(object sender, EventArgs e)
         {
@@ -147,17 +168,12 @@ namespace BandMaster.Logic
             if (insert >= PlayerDynamics.Length) insert = 0;
             PlayerDynamics[insert] = y;
 
-            //float score = ;
-
-            //splasher.Write("Dyn "+score, Color.White);
-/*            if (veldig bra)
+            if ( Math.Abs(y - GetCorrectDynamics(midiPlayer.Position)) < 0.1f)
             {
-                splasher.Write(dynamicSplash[goodness], Color.White);
+                Player player = ((BandMaster)Game).Player;
+                player.Score = player.Score + 0.02f;
             }
-            else if (veldig dårlig)
-            {
-                splasher.Write(dynamicSplash[badness], Color.Red);
-            }*/
+            // TODO: evnt skriv noe om en veeeldig lavpassa score hvis indeks av hvor bra det er har endra seg
         }
 
         
