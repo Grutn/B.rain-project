@@ -16,19 +16,36 @@ namespace BandMaster.Input
         private Texture2D blank4sqr = null;
         private Texture2D colorImage = null;
 
-        TextWriter file; // Recording data
+        private TextWriter file; // Recording data
 
-        float time = -1f; // Impossible value to distinguish from real data
+        private float time = -1f; // Impossible value to distinguish from real data
 
-        Vector2 activeHand;
-        Vector2 offHand;
+        private bool timestamp = true;
+        private bool position = true;
 
-        bool timestamp = true;
-        bool direction = true;
-        bool position = true;
-        bool velocity = true;
+        private bool enableColorImage = false;
+        private bool enableLog = false;
+        private bool enableEdgeAndHand = false;
 
         #region Getters and Setters
+
+        public bool EnableColorImage
+        {
+            get { return enableColorImage; }
+            set { enableColorImage = value; }
+        }
+
+        public bool EnableLog
+        {
+            get { return enableLog; }
+            set { enableLog = value; }
+        }
+
+        public bool EnableEdgeAndHand
+        {
+            get { return enableEdgeAndHand; }
+            set { enableEdgeAndHand = value; }
+        }
 
         public bool EnableTimeStamp
         {
@@ -36,22 +53,10 @@ namespace BandMaster.Input
             set { timestamp = value; }
         }
 
-        public bool EnableDirection
-        {
-            get { return direction; }
-            set { direction = value; }
-        }
-
         public bool EnablePosition
         {
             get { return position; }
             set { position = value; }
-        }
-
-        public bool EnableVelocity
-        {
-            get { return velocity; }
-            set { velocity = value; }
         }
 
         #endregion
@@ -66,9 +71,12 @@ namespace BandMaster.Input
 
         public override void Initialize()
         {
-            file = new StreamWriter("kinectdata.txt");
-            file.WriteLine("Positional data is in meters");
-            file.WriteLine("Timestamps are given in ms\n");
+            if (EnableLog)
+            {
+                file = new StreamWriter("kinectdata.txt");
+                file.WriteLine("Positional data is in meters");
+                file.WriteLine("Timestamps are given in ms\n");
+            }
 
             ContentManager content = Game.Content;
 
@@ -83,16 +91,20 @@ namespace BandMaster.Input
 
         protected override void Dispose(bool disposing)
         {
-            file.Close();
+            if (EnableLog)
+            {
+                file.Close();
+            }
         }        
 
         public void OnPlayerData(object sender, PlayerEvent e)
         {
-            file.WriteLine("TimeStamp: " + time.ToString());
-            file.WriteLine("Hand: " + e.hand.ToString());
-            file.WriteLine("Direction: " + e.direction.ToString());
-            file.WriteLine("Position: " + e.position.ToString());
-            file.WriteLine("Velocity: " + e.position.ToString() + "\n");
+            if (EnableLog)
+            {
+                file.WriteLine("TimeStamp: " + time.ToString());
+                file.WriteLine("Hand: " + e.hand.ToString());
+                file.WriteLine("Position: " + e.position.ToString());
+            }
         }
 
         public void  OnColorFrameReady(object sender, ColorImageFrameReadyEventArgs e)
@@ -125,26 +137,38 @@ namespace BandMaster.Input
 
         public override void Update(GameTime gameTime)
         {
-            time = (float)gameTime.TotalGameTime.TotalMilliseconds;
+            if (EnableLog)
+            {
+                time = (float)gameTime.TotalGameTime.TotalMilliseconds;
+            }
         }
 
         public override void Draw(GameTime gameTime)
         {
+            if (!EnableColorImage && !EnableEdgeAndHand)
+            {
+                return;
+            }
+
             SpriteBatch spriteBatch = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
 
             spriteBatch.Begin();
 
-            if (colorImage != null)
+            if (EnableColorImage && colorImage != null)
             {
                 int imageWidth = colorImage.Width;
                 int imageHeight = colorImage.Height;
 
-                Viewport viewport = Game.GraphicsDevice.Viewport;
-
                 spriteBatch.Draw(colorImage, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-                spriteBatch.Draw(blank4sqr, input.CurrActivePos, null, Color.Red, 0f, Vector2.Zero, 0.5f, SpriteEffects.None, 0f);
-                spriteBatch.Draw(blank4sqr, new Rectangle((int)input.RightLine, 0, 2, Game.GraphicsDevice.Viewport.Height), Color.White);
-                spriteBatch.Draw(blank4sqr, new Rectangle((int)input.LeftLine, 0, 2, Game.GraphicsDevice.Viewport.Height), Color.White);
+            }
+
+            if (enableEdgeAndHand)
+            {
+                Viewport viewport = Game.GraphicsDevice.Viewport;
+            
+                spriteBatch.Draw(blank4sqr, input.RightHand, null, Color.Red, 0f, Vector2.Zero, 0.5f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(blank4sqr, new Rectangle((int)input.Thresholds.Right, 0, 2, Game.GraphicsDevice.Viewport.Height), Color.White);
+                spriteBatch.Draw(blank4sqr, new Rectangle((int)input.Thresholds.Left, 0, 2, Game.GraphicsDevice.Viewport.Height), Color.White);
             }
 
             spriteBatch.End();

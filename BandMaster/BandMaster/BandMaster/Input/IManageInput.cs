@@ -17,18 +17,14 @@ namespace BandMaster.Input
     public class PlayerEvent : EventArgs
     {
         public Hand hand;
-        public Vector3 direction;
         public Vector3 position;
-        public Vector3 velocity;
 
         public PlayerEvent() { }
 
-        public PlayerEvent(Hand hand, Vector3 direction, Vector3 position, Vector3 velocity)
+        public PlayerEvent(Hand hand, Vector3 position)
         {
             this.hand = hand;
-            this.direction = direction;
             this.position = position;
-            this.velocity = velocity;
         }
     }
 
