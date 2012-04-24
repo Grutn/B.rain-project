@@ -175,10 +175,12 @@ namespace BandMaster.Graphics
             {
                 if (j >= bm.PlayerDynamics.Length) j = 0;
 
+                float h = bm.PlayerDynamics[j];
                 Vector2 pos;
                 pos.X = center + p * pointDistance;
-                pos.Y = startpos.Y + (bm.PlayerDynamics[j]) * segmentHeight;
-                drawDot(pos, gameTime, 0, true);
+                pos.Y = startpos.Y + h * segmentHeight;
+                if (h>=0.0f)
+                    drawDot(pos, gameTime, 0, true);
 
                 if (j == bm.PlayerDynamicsEnd) break;
                 p++;

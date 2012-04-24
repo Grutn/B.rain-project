@@ -45,7 +45,10 @@ namespace BandMaster.Logic
             ((BandMaster)Game).SongChanged += onSongChanged;
             ((BandMaster)Game).SongLoaded += onSongLoaded;
 
-            base.Initialize();
+            for (int i = 0; i < PlayerDynamics.Length; i++)
+                PlayerDynamics[i] = -1.0f;
+
+                base.Initialize();
         }
 
         public void onSongChanged(object sender, EventArgs args)
