@@ -56,6 +56,7 @@ namespace BandMaster.Logic
             midiPlayer.Play();
             tier.Start();
         }
+
         public void onSongLoaded(object sender, EventArgs args)
         {
             midiPlayer.Song = ((BandMaster)Game).Song.Midi;
