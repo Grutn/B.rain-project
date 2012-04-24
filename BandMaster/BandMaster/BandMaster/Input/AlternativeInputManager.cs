@@ -18,20 +18,22 @@ namespace BandMaster.Input
         {
             get { return true; }
         }
+        
+        Vector2 pos = new Vector2();
 
         public Vector2 RightHand
         {
-            get { return Vector2.Zero; }
+            get { return new Vector2(pos.X, pos.Y); }
         }
 
         public Vector2 LeftHand
         {
-            get { return Vector2.Zero; }
+            get { return new Vector2(pos.X - 200.0f, pos.Y); }
         }
 
         public Rectangle Thresholds
         {
-            get { return new Rectangle(); }
+            get { return new Rectangle(500,100,400,400); }
         }
         // TODO: Standard value for the properties above?
 
@@ -41,6 +43,11 @@ namespace BandMaster.Input
 
         public override void Update(GameTime gameTime)
         {
+            MouseState m = Mouse.GetState();
+            pos.X = (float)m.X;
+            pos.Y = (float)m.Y;
+
+
             lastState = currState;
             currState = Keyboard.GetState();
 
