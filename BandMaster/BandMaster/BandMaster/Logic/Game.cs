@@ -20,6 +20,18 @@ namespace BandMaster
 
     }
 
+
+    public class Player
+    {
+        public String Name;
+
+        double score;
+        public double Score { get { return score; } set { score = value; if (ScoreChanged != null) ScoreChanged(this, null); } }
+        public event EventHandler ScoreChanged;
+
+    }
+
+
     /// <summary>
     /// This is the main type for your game
     /// </summary>
@@ -34,6 +46,8 @@ namespace BandMaster
         // ModeChanged and SongChanged are events that the graphics components of the system will listen to.
         // The idea is taht we should not know anything about the graphical representation of the game :)
 
+        public Player Player = new Player();
+
         private IMode mode;
         public IMode Mode { get { return mode; } set {  mode = value; if (ModeChanged != null) ModeChanged(this, null); } }
         public event EventHandler ModeChanged;
@@ -43,7 +57,12 @@ namespace BandMaster
         public event EventHandler SongChanged;
         public event EventHandler SongLoaded; 
 
-        public BandMaster()
+//        public Event EventHandler 
+
+        private int width = 1280;
+        private int height = 720;
+
+        public BandMaster(): base()
         {
             Content.RootDirectory = "Content";
 
@@ -51,6 +70,9 @@ namespace BandMaster
             // Services
             
             GraphicsDeviceManager graphics = new GraphicsDeviceManager(this);
+
+            graphics.PreferredBackBufferHeight = height;
+            graphics.PreferredBackBufferWidth = width;
 
             IManageInput inputManager;
             try
@@ -70,6 +92,8 @@ namespace BandMaster
             Components.Add(player);
             Services.AddService(typeof(Midi.Player), player);
 
+            Helpers.Game = this;
+
             // Game modes
 
             Play = new Logic.BandMasterMode(this);
@@ -85,6 +109,10 @@ namespace BandMaster
             Graphics.SplashText splasher = new Graphics.SplashText(this);
             Components.Add(splasher);
             Services.AddService(typeof(Graphics.SplashText), splasher);
+
+            Graphics.FlyingNotes notes = new Graphics.FlyingNotes(this);
+            Components.Add(notes);
+            Services.AddService(typeof(Graphics.FlyingNotes), notes);
 
             Components.Add(new Graphics.Stage(this));
         }

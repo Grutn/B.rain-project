@@ -44,6 +44,9 @@ namespace BandMaster.Audio
                     return;
                 }*/
 
+                if (e.Message.Command == ChannelCommand.NoteOn)
+                    NotePlayed((object)(e.Message.MidiChannel), null);
+
                 outDevice.Send(e.Message);
                 //pianoControl1.Send(e.Message);
             }
@@ -85,6 +88,9 @@ namespace BandMaster.Audio
             // you get this every tick
             public event System.EventHandler Tick;
 
+            // you get this everey time a note is played on any instrument, sender is just an Integer containing the instrument index
+            public event System.EventHandler NotePlayed;
+
             // the song playing
             Song _song;
             public Song Song 
@@ -101,6 +107,17 @@ namespace BandMaster.Audio
                 }
             }
 
+
+
+            // ticks
+            public int Length
+            {
+                get
+                {
+                    return sequencer1.Sequence.GetLength();
+                }
+            }
+
             // ticks
             public int Position 
             { 
@@ -112,6 +129,15 @@ namespace BandMaster.Audio
                 { 
                     sequencer1.Position = value;
                 } 
+            }
+
+            float idealTempo = 1.0f;
+            public float TempoDifference
+            {
+                get
+                {
+                    return Tempo - idealTempo;
+                }
             }
 
             // Tempo = secPerHit
@@ -152,6 +178,7 @@ namespace BandMaster.Audio
             {
                 sequencer1.clock.Stop();
             }
+            public bool IsRunning { get { return sequencer1.clock.IsRunning; } }
 
         }
 
