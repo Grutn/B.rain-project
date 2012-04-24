@@ -12,7 +12,7 @@ namespace BandMaster.Input
     {
         #region EventHandlers
 
-        public event EventHandler<PlayerEvent> OnPlayerEvent;   // on kinect: all movements of hands; on keyboard: mouse movements
+        public event EventHandler OnPlayerEvent;
         public event EventHandler OnTempoHit;                   // on kinect: detect in kinectinput subclass; on keyboard: some key event
         public event EventHandler OnDynamicHit;                 // same as above
 
@@ -29,6 +29,8 @@ namespace BandMaster.Input
         private JointType offHand;
 
         private bool isRightHit;
+
+        private bool isReady;
 
         // Right and Left Threshold for tempo hit
         float right;
@@ -115,6 +117,41 @@ namespace BandMaster.Input
             }
         }
 
+        // TODO: Values for the properties below?
+        public bool IsReady
+        {
+            get { return isReady; }
+        }
+
+        public Vector2 RightHand
+        {
+            get
+            {
+                SkeletonPoint sp = currSkeleton[skeletonIndex].Joints[activeHand].Position;
+                ColorImagePoint cp = kinect.MapSkeletonPointToColor(sp, ColorImageFormat.RgbResolution640x480Fps30);
+
+                return Vector2.Zero;
+            }
+        }
+
+        public Vector2 LeftHand
+        {
+            get
+            {
+                SkeletonPoint sp = currSkeleton[skeletonIndex].Joints[offHand].Position;
+                ColorImagePoint cp = kinect.MapSkeletonPointToColor(sp, ColorImageFormat.RgbResolution640x480Fps30);
+
+                return Vector2.Zero;
+            }
+        }
+
+        public Rectangle Thresholds
+        {
+            get { return new Rectangle(); }
+        }
+
+        // TODO: Values for the properties above?
+
         #endregion
 
         public KinectInputManager(Game game) : base(game)
@@ -142,7 +179,7 @@ namespace BandMaster.Input
                 kinect.ColorStream.Enable();
                 kinect.ColorFrameReady += debug.OnColorFrameReady;
 
-                OnPlayerEvent += debug.OnPlayerData;
+                //OnPlayerEvent += debug.OnPlayerData;
 
                 Game.Components.Add(debug);
             }
@@ -214,16 +251,16 @@ namespace BandMaster.Input
 
                     // Dispatch PlayerEvent for any movement
                     // Check if OnPlayerEvent has value and no point in sending data where position is zero, as this doesn't happen
-                    if (OnPlayerEvent != null && currActivePos != Vector3.Zero)
+                    if (currActivePos != Vector3.Zero)
                     {
-                        OnPlayerEvent.Invoke(this, new PlayerEvent());
+                        //OnPlayerEvent.Invoke(this, new PlayerEvent());
 
                         bool isRight =  IsRightHit && currActivePos.X < left;
                         bool isLeft  = !IsRightHit && currActivePos.X > right;
 
                         if (isRight || isLeft)
                         {
-                            IsRightHit = false;
+                            IsRightHit = !IsRightHit;
                             // Dispatch OnTempoHit event for 
                             if (OnTempoHit != null)
                             {

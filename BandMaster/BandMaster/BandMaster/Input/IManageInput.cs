@@ -16,7 +16,6 @@ namespace BandMaster.Input
 
     public class PlayerEvent : EventArgs
     {
-        public int timestamp;
         public Hand hand;
         public Vector3 direction;
         public Vector3 position;
@@ -35,8 +34,15 @@ namespace BandMaster.Input
 
     public interface IManageInput : IGameComponent
     {
-        event EventHandler<PlayerEvent> OnPlayerEvent;  // on kinect: all movements of hands; on keyboard: mouse movements
+        event EventHandler OnPlayerEvent;
         event EventHandler OnTempoHit;                  // on kinect: detect in kinectinput subclass; on keyboard: some key event
         event EventHandler OnDynamicHit;                // same as above
+
+        bool IsReady { get; }
+
+        Vector2 RightHand { get; }
+        Vector2 LeftHand { get; }
+
+        Rectangle Thresholds { get; }
     }
 }
