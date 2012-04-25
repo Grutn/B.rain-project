@@ -15,6 +15,7 @@ namespace BandMaster.Input
         public event EventHandler OnPlayerEvent; // Used by KinectDebug to get movement data
         public event EventHandler OnTempoHit;    // on kinect: detect in kinectinput subclass; on keyboard: some key 
         public event EventHandler OnRestart;     // Used to restart the game
+        public event EventHandler OnExit;
 
         #endregion
 
@@ -33,6 +34,7 @@ namespace BandMaster.Input
         private bool isReady = false;
 
         private bool isWipe = false;
+        private bool isExit = false;
 
         // Right and Left Threshold for tempo hit
         private float right;
@@ -307,10 +309,19 @@ namespace BandMaster.Input
 
                     Vector3 hipLeft = SkeletonPointToVector3(Skeleton, JointType.HipLeft);
                     Vector3 shoulderCenter = SkeletonPointToVector3(Skeleton, JointType.ShoulderCenter);
+                    Vector3 spine = SkeletonPointToVector3(Skeleton, JointType.Spine);
 
-                    if (activePos.Y > shoulderCenter.Y)
+                    if ((activePos.X < shoulderCenter.X) && (activePos.Y > shoulderCenter.Y))
                     {
+                        isExit = true;
+                    }
 
+                    if (isExit && ((activePos.X > hipRight.X) && (activePos.Y < spine.Y)))
+                    {
+                        if (OnExit != null)
+                        {
+                            OnExit.Invoke(this, null);
+                        }
                     }
 
                     if (activePos.X < hipLeft.X)

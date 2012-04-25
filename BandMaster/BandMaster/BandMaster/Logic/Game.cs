@@ -98,6 +98,8 @@ namespace BandMaster
                 inputManager = new AlternativeInputManager(this);
             }
 
+            inputManager.OnExit += OnExit;
+
             Components.Add(inputManager);
             Services.AddService(typeof(IManageInput), inputManager);
 
@@ -124,7 +126,6 @@ namespace BandMaster
             Components.Add(Menu);
             Components.Add(Tutorial);
             Components.Add(HighScore);
-
             
             // Graphics
             Graphics.SplashText splasher = new Graphics.SplashText(this);
@@ -140,7 +141,12 @@ namespace BandMaster
             Components.Add(new Graphics.Stage(this));
         }
 
-
+        public void OnExit(object sender, EventArgs e)
+        {
+            Midi.Player p = (Midi.Player)Services.GetService(typeof(Midi.Player));
+            p.Dispose();
+            this.Exit();
+        }
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.

@@ -8,6 +8,7 @@ namespace BandMaster.Input
     {
         public event EventHandler OnTempoHit; // on kinect: detect in kinectinput subclass; on keyboard: some key event
         public event EventHandler OnRestart;
+        public event EventHandler OnExit;
 
         private KeyboardState currState;
         private KeyboardState lastState;
@@ -63,6 +64,14 @@ namespace BandMaster.Input
                 if (OnRestart != null)
                 {
                     OnRestart(this, null);
+                }
+            }
+
+            if (IsNewKeyPress(Keys.Escape))
+            {
+                if (OnExit != null)
+                {
+                    OnExit.Invoke(this, null);
                 }
             }
             

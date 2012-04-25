@@ -32,6 +32,7 @@ namespace BandMaster.Input
     {
         event EventHandler OnTempoHit;                  // on kinect: detect in kinectinput subclass; on keyboard: some key event
         event EventHandler OnRestart;
+        event EventHandler OnExit;
 
         bool IsReady { get; }
 
