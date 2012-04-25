@@ -34,6 +34,8 @@ namespace BandMaster.Input
         event EventHandler OnTempoHit;                  // on kinect: detect in kinectinput subclass; on keyboard: some key event
         event EventHandler OnDynamicHit;                // same as above
 
+        event EventHandler StartPressed;
+
         bool IsReady { get; }
 
         Vector2 RightHand { get; }

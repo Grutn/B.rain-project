@@ -62,6 +62,13 @@ namespace BandMaster
         private int width = 1280;
         private int height = 720;
 
+
+        public void Restart()
+        {
+            Player.Score = 0.0;
+            Mode = Play;
+        }
+
         public void StartTheDance()
         {
             Song = new State.Song(); // sender SongChanged (listners starter å vise loading) 
@@ -97,6 +104,10 @@ namespace BandMaster
             Midi.Player player = new Midi.Player(this);
             Components.Add(player);
             Services.AddService(typeof(Midi.Player), player);
+
+            AudioFx fx = new AudioFx(this);
+            Components.Add(fx);
+            Services.AddService(typeof(AudioFx), fx);
 
             Helpers.Game = this;
 
@@ -147,7 +158,7 @@ namespace BandMaster
 
             // Set initial mode (dette er senere satt fra sangvalg-menyen eller noe)
 
-            Mode = Tutorial; // sender ModeChanged  (bare nyttig for grafikken sin del)
+            Mode = HighScore; // sender ModeChanged  (bare nyttig for grafikken sin del)
         }
 
         /// <summary>

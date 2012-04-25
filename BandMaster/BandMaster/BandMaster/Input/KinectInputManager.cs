@@ -16,6 +16,8 @@ namespace BandMaster.Input
         public event EventHandler OnTempoHit;                   // on kinect: detect in kinectinput subclass; on keyboard: some key event
         public event EventHandler OnDynamicHit;                 // same as above
 
+        public event EventHandler StartPressed;
+
         #endregion
 
         #region Fields

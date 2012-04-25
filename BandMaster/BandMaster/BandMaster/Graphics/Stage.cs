@@ -22,6 +22,7 @@ namespace BandMaster.Graphics
         SpriteBatch sprites;
         Audio.Midi.Player midiPlayer;
         Graphics.FlyingNotes notes;
+        Audio.AudioFx fx;
 
         List<Instrument> Band = new List<Instrument>();
 
@@ -51,6 +52,7 @@ namespace BandMaster.Graphics
             sprites = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
             midiPlayer = (Audio.Midi.Player)Game.Services.GetService(typeof(Audio.Midi.Player));
             notes = (FlyingNotes)Game.Services.GetService(typeof(FlyingNotes));
+            fx = (Audio.AudioFx)Game.Services.GetService(typeof(Audio.AudioFx));
 
             background = Game.Content.Load<Texture2D>("Textures/bg"); 
             stand = Game.Content.Load<Texture2D>("Textures/notestativ");

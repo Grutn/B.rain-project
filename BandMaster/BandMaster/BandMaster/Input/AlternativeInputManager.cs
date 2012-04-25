@@ -13,6 +13,8 @@ namespace BandMaster.Input
         public event EventHandler OnTempoHit; // on kinect: detect in kinectinput subclass; on keyboard: some key event
         public event EventHandler OnDynamicHit; // same as above
 
+        public event EventHandler StartPressed;
+
         // TODO: Standard values for the properties below?
         public bool IsReady
         {
@@ -64,6 +66,11 @@ namespace BandMaster.Input
                 {
                     OnDynamicHit(this, new PlayerEvent());
                 }
+            }
+            if (IsNewKeyPress(Keys.Space))
+            {
+                if (StartPressed != null)
+                    StartPressed(this, null);
             }
             
         }
