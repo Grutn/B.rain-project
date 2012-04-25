@@ -35,6 +35,7 @@ namespace BandMaster.Graphics
         Queue<Note> queue = new Queue<Note>();
 
         public Effector White = new Effector(0.0f);
+        public Effector Black = new Effector(0.0f);
 
         public FlyingNotes(Game game)
             : base(game)
@@ -74,6 +75,16 @@ namespace BandMaster.Graphics
             }
 
             sprites.Draw(square, new Rectangle(0, 0, Game.GraphicsDevice.Viewport.Width, Game.GraphicsDevice.Viewport.Height), new Color(White.Value, White.Value, White.Value));
+
+            sprites.End();
+
+            blend = new BlendState();
+            blend.ColorBlendFunction = BlendFunction.Add;
+            blend.ColorSourceBlend = Blend.Zero;
+            blend.ColorDestinationBlend = Blend.InverseSourceColor;
+
+            sprites.Begin(SpriteSortMode.Immediate, blend);
+            sprites.Draw(square, new Rectangle(0, 0, Game.GraphicsDevice.Viewport.Width, Game.GraphicsDevice.Viewport.Height), new Color(Black.Value, Black.Value, Black.Value));
 
             sprites.End();
 

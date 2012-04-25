@@ -158,8 +158,7 @@ namespace BandMaster
 
             // Set initial mode (dette er senere satt fra sangvalg-menyen eller noe)
 
-            Mode = Play; // sender ModeChanged  (bare nyttig for grafikken sin del)
-        }
+			Mode = Menu; // sender ModeChanged  (bare nyttig for grafikken sin del)
 
         /// <summary>
         /// LoadContent will be called once per game and is the place to load

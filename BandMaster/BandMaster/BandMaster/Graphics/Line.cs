@@ -102,6 +102,7 @@ namespace BandMaster.Graphics
 
         int spriteHeight, spriteWidth;
 
+        float starRotation = 0.0f;
         public override void Draw(GameTime gameTime)
         {
             if (!Visible) return;
@@ -193,7 +194,8 @@ namespace BandMaster.Graphics
                 Rectangle r = input.Thresholds;
                 float h = Helpers.Clamp(((float)input.LeftHand.Y - (float)r.Top) / (float)r.Height, 0.0f, 1.0f);
                 bool good = Math.Abs(h - (float)bm.GetCorrectDynamics(player.Position)) < 0.1;
-                if (Alpha.Value > 0.99f) sprites.Draw(good ? starOn : starOff, new Rectangle((int)center - (int)starOn.Width / 2, (int)(lineTop + h * (lineBottom - lineTop)) - starOn.Height / 2, starOn.Width, starOn.Height), Color.White);
+                if (good) starRotation += 1.3f * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (Alpha.Value > 0.99f) sprites.Draw(good ? starOn : starOff, new Rectangle((int)center, (int)(lineTop + h * (lineBottom - lineTop)), starOn.Width, starOn.Height), null, Color.White, starRotation, new Vector2((float)starOn.Width * 0.5f, (float)starOn.Height * 0.5f), SpriteEffects.None, 0.0f);
             }
             sprites.End();
 

@@ -55,7 +55,7 @@ namespace BandMaster.Logic
             {
                 if (((BandMaster)Game).Mode == this)
                 {
-                    Helpers.Wait(2.0, delegate()
+                    Helpers.Wait(4.0, delegate()
                     {
                         splasher.Write("Beveg høyre hånd til siden", Color.White, 3.0f);
 
