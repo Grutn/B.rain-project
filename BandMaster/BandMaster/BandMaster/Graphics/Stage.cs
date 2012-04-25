@@ -327,11 +327,11 @@ namespace BandMaster.Graphics
                     sprites.DrawString(font, str, new Vector2(dr.Center.X - font.MeasureString(str).X*0.5f, dinPos.Value), Color.White);
 
                     font = bm.BigFont;
-                    str = bm.Player.Score.ToString();
+                    str = ((int)(bm.Player.Score*10.0)).ToString();
                     sprites.DrawString(font, str, new Vector2(dr.Center.X - font.MeasureString(str).X*0.5f, scorePos.Value), Color.White);
 
                     font = bm.MiniFont;
-                    str = "Trykk space for å spille igjen";
+                    str = "Tørk for å spille igjen";
                     sprites.DrawString(font, str, new Vector2(dr.Center.X - font.MeasureString(str).X*0.5f, dr.Bottom-400), new Color(pressStartAlpha.Value,pressStartAlpha.Value,pressStartAlpha.Value) );
                 }
                 sprites.End();
