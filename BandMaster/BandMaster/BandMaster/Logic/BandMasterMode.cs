@@ -20,11 +20,9 @@ namespace BandMaster.Logic
     /// </summary>
     public class BandMasterMode : Microsoft.Xna.Framework.GameComponent, IMode
     {
-        private Midi.Player midiPlayer;
+        private Midi.Player player;
         private IManageInput inputManager;
-        private Graphics.SplashText splasher;
-        private SoundEffectInstance soundInstance;
-        private Effector effector;
+        private Graphics.SplashText splasher; 
         
         public BandMasterMode(Game game)
             : base(game)
@@ -38,7 +36,7 @@ namespace BandMaster.Logic
         /// </summary>
         public override void Initialize()
         {
-            midiPlayer = (Midi.Player)Game.Services.GetService(typeof(Midi.Player));
+            player = (Midi.Player)Game.Services.GetService(typeof(Midi.Player));
             inputManager = (IManageInput)Game.Services.GetService(typeof(IManageInput));
             splasher = (Graphics.SplashText)Game.Services.GetService(typeof(Graphics.SplashText));
 
@@ -51,6 +49,7 @@ namespace BandMaster.Logic
             };
             ((BandMaster)Game).SongChanged += onSongChanged;
             ((BandMaster)Game).SongLoaded += onSongLoaded;
+            player.Completed += onSongDone;
 
             for (int i = 0; i < PlayerDynamics.Length; i++)
                 PlayerDynamics[i] = -1.0f;
@@ -63,15 +62,13 @@ namespace BandMaster.Logic
             splasher.Write("Laster..", Color.White);
             if (!Enabled) return;
             Enabled = false;
-            midiPlayer.Play();
+            player.Play();
             tier.Start();
         }
-
         public void onSongLoaded(object sender, EventArgs args)
         {
-            midiPlayer.Song = ((BandMaster)Game).Song.Midi;
-            AudioFx audiofx = (AudioFx)Game.Services.GetService(typeof(AudioFx));
-
+            player.Song = ((BandMaster)Game).Song.Midi;
+            
             Helpers.Wait(6.0, delegate()
             {
                 splasher.Write("3", Color.White);
@@ -84,13 +81,18 @@ namespace BandMaster.Logic
                         Helpers.Wait(1.0, delegate()
                         {
                             splasher.Write("Start!", Color.White);
-                            midiPlayer.Play();
+                            player.Play();
                             tier.Start();
                             Enabled = true;
                         });
                     });
                 });
             });
+        }
+        public void onSongDone(object sender, EventArgs args)
+        {
+            Enabled = false;
+            ((BandMaster)Game).Mode = ((BandMaster)Game).HighScore;
         }
 
         protected override void OnEnabledChanged(object sender, EventArgs args)
@@ -100,18 +102,19 @@ namespace BandMaster.Logic
             if (Enabled)
             {
                 inputManager.OnTempoHit += tempoHit;
-                midiPlayer.Tick += onTick;
-                midiPlayer.Tick += updateDynamicLine;
-                midiPlayer.Play();
+                player.Tick += onTick;
+                player.Tick += updateDynamicLine;
+                player.Play();
                 tier.Start();                
             }
             else
             {
                 inputManager.OnTempoHit -= tempoHit;
-                midiPlayer.Tick -= onTick;
-                midiPlayer.Tick -= updateDynamicLine;
-                midiPlayer.Stop();
+                player.Tick -= onTick;
+                player.Tick -= updateDynamicLine;
+                player.Stop();
                 tier.Stop();
+                
             }
         
         }
@@ -125,7 +128,7 @@ namespace BandMaster.Logic
             ticksToNextHit--;
 
             if (ticksToNextHit == 1)
-                midiPlayer.Stop();
+                player.Stop();
         }
 
         float lastTempo = 0.0f;
@@ -146,13 +149,13 @@ namespace BandMaster.Logic
         public float GetCorrectDynamics(int time)
         {
             int[] parts = ((BandMaster)Game).Song.Lines[0];
-            double done = Helpers.Clamp((float)((double)time / (double)midiPlayer.Length), 0.0f, 0.9999f); // prosent av sangen hvor vi er
+            double done = Helpers.Clamp((float)((double)time / (double)player.Length), 0.0f, 0.9999f); // prosent av sangen hvor vi er
             int currentPart = (int)Math.Floor(done * (double)parts.Length); // part-indexen for den parten vi er i
-            double partLength = (double)midiPlayer.Length / (double)parts.Length; // hvor mange ticks har man per part
+            double partLength = (double)player.Length / (double)parts.Length; // hvor mange ticks har man per part
             double start = ((double)currentPart * partLength); // prosent av sangen hvor denne parten starter
 
             //int ticksPerPart = (960 * 4);
-            int ticksPerPart = (int)Math.Floor((float)midiPlayer.Length / (float) parts.Length);
+            int ticksPerPart = (int)Math.Floor((float)player.Length / (float) parts.Length);
             int currentPartStartTicks = (int)Math.Floor((double)time / (double)ticksPerPart) * ticksPerPart;
             double segmentDone = (double)(time - currentPartStartTicks) / (double)ticksPerPart; 
 
@@ -177,10 +180,10 @@ namespace BandMaster.Logic
             if (insert >= PlayerDynamics.Length) insert = 0;
             PlayerDynamics[insert] = y;
 
-            if ( Math.Abs(y - GetCorrectDynamics(midiPlayer.Position)) < 0.1f)
+            if ( Math.Abs(y - GetCorrectDynamics(player.Position)) < 0.1f)
             {
-                Player player = ((BandMaster)Game).Player;
-                player.Score = player.Score + 0.02f;
+                Player pl = ((BandMaster)Game).Player;
+                pl.Score = pl.Score + 0.02f;
             }
             // TODO: evnt skriv noe om en veeeldig lavpassa score hvis indeks av hvor bra det er har endra seg
         }
@@ -192,23 +195,23 @@ namespace BandMaster.Logic
         {
             
             // spol fram til nextTick
-            midiPlayer.Position += ticksToNextHit;
+            player.Position += ticksToNextHit;
             for (int i = 0; i < ticksToNextHit; i++)
                 updateDynamicLine(this, null);
             ticksToNextHit = 960 - 1;
 
             // set tepo basert på tid siden sist click
-            midiPlayer.Continue();
+            player.Continue();
 
             float now = 0.001f * tier.ElapsedMilliseconds;
 
             float temp = now - lastHitTime;
             float v = 0.4f;
-            midiPlayer.Tempo = temp * v + lastTempo * (1.0f - v);
-            lastTempo = midiPlayer.Tempo;
+            player.Tempo = temp * v + lastTempo * (1.0f - v);
+            lastTempo = player.Tempo;
             lastHitTime = now;
 
-            float tempoDiff = midiPlayer.TempoDifference;
+            float tempoDiff = player.TempoDifference;
             if (-0.05f < tempoDiff && tempoDiff <= 0.05f)
                 splasher.Write("Perfekt tempo!", Color.White);
             else if (-0.7f < tempoDiff && tempoDiff <= -0.2f)
@@ -220,8 +223,8 @@ namespace BandMaster.Logic
             else if ( 0.7f < tempoDiff && tempoDiff <= 2.0f)
                 splasher.Write("Mye raskere!", Color.White);
 
-            Player player = ((BandMaster)Game).Player;
-            player.Score = player.Score + (1.0 - Math.Abs(tempoDiff));
+            Player pl = ((BandMaster)Game).Player;
+            pl.Score = pl.Score + (1.0 - Math.Abs(tempoDiff));
 
         }   
 
@@ -232,11 +235,10 @@ namespace BandMaster.Logic
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-
             float now = 0.001f * tier.ElapsedMilliseconds;
 
-            if (!midiPlayer.IsRunning)
-                midiPlayer.Tempo = now - lastHitTime;
+            if (!player.IsRunning)
+                player.Tempo = now - lastHitTime;
 
             base.Update(gameTime);
         }

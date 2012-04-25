@@ -75,7 +75,8 @@ namespace BandMaster.Audio
 
             private void HandlePlayingCompleted(object sender, EventArgs e)
             {
-                //timer1.Stop();
+                if (Completed != null) 
+                    Completed(this, null); //timer1.Stop();
             }
 
 
@@ -84,6 +85,8 @@ namespace BandMaster.Audio
                 if(Tick != null)
                     Tick(sender, args);
             }
+
+            public event System.EventHandler Completed;
 
             // you get this every tick
             public event System.EventHandler Tick;
