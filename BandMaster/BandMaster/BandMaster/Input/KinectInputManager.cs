@@ -160,7 +160,7 @@ namespace BandMaster.Input
                 float xScale = (float)viewport.Width / (float)colorImageWidth;
                 float yScale = (float)viewport.Height / (float)colorImageHeight;
 
-                return new Rectangle((int)(cpl.X * xScale), (int)((cph.Y + 0.6f * (cpl.Y - cph.Y)) * yScale), (int)((cpr.X - cpl.X) * xScale), (int)(((cpb.Y - cph.Y) * 0.5f)* yScale));
+                return new Rectangle((int)(cpl.X * xScale), (int)((cph.Y + 0.6f * (cpl.Y - cph.Y)) * yScale), (int)((cpr.X - cpl.X) * xScale), (int)(((cpb.Y - cph.Y) * 0.45f)* yScale));
             }
         }
 
@@ -279,8 +279,8 @@ namespace BandMaster.Input
                     Vector3 hipCenter = SkeletonPointToVector3(Skeleton, JointType.HipCenter);
 
                     // Left and Right edge detection for OnTempoHit
-                    left = hipRight.X + 1.5f * (hipRight.X - hipCenter.X);
-                    right = hipRight.X + 3.1f * (hipRight.X - hipCenter.X);
+                    left = hipRight.X + 1.8f * (hipRight.X - hipCenter.X);
+                    right = hipRight.X + 2.9f * (hipRight.X - hipCenter.X);
                     
                     // Current position of active hand and offhand
                     activePos = SkeletonPointToVector3(Skeleton, activeHand);
