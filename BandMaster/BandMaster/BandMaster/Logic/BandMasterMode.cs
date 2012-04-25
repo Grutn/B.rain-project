@@ -22,7 +22,11 @@ namespace BandMaster.Logic
     {
         private Midi.Player player;
         private IManageInput inputManager;
-        private Graphics.SplashText splasher; 
+        private Graphics.SplashText splasher;
+
+        private AudioFx audiofx;
+        private SoundEffectInstance applause;
+        Effector applauseVolume = new Effector(1.0f);
         
         public BandMasterMode(Game game)
             : base(game)
@@ -54,6 +58,12 @@ namespace BandMaster.Logic
             for (int i = 0; i < PlayerDynamics.Length; i++)
                 PlayerDynamics[i] = -1.0f;
 
+            ((BandMaster)Game).Updated += delegate()
+            {
+                if (applause != null) applause.Volume = applauseVolume.Value;
+            };
+
+
             base.Initialize();
         }
 
@@ -68,16 +78,24 @@ namespace BandMaster.Logic
         public void onSongLoaded(object sender, EventArgs args)
         {
             player.Song = ((BandMaster)Game).Song.Midi;
+            AudioFx audiofx = (AudioFx)Game.Services.GetService(typeof(AudioFx));
+            SoundEffectInstance drumstick;
+
+            applause = AudioFx.Play(audiofx.ApplauseSmall);
             
             Helpers.Wait(6.0, delegate()
             {
+                applauseVolume.Lerp(2.0, applauseVolume.Value, 0.0f);
                 splasher.Write("3", Color.White);
+                drumstick = AudioFx.Play(audiofx.DrumStick);
                 Helpers.Wait(1.0, delegate()
                 {
                     splasher.Write("2", Color.White);
+                    drumstick.Play();
                     Helpers.Wait(1.0, delegate()
                     {
                         splasher.Write("1", Color.White);
+                        drumstick.Play();
                         Helpers.Wait(1.0, delegate()
                         {
                             splasher.Write("Start!", Color.White);
@@ -235,6 +253,7 @@ namespace BandMaster.Logic
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
+
             float now = 0.001f * tier.ElapsedMilliseconds;
 
             if (!player.IsRunning)
