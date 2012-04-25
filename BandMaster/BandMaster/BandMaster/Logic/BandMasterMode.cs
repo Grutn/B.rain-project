@@ -58,13 +58,10 @@ namespace BandMaster.Logic
             ((BandMaster)Game).SongLoaded += onSongLoaded;
             player.Completed += onSongDone;
 
-
-
-            /*((BandMaster)Game).Updated += delegate()
+            ((BandMaster)Game).Updated += delegate()
             {
                 if (applause != null) applause.Volume = applauseVolume.Value;
-            };*/
-
+            };
 
             base.Initialize();
         }
@@ -87,6 +84,7 @@ namespace BandMaster.Logic
             AudioFx audiofx = (AudioFx)Game.Services.GetService(typeof(AudioFx));
             SoundEffectInstance drumstick;
 
+            applauseVolume.Value = 1.0f;
             applause = AudioFx.Play(audiofx.ApplauseSmall);
             
             Helpers.Wait(6.0, delegate()

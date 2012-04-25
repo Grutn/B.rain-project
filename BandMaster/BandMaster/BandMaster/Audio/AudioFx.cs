@@ -15,7 +15,7 @@ namespace BandMaster.Audio
         public SoundEffect ApplauseSmall;
         public SoundEffect DrumStick;
         public SoundEffect Tuning;
-        public SoundEffect Ambient;
+        public SoundEffect Pling;
 
         public AudioFx(Game game) : base(game)
         {

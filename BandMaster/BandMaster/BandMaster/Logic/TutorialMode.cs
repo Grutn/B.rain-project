@@ -41,7 +41,7 @@ namespace BandMaster.Logic
                     {
                         splasher.Write("Med venstre hånd styrer du dynamikken", Color.White, 3.0);
                         Helpers.Wait(8.0, delegate() {
-                            ambientVolume.Lerp(0.5, ambientVolume.Value, 0.0f);
+                            ambientVolume.Lerp(3.0, ambientVolume.Value, 0.0f);
                             splasher.Write("Klar?", Color.White);
                             ((BandMaster)Game).Mode = ((BandMaster)Game).Play;
                         });
@@ -60,12 +60,11 @@ namespace BandMaster.Logic
             {
                 if (((BandMaster)Game).Mode == this)
                 {
-
-
+                    ambientVolume.Value = 0.5f; //.Lerp(1.0, 0.0f, 0.5f);
+                    ambient = Audio.AudioFx.Play(audiofx.Tuning);
                     Helpers.Wait(2.0, delegate()
                     {
-                        ambientVolume.Lerp(1.0, 0.0f, 0.2f);
-                        ambient = Audio.AudioFx.Play(audiofx.Ambient);
+
                         splasher.Write("Beveg høyre hånd til siden", Color.White, 3.0f);
 
                         EventHandler e = null; e = delegate(Object o2, EventArgs a2)

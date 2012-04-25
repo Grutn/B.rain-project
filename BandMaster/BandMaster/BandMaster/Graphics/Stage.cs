@@ -149,7 +149,7 @@ namespace BandMaster.Graphics
                         {
                             Helpers.Wait(0.5, delegate()
                             {
-                                ((Input.IManageInput)Game.Services.GetService(typeof(Input.IManageInput))).StartPressed += animateAwayLogo;
+                                ((Input.IManageInput)Game.Services.GetService(typeof(Input.IManageInput))).OnRestart += animateAwayLogo;
                                 pressStartAlpha.Lerp(1.0, 0.0f, 1.0f);
                             });
                         });

@@ -37,7 +37,7 @@ namespace BandMaster.Logic
 
                     Helpers.Wait(1.5, delegate()
                     {
-                        input.StartPressed += startGame;
+                        input.OnRestart += startGame;
                     });
                 }
             };
@@ -45,7 +45,7 @@ namespace BandMaster.Logic
 
         void startGame(object o, EventArgs a)
         {
-            input.StartPressed -= startGame;
+            input.OnRestart -= startGame;
             ambientVolume.Lerp(4.0, 1.0f, 0.0f);
             Helpers.Wait(0.2, delegate()
             {
