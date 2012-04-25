@@ -197,7 +197,11 @@ namespace BandMaster.Logic
             midiPlayer.Continue();
 
             float now = 0.001f * tier.ElapsedMilliseconds;
-            midiPlayer.Tempo = now - lastHitTime;
+
+            float temp = now - lastHitTime;
+            float v = 0.4f;
+            midiPlayer.Tempo = temp * v + lastTempo * (1.0f - v);
+            lastTempo = midiPlayer.Tempo;
             lastHitTime = now;
 
             float tempoDiff = midiPlayer.TempoDifference;
