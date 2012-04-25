@@ -140,7 +140,7 @@ namespace BandMaster.Logic
         public float GetCorrectDynamics(int time)
         {
             int[] parts = ((BandMaster)Game).Song.Lines[0];
-            double done = (double)time / (double)midiPlayer.Length; // prosent av sangen hvor vi er
+            double done = Helpers.Clamp((float)((double)time / (double)midiPlayer.Length), 0.0f, 0.9999f); // prosent av sangen hvor vi er
             int currentPart = (int)Math.Floor(done * (double)parts.Length); // part-indexen for den parten vi er i
             double partLength = (double)midiPlayer.Length / (double)parts.Length; // hvor mange ticks har man per part
             double start = ((double)currentPart * partLength); // prosent av sangen hvor denne parten starter
@@ -150,8 +150,9 @@ namespace BandMaster.Logic
             int currentPartStartTicks = (int)Math.Floor((double)time / (double)ticksPerPart) * ticksPerPart;
             double segmentDone = (double)(time - currentPartStartTicks) / (double)ticksPerPart; 
 
-            double lastHeight = (double)parts[currentPart == 0 ? currentPart : currentPart - 1] / 4.0f;
-            double currentHeight = (double)parts[currentPart] / 4.0f;
+            double lastHeight = (double)parts[currentPart == 0 ? currentPart : currentPart - 1] / 2.0f;
+            int p = parts[currentPart];
+            double currentHeight = ((double)p / 2.0f);
             return segmentDone<0.5 ? Helpers.Scurve((float)lastHeight, (float)currentHeight, (float)segmentDone*2.0f) : (float) currentHeight;
         }
 
