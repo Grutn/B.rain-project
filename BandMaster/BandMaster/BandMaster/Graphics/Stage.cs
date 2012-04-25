@@ -213,7 +213,7 @@ namespace BandMaster.Graphics
                                             Helpers.Wait(2.0, delegate()
                                             {
                                                 pressStartAlpha.Lerp(1.0, 0.0f, 1.0f);
-                                                ((Input.IManageInput)Game.Services.GetService(typeof(Input.IManageInput))).StartPressed += animateAwayScore;
+                                                ((Input.IManageInput)Game.Services.GetService(typeof(Input.IManageInput))).OnRestart += animateAwayScore;
                                             });
                                         });
                                     });
@@ -238,14 +238,14 @@ namespace BandMaster.Graphics
 
         void animateAwayLogo(object sender, EventArgs a)
         {
-            ((Input.IManageInput)Game.Services.GetService(typeof(Input.IManageInput))).StartPressed -= animateAwayLogo;
+            ((Input.IManageInput)Game.Services.GetService(typeof(Input.IManageInput))).OnRestart -= animateAwayLogo;
             logoAlpha.Lerp(0.2, logoAlpha.Value, 0.0f);
             pressStartAlpha.Lerp(0.2, pressStartAlpha.Value, 0.0f);
         }
 
         void animateAwayScore(object sender, EventArgs a)
         {
-            ((Input.IManageInput)Game.Services.GetService(typeof(Input.IManageInput))).StartPressed -= animateAwayScore;
+            ((Input.IManageInput)Game.Services.GetService(typeof(Input.IManageInput))).OnRestart -= animateAwayScore;
             pressStartAlpha.Lerp(0.2, pressStartAlpha.Value, 0.0f, delegate()
             {
                 dinPos.EaseIn(0.2, 200, -200, delegate()

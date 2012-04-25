@@ -24,7 +24,6 @@ namespace BandMaster.Logic
         private IManageInput inputManager;
         private Graphics.SplashText splasher;
 
-        private AudioFx audiofx;
         private SoundEffectInstance applause;
         Effector applauseVolume = new Effector(1.0f);
         
@@ -50,6 +49,10 @@ namespace BandMaster.Logic
             {
                 if (((BandMaster)Game).Mode == this)
                     Helpers.Wait(2.0,  ((BandMaster)Game).StartTheDance);
+                if (applause != null)
+                {
+                    applause.Volume = 1f;
+                }
             };
             ((BandMaster)Game).SongChanged += onSongChanged;
             ((BandMaster)Game).SongLoaded += onSongLoaded;
@@ -135,7 +138,6 @@ namespace BandMaster.Logic
                 player.Tick -= updateDynamicLine;
                 player.Stop();
                 tier.Stop();
-                
             }
         
         }

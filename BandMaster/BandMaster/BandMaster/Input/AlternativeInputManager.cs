@@ -6,14 +6,11 @@ namespace BandMaster.Input
 {
     public class AlternativeInputManager : GameComponent, IManageInput
     {
+        public event EventHandler OnTempoHit; // on kinect: detect in kinectinput subclass; on keyboard: some key event
+        public event EventHandler OnRestart;
+
         private KeyboardState currState;
         private KeyboardState lastState;
-
-        public event EventHandler OnPlayerEvent;
-        public event EventHandler OnTempoHit; // on kinect: detect in kinectinput subclass; on keyboard: some key event
-        public event EventHandler OnDynamicHit; // same as above
-
-        public event EventHandler StartPressed;
 
         // TODO: Standard values for the properties below?
         public bool IsReady
@@ -60,17 +57,13 @@ namespace BandMaster.Input
                     OnTempoHit(this, null);
                 }
             }
-            if (IsNewKeyPress(Keys.F))
-            {
-                if (OnDynamicHit != null)
-                {
-                    OnDynamicHit(this, new PlayerEvent());
-                }
-            }
+
             if (IsNewKeyPress(Keys.Space))
             {
-                if (StartPressed != null)
-                    StartPressed(this, null);
+                if (OnRestart != null)
+                {
+                    OnRestart(this, null);
+                }
             }
             
         }
