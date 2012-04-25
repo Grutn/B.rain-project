@@ -66,13 +66,13 @@ namespace BandMaster.Graphics
                     int l = (int)input.Thresholds.Left;
                     int r = (int)input.Thresholds.Right;
 
-                    Rectangle bodyRect = new Rectangle(l, y - 10, (int)r-l, (int)20);
+                    Rectangle bodyRect = new Rectangle(l, y - (arrowHead.Height / 8), r - l + arrowHead.Width, arrowHead.Height / 4);
                     sprites.Draw(arrowBody, bodyRect, arrowc);
 
                     Rectangle headRect1 = new Rectangle(l - arrowHead.Width, y - arrowHead.Height / 2, (int)arrowHead.Width, (int)arrowHead.Height);
                     sprites.Draw(arrowHead, headRect1, arrowc);
 
-                    Rectangle headRect2 = new Rectangle(r, y - arrowHead.Height / 2, (int)arrowHead.Width, (int)arrowHead.Height);
+                    Rectangle headRect2 = new Rectangle(r + arrowHead.Width, y - arrowHead.Height / 2, (int)arrowHead.Width, (int)arrowHead.Height);
                     sprites.Draw(arrowHead, headRect2, null, arrowc, 0.0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0.0f);
 
                     int x = (int)input.RightHand.X;

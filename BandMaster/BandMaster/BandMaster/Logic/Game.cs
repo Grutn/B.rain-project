@@ -57,7 +57,7 @@ namespace BandMaster
         public event EventHandler SongChanged;
         public event EventHandler SongLoaded; 
 
-//        public Event EventHandler 
+//      public Event EventHandler
 
         private int width = 1280;
         private int height = 720;
@@ -103,7 +103,6 @@ namespace BandMaster
             Components.Add(Play);
             Components.Add(Pause);
             Components.Add(Menu);
-
             
             // Graphics
             Graphics.SplashText splasher = new Graphics.SplashText(this);
@@ -117,6 +116,10 @@ namespace BandMaster
             Components.Add(new Graphics.HandVisualizer(this));
 
             Components.Add(new Graphics.Stage(this));
+
+            AudioFx soundfx = new AudioFx(this);
+            Components.Add(soundfx);
+            Services.AddService(typeof(AudioFx), soundfx);
         }
 
 

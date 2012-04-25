@@ -22,7 +22,9 @@ namespace BandMaster.Logic
     {
         private Midi.Player midiPlayer;
         private IManageInput inputManager;
-        private Graphics.SplashText splasher; 
+        private Graphics.SplashText splasher;
+        private SoundEffectInstance soundInstance;
+        private Effector effector;
         
         public BandMasterMode(Game game)
             : base(game)
@@ -63,9 +65,8 @@ namespace BandMaster.Logic
         public void onSongLoaded(object sender, EventArgs args)
         {
             midiPlayer.Song = ((BandMaster)Game).Song.Midi;
-            SoundFx soundfx = (SoundFx)Game.Services.GetService(typeof(SoundFx));
+            AudioFx audiofx = (AudioFx)Game.Services.GetService(typeof(AudioFx));
 
-            soundfx;
             Helpers.Wait(6.0, delegate()
             {
                 splasher.Write("3", Color.White);
@@ -222,6 +223,7 @@ namespace BandMaster.Logic
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
+
             float now = 0.001f * tier.ElapsedMilliseconds;
 
             if (!midiPlayer.IsRunning)
