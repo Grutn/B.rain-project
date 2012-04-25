@@ -153,14 +153,14 @@ namespace BandMaster.Input
                 ColorImagePoint cpl = kinect.MapSkeletonPointToColor(spLeft, ColorImageFormat);
                 ColorImagePoint cpr = kinect.MapSkeletonPointToColor(spRight, ColorImageFormat);
                 ColorImagePoint cph = kinect.MapSkeletonPointToColor(Skeleton.Joints[JointType.ShoulderCenter].Position, ColorImageFormat);
-                ColorImagePoint cpb = kinect.MapSkeletonPointToColor(Skeleton.Joints[JointType.HipCenter].Position, ColorImageFormat);
+                ColorImagePoint cpb = kinect.MapSkeletonPointToColor(Skeleton.Joints[JointType.Spine].Position, ColorImageFormat);
 
                 Viewport viewport = Game.GraphicsDevice.Viewport;
                 // Be sure to keep all decimals
                 float xScale = (float)viewport.Width / (float)colorImageWidth;
                 float yScale = (float)viewport.Height / (float)colorImageHeight;
 
-                return new Rectangle((int)(cpl.X * xScale), (int)(cph.Y * yScale), (int)((cpr.X - cpl.X) * xScale), (int)((cpl.Y - cph.Y) * yScale));
+                return new Rectangle((int)(cpl.X * xScale), (int)((cph.Y + 0.6f * (cpl.Y - cph.Y)) * yScale), (int)((cpr.X - cpl.X) * xScale), (int)(((cpb.Y - cph.Y) * 0.5f)* yScale));
             }
         }
 
@@ -180,7 +180,7 @@ namespace BandMaster.Input
             kinect = KinectSensor.KinectSensors[0];
 
             // For non-debug mode comment out the KinectDebug constr below
-            debug = new KinectDebug(game, this);
+            //debug = new KinectDebug(game, this);
 
             // Standard setup is right handed controlls
             activeHand = JointType.HandRight;
@@ -279,8 +279,8 @@ namespace BandMaster.Input
                     Vector3 hipCenter = SkeletonPointToVector3(Skeleton, JointType.HipCenter);
 
                     // Left and Right edge detection for OnTempoHit
-                    left = hipRight.X + (hipRight.X - hipCenter.X);
-                    right = left + 1.8f * (hipRight.X - hipCenter.X);
+                    left = hipRight.X + 1.5f * (hipRight.X - hipCenter.X);
+                    right = hipRight.X + 3.1f * (hipRight.X - hipCenter.X);
                     
                     // Current position of active hand and offhand
                     activePos = SkeletonPointToVector3(Skeleton, activeHand);
@@ -301,11 +301,6 @@ namespace BandMaster.Input
                                 OnTempoHit.Invoke(this, new PlayerEvent());
                             }
                         }
-                    }
-
-                    if (offPos != Vector3.Zero)
-                    {
-                        // TODO: Dynamic controlls
                     }
                 }
             }
