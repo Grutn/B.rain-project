@@ -34,6 +34,7 @@ namespace BandMaster.Logic
             {
                 if (gm.Mode == this)
                 {
+                    applauseVolume.Value = 1.0f;
                     applause = fx.ApplauseBig.CreateInstance();
                     applause.Play();
                     Helpers.Wait(1.0, delegate()

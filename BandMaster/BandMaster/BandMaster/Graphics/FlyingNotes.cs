@@ -20,6 +20,7 @@ namespace BandMaster.Graphics
         SpriteBatch sprites;
 
         Texture2D[] textures;
+        Texture2D square;
 
         class Note
         {
@@ -32,6 +33,8 @@ namespace BandMaster.Graphics
 
         List<Note> notes = new List<Note>();
         Queue<Note> queue = new Queue<Note>();
+
+        public Effector White = new Effector(0.0f);
 
         public FlyingNotes(Game game)
             : base(game)
@@ -51,6 +54,7 @@ namespace BandMaster.Graphics
                 Game.Content.Load<Texture2D>("Textures/note1"),
                 Game.Content.Load<Texture2D>("Textures/note2")
             };
+            square = Game.Content.Load<Texture2D>("Textures/4sqr");
             base.Initialize();
         }
 
@@ -68,6 +72,9 @@ namespace BandMaster.Graphics
                 foreach (Note note in notes)
                     sprites.Draw(note.Texture, new Rectangle((int)note.Position.X, (int)note.Position.Y, (int)(note.Scale * (float)note.Texture.Width/8), (int)(note.Scale * (float)note.Texture.Height/8)), new Color((float)note.Time, (float)note.Time, (float)note.Time));
             }
+
+            sprites.Draw(square, new Rectangle(0, 0, Game.GraphicsDevice.Viewport.Width, Game.GraphicsDevice.Viewport.Height), new Color(White.Value, White.Value, White.Value));
+
             sprites.End();
 
             base.Draw(gameTime);

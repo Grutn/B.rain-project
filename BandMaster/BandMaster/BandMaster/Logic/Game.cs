@@ -38,7 +38,7 @@ namespace BandMaster
     /// 
     public class BandMaster : Microsoft.Xna.Framework.Game
     {
-        public SpriteFont MenuFont, MenuFontHover, SplashFont;
+        public SpriteFont MiniFont, BigFont, SplashFont;
 
         public IMode Play, Pause, Menu, Tutorial, HighScore;
 
@@ -167,8 +167,8 @@ namespace BandMaster
         /// </summary>
         protected override void LoadContent()
         {
-            MenuFont = Content.Load<SpriteFont>("Menu");
-            MenuFontHover = Content.Load<SpriteFont>("MenuHover");
+            MiniFont = Content.Load<SpriteFont>("Menu");
+            BigFont = Content.Load<SpriteFont>("MenuHover");
             SplashFont = Content.Load<SpriteFont>("Splash");
         }
 
