@@ -40,7 +40,7 @@ namespace BandMaster
     {
         public SpriteFont MenuFont, MenuFontHover, SplashFont;
 
-        public IMode Play, Pause, Menu;
+        public IMode Play, Pause, Menu, Tutorial;
 
         // Mode and Song holds the state of the game.
         // ModeChanged and SongChanged are events that the graphics components of the system will listen to.
@@ -61,6 +61,12 @@ namespace BandMaster
 
         private int width = 1280;
         private int height = 720;
+
+        public void StartTheDance()
+        {
+            Song = new State.Song(); // sender SongChanged (listners starter å vise loading) 
+            Song.LoadAsync("song.txt", delegate() { if (SongLoaded != null) SongLoaded(this, null); }); // PlayMode lytter på SongLoaded
+        }
 
         public BandMaster(): base()
         {
@@ -99,10 +105,12 @@ namespace BandMaster
             Play = new Logic.BandMasterMode(this);
             Pause = new Logic.PauseMenuMode(this);
             Menu = new Logic.MainMenuMode(this);
+            Tutorial = new Logic.TutorialMode(this);
 
             Components.Add(Play);
             Components.Add(Pause);
             Components.Add(Menu);
+            Components.Add(Tutorial);
 
             
             // Graphics
@@ -137,9 +145,7 @@ namespace BandMaster
 
             // Set initial mode (dette er senere satt fra sangvalg-menyen eller noe)
 
-            Mode = Play; // sender ModeChanged  (bare nyttig for grafikken sin del)
-            Song = new State.Song(); // sender SongChanged (listners starter å vise loading) 
-            Song.LoadAsync("song.txt", delegate() { if (SongLoaded != null) SongLoaded(this, null); }); // PlayMode lytter på SongLoaded
+            Mode = Tutorial; // sender ModeChanged  (bare nyttig for grafikken sin del)
         }
 
         /// <summary>

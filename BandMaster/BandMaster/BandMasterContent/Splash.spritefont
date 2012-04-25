@@ -55,6 +55,18 @@ with.
         <Start>&#32;</Start>
         <End>&#126;</End>
       </CharacterRegion>
+      <CharacterRegion>
+        <Start>æ</Start>
+        <End>æ</End>
+      </CharacterRegion>
+      <CharacterRegion>
+        <Start>ø</Start>
+        <End>ø</End>
+      </CharacterRegion>
+      <CharacterRegion>
+        <Start>å</Start>
+        <End>å</End>
+      </CharacterRegion>
     </CharacterRegions>
   </Asset>
 </XnaContent>

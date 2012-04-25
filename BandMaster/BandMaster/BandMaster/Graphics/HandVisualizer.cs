@@ -29,6 +29,8 @@ namespace BandMaster.Graphics
             DrawOrder = 99;
         }
 
+        Effector alpha = new Effector(0.0f);
+
         /// <summary>
         /// Allows the game component to perform any initialization it needs to before starting
         /// to run.  This is where it can query for any required services and load content.
@@ -42,6 +44,19 @@ namespace BandMaster.Graphics
             arrowHead = Game.Content.Load<Texture2D>("Textures/arrow_head");
             arrowHeadr = Game.Content.Load<Texture2D>("Textures/arrow_head_r");
             circle = Game.Content.Load<Texture2D>("Textures/circle");
+
+            BandMaster bm = ((BandMaster)Game);
+            bm.ModeChanged += delegate(object o, EventArgs a)
+            {
+                if (bm.Mode == bm.Tutorial)
+                {
+                    alpha.Lerp(2.0, alpha.Value, 1.0f);
+                }
+                else if (bm.Mode == bm.Play)
+                {
+                    alpha.Lerp(1.0, alpha.Value, 0.0f);
+                }
+            };
 
             base.Initialize();
         }
@@ -59,7 +74,8 @@ namespace BandMaster.Graphics
         {
             sprites.Begin(SpriteSortMode.Immediate, BlendState.Additive);
             {
-                Color arrowc = new Color(0.25f, 0.25f, 0.25f);
+                Color arrowc = new Color(0.25f * alpha.Value, 0.25f * alpha.Value, 0.25f * alpha.Value);
+                Color circlec = new Color( alpha.Value, alpha.Value,  alpha.Value);
                 // Horizontal Arrow
                 {
                     int y = (int)input.RightHand.Y;
@@ -78,7 +94,7 @@ namespace BandMaster.Graphics
                     int x = (int)input.RightHand.X;
 
                     Rectangle circleRect = new Rectangle(x, y - circle.Height / 2, (int)circle.Width, (int)circle.Height);
-                    sprites.Draw(circle, circleRect, Color.White);
+                    sprites.Draw(circle, circleRect, circlec);
                 }
                 // Vertical arrow
                 {
@@ -98,7 +114,7 @@ namespace BandMaster.Graphics
                     int y = (int)input.LeftHand.Y;
 
                     Rectangle circleRect = new Rectangle(x - circle.Width / 2, y, (int)circle.Width, (int)circle.Height);
-                    sprites.Draw(circle, circleRect, Color.White);
+                    sprites.Draw(circle, circleRect, circlec);
                 }
             }
             sprites.End();

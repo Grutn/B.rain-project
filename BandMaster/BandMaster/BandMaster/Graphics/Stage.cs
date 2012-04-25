@@ -149,6 +149,8 @@ namespace BandMaster.Graphics
         string laststr = "";
         public override void  Draw(GameTime gameTime)
         {
+
+
             // find correct size (keeping aspect ratio) and extra pixels on top (for transition)
             Rectangle dr = Game.GraphicsDevice.Viewport.Bounds;
             Rectangle sr = background.Bounds;
@@ -160,13 +162,19 @@ namespace BandMaster.Graphics
 
             int bgOffset = (int)(stagePos.Value * extraTop);
 
-            sprites.Begin();
+            if (((BandMaster)Game).Mode == ((BandMaster)Game).Play
+                || ((BandMaster)Game).Mode == ((BandMaster)Game).Tutorial)
             {
-                // Background
+                sprites.Begin();
+                {
+                    // Background
 
-                sprites.Draw(background, new Rectangle(dr.X, dr.Y - bgOffset, dr.Width, dr.Height), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1);
+                    sprites.Draw(background, new Rectangle(dr.X, dr.Y - bgOffset, dr.Width, dr.Height), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1);
+                }
+                sprites.End();
             }
-            sprites.End();
+
+            if (((BandMaster)Game).Mode != ((BandMaster)Game).Play) return;
 
             // Instruments
             foreach (Instrument instrument in Band)
