@@ -76,6 +76,7 @@ namespace BandMaster.Logic
                             {
                                 splasher.Write("Slik holder du rytmen", Color.White, 2.0f);
                                 rytmer = 0;
+                                Audio.AudioFx.Play(audiofx.Pling);
                                 input.OnTempoHit += tellRytmer;
                             });
                         };

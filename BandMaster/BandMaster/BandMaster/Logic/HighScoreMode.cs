@@ -39,7 +39,7 @@ namespace BandMaster.Logic
                     applause.Play();
                     Helpers.Wait(1.0, delegate()
                     {
-                        Helpers.Wait(4.0, delegate()
+                        Helpers.Wait(10.0, delegate()
                         {
                             input.OnRestart += restart;
                         });
