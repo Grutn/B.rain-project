@@ -158,7 +158,7 @@ namespace BandMaster
 
             // Set initial mode (dette er senere satt fra sangvalg-menyen eller noe)
 
-            Mode = HighScore; // sender ModeChanged  (bare nyttig for grafikken sin del)
+            Mode = Tutorial; // sender ModeChanged  (bare nyttig for grafikken sin del)
         }
 
         /// <summary>
