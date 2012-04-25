@@ -34,6 +34,7 @@ namespace BandMaster.Input
         private bool isReady = false;
 
         private bool isWipe = false;
+        private bool isOppositWipe = false;
         private bool isExit = false;
 
         // Right and Left Threshold for tempo hit
@@ -309,14 +310,29 @@ namespace BandMaster.Input
 
                     Vector3 hipLeft = SkeletonPointToVector3(Skeleton, JointType.HipLeft);
                     Vector3 shoulderCenter = SkeletonPointToVector3(Skeleton, JointType.ShoulderCenter);
+                    Vector3 head = SkeletonPointToVector3(Skeleton, JointType.Head);
                     Vector3 spine = SkeletonPointToVector3(Skeleton, JointType.Spine);
 
-                    if ((activePos.X < shoulderCenter.X) && (activePos.Y > shoulderCenter.Y))
+                    if ((activePos.X - shoulderCenter.X) > (shoulderCenter.Y - hipCenter.Y))
+                    {
+                        isOppositWipe = true;
+                    }
+
+                    if (isOppositWipe && (activePos.X < hipRight.X))
+                    {
+                        isOppositWipe = false;
+                        if (OnRestart != null)
+                        {
+                            OnRestart.Invoke(this, null);
+                        }
+                    }
+
+                    if ((activePos.Y > head.Y))
                     {
                         isExit = true;
                     }
 
-                    if (isExit && ((activePos.X > hipRight.X) && (activePos.Y < spine.Y)))
+                    if (isExit && (activePos.Y < spine.Y))
                     {
                         if (OnExit != null)
                         {
