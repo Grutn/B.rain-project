@@ -63,7 +63,9 @@ namespace BandMaster.Logic
         public void onSongLoaded(object sender, EventArgs args)
         {
             midiPlayer.Song = ((BandMaster)Game).Song.Midi;
-            
+            SoundFx soundfx = (SoundFx)Game.Services.GetService(typeof(SoundFx));
+
+            soundfx;
             Helpers.Wait(6.0, delegate()
             {
                 splasher.Write("3", Color.White);
