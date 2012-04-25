@@ -11,13 +11,13 @@ with.
     <!--
     Modify this string to change the font that will be imported.
     -->
-    <FontName>Segoe UI Mono</FontName>
+    <FontName>Calibri</FontName>
 
     <!--
     Size is a float value, measured in points. Modify this value to change
     the size of the font.
     -->
-    <Size>14</Size>
+    <Size>72</Size>
 
     <!--
     Spacing is a float value, measured in pixels. Modify this value to change
@@ -54,6 +54,18 @@ with.
       <CharacterRegion>
         <Start>&#32;</Start>
         <End>&#126;</End>
+      </CharacterRegion>
+      <CharacterRegion>
+        <Start>æ</Start>
+        <End>æ</End>
+      </CharacterRegion>
+      <CharacterRegion>
+        <Start>ø</Start>
+        <End>ø</End>
+      </CharacterRegion>
+      <CharacterRegion>
+        <Start>å</Start>
+        <End>å</End>
       </CharacterRegion>
     </CharacterRegions>
   </Asset>

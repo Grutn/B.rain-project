@@ -42,6 +42,9 @@ namespace BandMaster.Graphics
 
         Effector stagePos = new Effector(0.0f);
         Effector metronomePos = new Effector(0.0f);
+        Effector dinPos = new Effector();
+        Effector scorePos = new Effector();
+        Effector pressStartAlpha = new Effector();
 
         /// <summary>
         /// Allows the game component to perform any initialization it needs to before starting
@@ -133,12 +136,16 @@ namespace BandMaster.Graphics
             {
                 if (bm.Mode == bm.HighScore)
                 {
+                    dinPos.Value = -9999f;
+                    scorePos.Value = 9999f;
+                    pressStartAlpha.Value = 0.0f;
+
                     line.Alpha.Lerp(1.0, line.Alpha.Value, 0.0f, delegate()
                     {
                         stagePos.EaseOut(1.2, stagePos.Value, 0);
                         metronomePos.EaseOut(1.2, stagePos.Value, 0);
                         // TODO: spill jubel
-                        Helpers.Wait(1.0, delegate()
+                        Helpers.Wait(2.0, delegate()
                         {
                             // Anti-Deus ex machina effect
                             for (int i = 0; i < Band.Count; i++)
@@ -147,6 +154,7 @@ namespace BandMaster.Graphics
                                 Helpers.Wait(0.4 * i, delegate() { inst.Lerp(0.6, inst.Value, -700.0f); });
                             }
                             // KAbal-effekt
+                            
                             ejaculator = 100;
                             Helpers.SimpleDelegate ejaculate = null;
                             Random rand = new Random();
@@ -177,16 +185,47 @@ namespace BandMaster.Graphics
                                     Helpers.Wait(0.001, ejaculate);
                                 else
                                 {
-                                    // TODO: vis score
+                                    dinPos.EaseOut(0.5, -200, 200, delegate()
+                                    {
+                                        scorePos.EaseOut(0.5, GraphicsDevice.Viewport.Height, 260, delegate()
+                                        {
+                                            Helpers.Wait(2.0, delegate()
+                                            {
+                                                pressStartAlpha.Lerp(1.0, 0.0f, 1.0f);
+                                                ((Input.IManageInput)Game.Services.GetService(typeof(Input.IManageInput))).StartPressed += animateAwayScore;
+                                            });
+                                        });
+                                    });
+
                                 }
                             };
-                            Helpers.Wait(1.2, ejaculate);
+                            Helpers.Wait(1.2, delegate() 
+                            {
+                                notes.White.Lerp(0.1, 0.0f, 1.0f, delegate()
+                                {
+                                    notes.White.Lerp(0.5, 1.0f, 0.0f);
+                                    ejaculate();
+                                });
+                            });
                         });
                     });
                 }
             };
 
             base.Initialize();
+        }
+
+        void animateAwayScore(object sender, EventArgs a)
+        {
+            ((Input.IManageInput)Game.Services.GetService(typeof(Input.IManageInput))).StartPressed -= animateAwayScore;
+            pressStartAlpha.Lerp(0.2, pressStartAlpha.Value, 0.0f, delegate()
+            {
+                dinPos.EaseIn(0.5, 200, -200);
+                Helpers.Wait(0.2, delegate()
+                {
+                    scorePos.EaseOut(0.3, 260, GraphicsDevice.Viewport.Height);
+                });
+            });
         }
 
         int ejaculator;
@@ -213,7 +252,7 @@ namespace BandMaster.Graphics
         string laststr = "";
         public override void  Draw(GameTime gameTime)
         {
-
+            BandMaster bm = (BandMaster)Game;
 
             // find correct size (keeping aspect ratio) and extra pixels on top (for transition)
             Rectangle dr = Game.GraphicsDevice.Viewport.Bounds;
@@ -226,9 +265,9 @@ namespace BandMaster.Graphics
 
             int bgOffset = (int)(stagePos.Value * extraTop);
 
-            if (((BandMaster)Game).Mode == ((BandMaster)Game).Play
-                || ((BandMaster)Game).Mode == ((BandMaster)Game).Tutorial
-                || ((BandMaster)Game).Mode == ((BandMaster)Game).HighScore )
+            if (   bm.Mode == bm.Play
+                || bm.Mode == bm.Tutorial
+                || bm.Mode == bm.HighScore )
             {
                 sprites.Begin();
                 {
@@ -239,8 +278,8 @@ namespace BandMaster.Graphics
                 sprites.End();
             }
 
-            if (((BandMaster)Game).Mode != ((BandMaster)Game).Play
-                && ((BandMaster)Game).Mode != ((BandMaster)Game).HighScore ) return;
+            if (   bm.Mode != bm.Play
+                && bm.Mode != bm.HighScore ) return;
 
             // Instruments
             foreach (Instrument instrument in Band)
@@ -269,7 +308,7 @@ namespace BandMaster.Graphics
             sprites.Begin(SpriteSortMode.Immediate, BlendState.Additive);
             {
                 // Draw score
-                SpriteFont font = ((BandMaster)Game).SplashFont;
+                SpriteFont font = bm.SplashFont;
                 string str = ((int)(scoreLP * 10.0f)).ToString();
                 if (str != laststr)
                     scoreFlashTime = gameTime.TotalGameTime.TotalSeconds;
@@ -279,6 +318,25 @@ namespace BandMaster.Graphics
             }
             sprites.End();
 
+            if (bm.Mode == bm.HighScore)
+            {
+                sprites.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+                {
+                    SpriteFont font = bm.SplashFont;
+                    String str = "Din score:";
+                    sprites.DrawString(font, str, new Vector2(dr.Center.X - font.MeasureString(str).X*0.5f, dinPos.Value), Color.White);
+
+                    font = bm.BigFont;
+                    str = bm.Player.Score.ToString();
+                    sprites.DrawString(font, str, new Vector2(dr.Center.X - font.MeasureString(str).X*0.5f, scorePos.Value), Color.White);
+
+                    font = bm.MiniFont;
+                    str = "Trykk space for å spille igjen";
+                    sprites.DrawString(font, str, new Vector2(dr.Center.X - font.MeasureString(str).X*0.5f, dr.Bottom-400), new Color(pressStartAlpha.Value,pressStartAlpha.Value,pressStartAlpha.Value) );
+                }
+                sprites.End();
+            }
+  
 
             if (line != null) line.Draw(gameTime);
             //if (snake != null) snake.Draw(gameTime);
