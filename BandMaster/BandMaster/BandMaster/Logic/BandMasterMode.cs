@@ -44,13 +44,18 @@ namespace BandMaster.Logic
 
             Enabled = false;
 
+            ((BandMaster)Game).ModeChanged += delegate (Object o, EventArgs a) 
+            {
+                if (((BandMaster)Game).Mode == this)
+                    Helpers.Wait(2.0,  ((BandMaster)Game).StartTheDance);
+            };
             ((BandMaster)Game).SongChanged += onSongChanged;
             ((BandMaster)Game).SongLoaded += onSongLoaded;
 
             for (int i = 0; i < PlayerDynamics.Length; i++)
                 PlayerDynamics[i] = -1.0f;
 
-                base.Initialize();
+            base.Initialize();
         }
 
         public void onSongChanged(object sender, EventArgs args)
@@ -161,7 +166,7 @@ namespace BandMaster.Logic
         private void updateDynamicLine(object sender, EventArgs e)
         {
             if (--dynamic != 0) return;
-            dynamic = 10; // do every 100th call
+            dynamic = 10; // do every 10th call
             
             Rectangle r = inputManager.Thresholds;
             float y = Helpers.Clamp(((float)inputManager.LeftHand.Y - (float)r.Top)/(float)r.Height, 0.0f,1.0f);

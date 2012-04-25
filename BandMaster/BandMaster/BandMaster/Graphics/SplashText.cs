@@ -24,8 +24,7 @@ namespace BandMaster.Graphics
 
         public class TextItem
         {
-            public bool Started = false;
-            public TimeSpan Time;
+            public double Time;
             public string Text;
             public Color Color;
         };
@@ -65,21 +64,17 @@ namespace BandMaster.Graphics
 
             batch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
 
-            TimeSpan ttl = new TimeSpan(0, 0, 1);
             for (int i = 0; i < items.Count; i++)
             {
                 TextItem item = items[i];
-                if (!item.Started)
-                {
-                    item.Started = true;
-                    item.Time = gameTime.TotalGameTime;
-                }
-                else if (gameTime.TotalGameTime - item.Time > ttl)
+
+                if (item.Time <= 0.0)
                     items.RemoveAt(i--);
                 else
                 {
-                    double alpha = 1.0 - (gameTime.TotalGameTime - item.Time).TotalSeconds / ttl.TotalSeconds;
-                    //System.Console.Out.WriteLine(alpha);
+                    item.Time -= gameTime.ElapsedGameTime.TotalSeconds;
+                    double alpha = (double)Helpers.Clamp((float)item.Time, 0.0f, 1.0f);
+ 
                     Vector2 halfsize = font.MeasureString(item.Text) / 2;
                     Vector2 center = new Vector2(
                         Game.GraphicsDevice.Viewport.Bounds.Center.X,
@@ -102,12 +97,25 @@ namespace BandMaster.Graphics
             base.Draw(gameTime);
         }
 
-        public void Write(string text, Color color)
+        public void Hide(TextItem i)
+        {
+            i.Time = 1.0f;
+        }
+
+        public TextItem Show(string text, Color color)
+        {
+            TextItem i = Write(text, color, double.MaxValue);
+            return i;
+        }
+
+        public TextItem Write(string text, Color color, double time = 1.0)
         {
             TextItem i = new TextItem();
             i.Text = text;
             i.Color = color;
+            i.Time = time;
             items.Add(i);
+            return i;
         }
     }
 }

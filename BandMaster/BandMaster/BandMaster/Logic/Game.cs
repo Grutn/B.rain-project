@@ -40,7 +40,7 @@ namespace BandMaster
     {
         public SpriteFont MenuFont, MenuFontHover, SplashFont;
 
-        public IMode Play, Pause, Menu;
+        public IMode Play, Pause, Menu, Tutorial;
 
         // Mode and Song holds the state of the game.
         // ModeChanged and SongChanged are events that the graphics components of the system will listen to.
@@ -57,10 +57,16 @@ namespace BandMaster
         public event EventHandler SongChanged;
         public event EventHandler SongLoaded; 
 
-//      public Event EventHandler
+//        public Event EventHandler 
 
         private int width = 1280;
         private int height = 720;
+
+        public void StartTheDance()
+        {
+            Song = new State.Song(); // sender SongChanged (listners starter å vise loading) 
+            Song.LoadAsync("song.txt", delegate() { if (SongLoaded != null) SongLoaded(this, null); }); // PlayMode lytter på SongLoaded
+        }
 
         public BandMaster(): base()
         {
@@ -99,10 +105,13 @@ namespace BandMaster
             Play = new Logic.BandMasterMode(this);
             Pause = new Logic.PauseMenuMode(this);
             Menu = new Logic.MainMenuMode(this);
+            Tutorial = new Logic.TutorialMode(this);
 
             Components.Add(Play);
             Components.Add(Pause);
             Components.Add(Menu);
+            Components.Add(Tutorial);
+
             
             // Graphics
             Graphics.SplashText splasher = new Graphics.SplashText(this);
@@ -116,10 +125,6 @@ namespace BandMaster
             Components.Add(new Graphics.HandVisualizer(this));
 
             Components.Add(new Graphics.Stage(this));
-
-            AudioFx soundfx = new AudioFx(this);
-            Components.Add(soundfx);
-            Services.AddService(typeof(AudioFx), soundfx);
         }
 
 
@@ -140,9 +145,7 @@ namespace BandMaster
 
             // Set initial mode (dette er senere satt fra sangvalg-menyen eller noe)
 
-            Mode = Play; // sender ModeChanged  (bare nyttig for grafikken sin del)
-            Song = new State.Song(); // sender SongChanged (listners starter å vise loading) 
-            Song.LoadAsync("song.txt", delegate() { if (SongLoaded != null) SongLoaded(this, null); }); // PlayMode lytter på SongLoaded
+            Mode = Tutorial; // sender ModeChanged  (bare nyttig for grafikken sin del)
         }
 
         /// <summary>
