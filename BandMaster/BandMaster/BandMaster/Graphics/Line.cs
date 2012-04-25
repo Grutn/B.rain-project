@@ -141,10 +141,10 @@ namespace BandMaster.Graphics
 
                 // Seperators (need to fade out you know)
                 float fadeout = evaluateFadeoutFactor(from) * 0.5f * Alpha.Value;
-                sprites.Draw(seperator, new Rectangle((int)from, (int)bounds.Top, seperator.Width / 2, (int)segmentHeight), new Color(fadeout, fadeout, fadeout));
+                sprites.Draw(seperator, new Rectangle((int)from, (int)lineTop-20, seperator.Width / 2, (int)segmentHeight + 40), new Color(fadeout, fadeout, fadeout));
                 float mid = from + (to - from) * 0.5f;
                 fadeout = evaluateFadeoutFactor(mid) * 0.5f * Alpha.Value;
-                sprites.Draw(seperator, new Rectangle((int)mid, (int)bounds.Top + 20, seperator.Width / 2, (int)segmentHeight - 30), new Color(fadeout, fadeout, fadeout));
+                sprites.Draw(seperator, new Rectangle((int)mid, (int)lineTop, seperator.Width / 2, (int)segmentHeight), new Color(fadeout, fadeout, fadeout));
 
                 // Segments
 
@@ -177,7 +177,7 @@ namespace BandMaster.Graphics
                 float h = bm.PlayerDynamics[j];
                 Vector2 pos;
                 pos.X = center + p * pointDistance;
-                pos.Y = startpos.Y + h * segmentHeight;
+                pos.Y = lineTop + h * (lineBottom - lineTop);
                 if (h>=0.0f)
                     drawDot(pos, gameTime, 0, true);
 
@@ -193,7 +193,7 @@ namespace BandMaster.Graphics
                 Rectangle r = input.Thresholds;
                 float h = Helpers.Clamp(((float)input.LeftHand.Y - (float)r.Top) / (float)r.Height, 0.0f, 1.0f);
                 bool good = Math.Abs(h - (float)bm.GetCorrectDynamics(player.Position)) < 0.1;
-                if (Alpha.Value > 0.99f) sprites.Draw(good? starOn : starOff, new Rectangle((int)center - (int)starOn.Width/2, (int)(startpos.Y + h * segmentHeight) - starOn.Height/2, starOn.Width, starOn.Height), Color.White);
+                if (Alpha.Value > 0.99f) sprites.Draw(good ? starOn : starOff, new Rectangle((int)center - (int)starOn.Width / 2, (int)(lineTop + h * (lineBottom - lineTop)) - starOn.Height / 2, starOn.Width, starOn.Height), Color.White);
             }
             sprites.End();
 
