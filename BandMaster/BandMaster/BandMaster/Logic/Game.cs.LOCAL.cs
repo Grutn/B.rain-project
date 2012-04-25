@@ -151,14 +151,14 @@ namespace BandMaster
         protected override void Initialize()
         {
 
-            SpriteBatch sprites = new SpriteBatch(GraphicsDevice);
+            SpriteBatch sprites = new SpriteBatch(GraphicsDevice); 
             Services.AddService(typeof(SpriteBatch), sprites);
 
             base.Initialize();
 
             // Set initial mode (dette er senere satt fra sangvalg-menyen eller noe)
 
-            Mode = Menu; // sender ModeChanged  (bare nyttig for grafikken sin del)
+            Mode = Play; // sender ModeChanged  (bare nyttig for grafikken sin del)
         }
 
         /// <summary>

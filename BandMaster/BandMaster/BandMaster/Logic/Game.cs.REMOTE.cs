@@ -151,7 +151,7 @@ namespace BandMaster
         protected override void Initialize()
         {
 
-            SpriteBatch sprites = new SpriteBatch(GraphicsDevice);
+            SpriteBatch sprites = new SpriteBatch(GraphicsDevice); 
             Services.AddService(typeof(SpriteBatch), sprites);
 
             base.Initialize();
@@ -186,8 +186,6 @@ namespace BandMaster
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-
-        public event Helpers.SimpleDelegate Updated;
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
@@ -197,7 +195,6 @@ namespace BandMaster
             // TODO: Add your update logic here
             
             base.Update(gameTime);
-            if (Updated != null) Updated();
         }
 
         /// <summary>
