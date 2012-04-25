@@ -41,7 +41,7 @@ namespace BandMaster.Logic
                     {
                         Helpers.Wait(4.0, delegate()
                         {
-                            input.StartPressed += restart;
+                            input.OnRestart += restart;
                         });
                     });
                 }
@@ -50,7 +50,7 @@ namespace BandMaster.Logic
 
         void restart(object o, EventArgs e)
         {
-            input.StartPressed -= restart;
+            input.OnRestart -= restart;
             applauseVolume.Lerp(1.0, 1.0f, 0.0f, delegate()
             {
                 ((BandMaster)Game).Restart();

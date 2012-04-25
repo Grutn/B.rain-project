@@ -30,11 +30,8 @@ namespace BandMaster.Input
 
     public interface IManageInput : IGameComponent
     {
-        event EventHandler OnPlayerEvent;
         event EventHandler OnTempoHit;                  // on kinect: detect in kinectinput subclass; on keyboard: some key event
-        event EventHandler OnDynamicHit;                // same as above
-
-        event EventHandler StartPressed;
+        event EventHandler OnRestart;
 
         bool IsReady { get; }
 

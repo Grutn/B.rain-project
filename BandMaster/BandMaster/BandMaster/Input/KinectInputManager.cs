@@ -12,11 +12,9 @@ namespace BandMaster.Input
     {
         #region EventHandlers
 
-        public event EventHandler OnPlayerEvent;
-        public event EventHandler OnTempoHit;                   // on kinect: detect in kinectinput subclass; on keyboard: some key event
-        public event EventHandler OnDynamicHit;                 // same as above
-
-        public event EventHandler StartPressed;
+        public event EventHandler OnPlayerEvent; // Used by KinectDebug to get movement data
+        public event EventHandler OnTempoHit;    // on kinect: detect in kinectinput subclass; on keyboard: some key 
+        public event EventHandler OnRestart;     // Used to restart the game
 
         #endregion
 
@@ -33,6 +31,8 @@ namespace BandMaster.Input
         private bool isRightHit = true;
 
         private bool isReady = false;
+
+        private bool isWipe = false;
 
         // Right and Left Threshold for tempo hit
         private float right;
@@ -281,7 +281,7 @@ namespace BandMaster.Input
                     Vector3 hipCenter = SkeletonPointToVector3(Skeleton, JointType.HipCenter);
 
                     // Left and Right edge detection for OnTempoHit
-                    left = hipRight.X + 1.8f * (hipRight.X - hipCenter.X);
+                    left = hipRight.X + 2.0f * (hipRight.X - hipCenter.X);
                     right = hipRight.X + 2.9f * (hipRight.X - hipCenter.X);
                     
                     // Current position of active hand and offhand
@@ -302,6 +302,28 @@ namespace BandMaster.Input
                             {
                                 OnTempoHit.Invoke(this, new PlayerEvent());
                             }
+                        }
+                    }
+
+                    Vector3 hipLeft = SkeletonPointToVector3(Skeleton, JointType.HipLeft);
+                    Vector3 shoulderCenter = SkeletonPointToVector3(Skeleton, JointType.ShoulderCenter);
+
+                    if (activePos.Y > shoulderCenter.Y)
+                    {
+
+                    }
+
+                    if (activePos.X < hipLeft.X)
+                    {
+                        isWipe = true;
+                    }
+
+                    if (isWipe && activePos.X > hipRight.X)
+                    {
+                        if (OnRestart != null)
+                        {
+                            isWipe = false;
+                            OnRestart.Invoke(this, null);
                         }
                     }
                 }

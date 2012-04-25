@@ -158,7 +158,7 @@ namespace BandMaster
 
             // Set initial mode (dette er senere satt fra sangvalg-menyen eller noe)
 
-            Mode = HighScore; // sender ModeChanged  (bare nyttig for grafikken sin del)
+            Mode = Play; // sender ModeChanged  (bare nyttig for grafikken sin del)
         }
 
         /// <summary>
@@ -186,6 +186,8 @@ namespace BandMaster
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
+
+        public event Helpers.SimpleDelegate Updated;
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
@@ -195,6 +197,7 @@ namespace BandMaster
             // TODO: Add your update logic here
             
             base.Update(gameTime);
+            if (Updated != null) Updated();
         }
 
         /// <summary>
