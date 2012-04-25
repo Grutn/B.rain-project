@@ -123,6 +123,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Audio\Midi.cs" />
+    <Compile Include="Audio\AudioFx.cs" />
     <Compile Include="Graphics\HandVisualizer.cs" />
     <Compile Include="Graphics\Instrument.cs" />
     <Compile Include="Graphics\Line.cs" />

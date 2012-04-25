@@ -26,7 +26,7 @@ namespace BandMaster
         }
         public static float EaseOut(float from, float to, float var)
         {
-            return from + (float)Math.Sin((double)var * Math.PI / 2.0)*(to-from); 
+            return from + (float)Math.Sin((double)var * Math.PI / 2.0)*(to-from);
         }
         public static float EaseIn(float from, float to, float var)
         {
