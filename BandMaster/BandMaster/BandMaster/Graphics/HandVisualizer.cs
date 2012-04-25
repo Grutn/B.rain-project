@@ -20,6 +20,7 @@ namespace BandMaster.Graphics
     {
         SpriteBatch sprites;
         IManageInput input;
+        FlyingNotes notes;
 
         Texture2D arrowBody, arrowHead, arrowHeadr, circle;
 
@@ -39,6 +40,7 @@ namespace BandMaster.Graphics
         {
             sprites = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
             input = (IManageInput)Game.Services.GetService(typeof(IManageInput));
+            notes = ((FlyingNotes)Game.Services.GetService(typeof(FlyingNotes)));
 
             arrowBody = Game.Content.Load<Texture2D>("Textures/4sqr");
             arrowHead = Game.Content.Load<Texture2D>("Textures/arrow_head");
@@ -50,7 +52,10 @@ namespace BandMaster.Graphics
             {
                 if (bm.Mode == bm.Tutorial)
                 {
-                    alpha.Lerp(2.0, alpha.Value, 1.0f);
+                    Helpers.Wait(0.3, delegate()
+                    {
+                        alpha.Lerp(1.0, alpha.Value, 1.0f);
+                    });
                 }
                 else if (bm.Mode == bm.Play)
                 {

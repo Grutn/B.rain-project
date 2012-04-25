@@ -28,7 +28,7 @@ namespace BandMaster.Graphics
 
         Line line;
 
-        Texture2D background, stand, metronome, metronomeSlider;
+        Texture2D background, stand, metronome, metronomeSlider, logo;
         
         public Stage(Game game)
             : base(game)
@@ -45,6 +45,7 @@ namespace BandMaster.Graphics
         Effector dinPos = new Effector();
         Effector scorePos = new Effector();
         Effector pressStartAlpha = new Effector();
+        Effector logoAlpha = new Effector();
 
         /// <summary>
         /// Allows the game component to perform any initialization it needs to before starting
@@ -61,6 +62,8 @@ namespace BandMaster.Graphics
             stand = Game.Content.Load<Texture2D>("Textures/notestativ");
             metronome = Game.Content.Load<Texture2D>("Textures/metronome512");
             metronomeSlider = Game.Content.Load<Texture2D>("Textures/metronome-slider");
+            logo = Game.Content.Load<Texture2D>("Textures/logo");
+
             line.Initialize();
 
             //((BandMaster)Game).StateChanged += OnGameStateChanged;
@@ -90,7 +93,7 @@ namespace BandMaster.Graphics
                 }
 
                 // find a suitable scale for our band
-                Rectangle stageBounds = new Rectangle(200, 20, Game.GraphicsDevice.Viewport.Width - 400, 500);
+                Rectangle stageBounds = new Rectangle(150, 20, Game.GraphicsDevice.Viewport.Width - 450, 500);
                 float bandScale = stageBounds.Width / bandWidth;
 
                 // place and scale our band
@@ -134,7 +137,22 @@ namespace BandMaster.Graphics
 
             bm.ModeChanged += delegate(object s, EventArgs a)
             {
-                if (bm.Mode == bm.HighScore)
+                if (bm.Mode == bm.Menu)
+                {
+                    logoAlpha.Value = 0.0f;
+                    pressStartAlpha.Value = 0.0f;
+
+                    notes.Black.Value = 1.0f;
+                    notes.Black.Lerp(1.0, 1.0f, 0.0f, delegate()
+                    {
+                        logoAlpha.Lerp(0.5, 0.0f, 1.0f, delegate()
+                        {
+                            ((Input.IManageInput)Game.Services.GetService(typeof(Input.IManageInput))).StartPressed += animateAwayLogo;
+                            pressStartAlpha.Lerp(2.0, 0.0f, 1.0f);
+                        });
+                    });
+                }
+                else if (bm.Mode == bm.HighScore)
                 {
                     dinPos.Value = -9999f;
                     scorePos.Value = 9999f;
@@ -215,13 +233,19 @@ namespace BandMaster.Graphics
             base.Initialize();
         }
 
+        void animateAwayLogo(object sender, EventArgs a)
+        {
+            ((Input.IManageInput)Game.Services.GetService(typeof(Input.IManageInput))).StartPressed -= animateAwayLogo;
+            logoAlpha.Lerp(0.2, logoAlpha.Value, 0.0f);
+            pressStartAlpha.Lerp(0.2, pressStartAlpha.Value, 0.0f);
+        }
+
         void animateAwayScore(object sender, EventArgs a)
         {
             ((Input.IManageInput)Game.Services.GetService(typeof(Input.IManageInput))).StartPressed -= animateAwayScore;
             pressStartAlpha.Lerp(0.2, pressStartAlpha.Value, 0.0f, delegate()
             {
-                dinPos.EaseIn(0.5, 200, -200);
-                Helpers.Wait(0.2, delegate()
+                dinPos.EaseIn(0.2, 200, -200, delegate()
                 {
                     scorePos.EaseOut(0.3, 260, GraphicsDevice.Viewport.Height);
                 });
@@ -267,6 +291,7 @@ namespace BandMaster.Graphics
 
             if (   bm.Mode == bm.Play
                 || bm.Mode == bm.Tutorial
+                || bm.Mode == bm.Menu
                 || bm.Mode == bm.HighScore )
             {
                 sprites.Begin();
@@ -279,7 +304,8 @@ namespace BandMaster.Graphics
             }
 
             if (   bm.Mode != bm.Play
-                && bm.Mode != bm.HighScore ) return;
+                && bm.Mode != bm.HighScore
+                && bm.Mode != bm.Menu ) return;
 
             // Instruments
             foreach (Instrument instrument in Band)
@@ -336,7 +362,20 @@ namespace BandMaster.Graphics
                 }
                 sprites.End();
             }
-  
+
+
+            if (bm.Mode == bm.Menu)
+            {
+                sprites.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+                {
+                    sprites.Draw(logo, new Rectangle(dr.Center.X - logo.Width/2, 100, logo.Width, logo.Height), new Color(logoAlpha.Value, logoAlpha.Value, logoAlpha.Value));
+
+                    SpriteFont font = bm.MiniFont;
+                    String str = "Tørk for å starte spillet";
+                    sprites.DrawString(font, str, new Vector2(dr.Center.X - font.MeasureString(str).X * 0.5f, dr.Bottom - 400), new Color(pressStartAlpha.Value, pressStartAlpha.Value, pressStartAlpha.Value));
+                }
+                sprites.End();
+            }
 
             if (line != null) line.Draw(gameTime);
             //if (snake != null) snake.Draw(gameTime);

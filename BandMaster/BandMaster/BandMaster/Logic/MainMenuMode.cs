@@ -17,10 +17,32 @@ namespace BandMaster.Logic
     /// </summary>
     public class MainMenuMode : Microsoft.Xna.Framework.GameComponent, IMode
     {
+        Input.IManageInput input;
+
         public MainMenuMode(Game game)
             : base(game)
         {
-            // TODO: Construct any child components here
+            BandMaster bm = (BandMaster)Game;
+
+            bm.ModeChanged += delegate(object o, EventArgs a)
+            {
+                if (bm.Mode == this)
+                {
+                    Helpers.Wait(1.5, delegate()
+                    {
+                        input.StartPressed += startGame;
+                    });
+                }
+            };
+        }
+
+        void startGame(object o, EventArgs a)
+        {
+            input.StartPressed -= startGame;
+            Helpers.Wait(0.2, delegate()
+            {
+                ((BandMaster)Game).Mode = ((BandMaster)Game).Tutorial;
+            });
         }
 
         /// <summary>
@@ -29,8 +51,7 @@ namespace BandMaster.Logic
         /// </summary>
         public override void Initialize()
         {
-            // TODO: Add your initialization code here
-
+            input = (Input.IManageInput)Game.Services.GetService(typeof(Input.IManageInput));
             base.Initialize();
         }
 
