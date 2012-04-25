@@ -15,6 +15,7 @@ namespace BandMaster.Audio
         public SoundEffect ApplauseSmall;
         public SoundEffect DrumStick;
         public SoundEffect Pling;
+        public SoundEffect Ambient;
 
         public AudioFx(Game game) : base(game)
         {
@@ -34,6 +35,8 @@ namespace BandMaster.Audio
             ApplauseBig = content.Load<SoundEffect>("Sounds/applause_big");
             ApplauseSmall = content.Load<SoundEffect>("Sounds/applause_small");
             DrumStick = content.Load<SoundEffect>("Sounds/single_drumstick_hit");
+            Ambient = content.Load<SoundEffect>("Sounds/applause_big");
+            Pling = content.Load<SoundEffect>("Sounds/single_drumstick_hit");
         }
 
         /*

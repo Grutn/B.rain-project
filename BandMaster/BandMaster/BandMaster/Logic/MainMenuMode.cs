@@ -18,6 +18,10 @@ namespace BandMaster.Logic
     public class MainMenuMode : Microsoft.Xna.Framework.GameComponent, IMode
     {
         Input.IManageInput input;
+        Audio.AudioFx audiofx;
+
+        private SoundEffectInstance ambient;
+        Effector ambientVolume = new Effector(1.0f);
 
         public MainMenuMode(Game game)
             : base(game)
@@ -28,6 +32,9 @@ namespace BandMaster.Logic
             {
                 if (bm.Mode == this)
                 {
+                    ambientVolume.Value = 1.0f;
+                    ambient = Audio.AudioFx.Play(audiofx.ApplauseBig);
+
                     Helpers.Wait(1.5, delegate()
                     {
                         input.StartPressed += startGame;
@@ -39,6 +46,7 @@ namespace BandMaster.Logic
         void startGame(object o, EventArgs a)
         {
             input.StartPressed -= startGame;
+            ambientVolume.Lerp(4.0, 1.0f, 0.0f);
             Helpers.Wait(0.2, delegate()
             {
                 ((BandMaster)Game).Mode = ((BandMaster)Game).Tutorial;
@@ -52,6 +60,7 @@ namespace BandMaster.Logic
         public override void Initialize()
         {
             input = (Input.IManageInput)Game.Services.GetService(typeof(Input.IManageInput));
+            audiofx = (Audio.AudioFx)Game.Services.GetService(typeof(Audio.AudioFx));
             base.Initialize();
         }
 
@@ -61,8 +70,8 @@ namespace BandMaster.Logic
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            // TODO: Add your update code here
-
+            if (ambient != null)
+                ambient.Volume = ambientVolume.Value;
             base.Update(gameTime);
         }
     }

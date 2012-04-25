@@ -20,10 +20,15 @@ namespace BandMaster.Logic
     {
         Graphics.SplashText splasher;
         Input.IManageInput input;
+        Audio.AudioFx audiofx;
+
+        SoundEffectInstance ambient;
+        Effector ambientVolume = new Effector(0.2f);
 
         int rytmer;
         void tellRytmer(Object o, EventArgs a)
         {
+            Audio.AudioFx.Play(audiofx.Pling);
             if (++rytmer == 6)
             {
                 input.OnTempoHit -= tellRytmer;
@@ -36,9 +41,9 @@ namespace BandMaster.Logic
                     {
                         splasher.Write("Med venstre hånd styrer du dynamikken", Color.White, 3.0);
                         Helpers.Wait(8.0, delegate() {
+                            ambientVolume.Lerp(0.5, ambientVolume.Value, 0.0f);
                             splasher.Write("Klar?", Color.White);
                             ((BandMaster)Game).Mode = ((BandMaster)Game).Play;
-
                         });
                  
                     });
@@ -55,15 +60,18 @@ namespace BandMaster.Logic
             {
                 if (((BandMaster)Game).Mode == this)
                 {
-                    Helpers.Wait(4.0, delegate()
+
+
+                    Helpers.Wait(2.0, delegate()
                     {
+                        ambientVolume.Lerp(1.0, 0.0f, 0.2f);
+                        ambient = Audio.AudioFx.Play(audiofx.Ambient);
                         splasher.Write("Beveg høyre hånd til siden", Color.White, 3.0f);
 
                         EventHandler e = null; e = delegate(Object o2, EventArgs a2)
                         {
                             input.OnTempoHit -= e;
-
-                            // TODO: spill lyd
+                            Audio.AudioFx.Play(audiofx.Pling);
                             splasher.Write("Flott!", Color.White, 1.0f);
                             Helpers.Wait(1.0, delegate()
                             {
@@ -110,6 +118,7 @@ namespace BandMaster.Logic
         {
             input = (Input.IManageInput)Game.Services.GetService(typeof(Input.IManageInput));
             splasher = (Graphics.SplashText)Game.Services.GetService(typeof(Graphics.SplashText));
+            audiofx = (Audio.AudioFx)Game.Services.GetService(typeof(Audio.AudioFx));
 
             base.Initialize();
         }
@@ -120,7 +129,8 @@ namespace BandMaster.Logic
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-
+            if (ambient != null)
+                ambient.Volume = ambientVolume.Value;
             base.Update(gameTime);
         }
     }

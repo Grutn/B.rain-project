@@ -147,8 +147,11 @@ namespace BandMaster.Graphics
                     {
                         logoAlpha.Lerp(0.5, 0.0f, 1.0f, delegate()
                         {
-                            ((Input.IManageInput)Game.Services.GetService(typeof(Input.IManageInput))).StartPressed += animateAwayLogo;
-                            pressStartAlpha.Lerp(2.0, 0.0f, 1.0f);
+                            Helpers.Wait(0.5, delegate()
+                            {
+                                ((Input.IManageInput)Game.Services.GetService(typeof(Input.IManageInput))).StartPressed += animateAwayLogo;
+                                pressStartAlpha.Lerp(1.0, 0.0f, 1.0f);
+                            });
                         });
                     });
                 }

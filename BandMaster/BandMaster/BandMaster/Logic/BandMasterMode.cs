@@ -55,13 +55,12 @@ namespace BandMaster.Logic
             ((BandMaster)Game).SongLoaded += onSongLoaded;
             player.Completed += onSongDone;
 
-            for (int i = 0; i < PlayerDynamics.Length; i++)
-                PlayerDynamics[i] = -1.0f;
 
-            ((BandMaster)Game).Updated += delegate()
+
+            /*((BandMaster)Game).Updated += delegate()
             {
                 if (applause != null) applause.Volume = applauseVolume.Value;
-            };
+            };*/
 
 
             base.Initialize();
@@ -78,6 +77,10 @@ namespace BandMaster.Logic
         public void onSongLoaded(object sender, EventArgs args)
         {
             player.Song = ((BandMaster)Game).Song.Midi;
+
+            for (int i = 0; i < PlayerDynamics.Length; i++)
+                PlayerDynamics[i] = -1.0f;
+
             AudioFx audiofx = (AudioFx)Game.Services.GetService(typeof(AudioFx));
             SoundEffectInstance drumstick;
 
