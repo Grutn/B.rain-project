@@ -27,6 +27,7 @@ namespace BandMaster.Graphics
             public Vector2 Velocity;
             public Texture2D Texture;
             public double Time;
+            public float Scale;
         }
 
         List<Note> notes = new List<Note>();
@@ -65,7 +66,7 @@ namespace BandMaster.Graphics
             lock (notes)
             {
                 foreach (Note note in notes)
-                    sprites.Draw(note.Texture, new Rectangle((int)note.Position.X, (int)note.Position.Y, note.Texture.Width/8, note.Texture.Height/8), new Color((float)note.Time, (float)note.Time, (float)note.Time));
+                    sprites.Draw(note.Texture, new Rectangle((int)note.Position.X, (int)note.Position.Y, (int)(note.Scale * (float)note.Texture.Width/8), (int)(note.Scale * (float)note.Texture.Height/8)), new Color((float)note.Time, (float)note.Time, (float)note.Time));
             }
             sprites.End();
 
@@ -84,7 +85,7 @@ namespace BandMaster.Graphics
             {
                 Note note = notes[i];
                 note.Velocity += new Vector2(0,-0.05f);
-                note.Position += Vector2.Multiply(note.Velocity, (float)dt * 100.0f) ;
+                note.Position += Vector2.Multiply(note.Velocity, (float)dt * 100.0f * note.Scale);
                 note.Time -= dt;
                 if (note.Time <= 0.0)
                     notes.RemoveAt(i--);
@@ -95,7 +96,7 @@ namespace BandMaster.Graphics
 
         Random rand = new Random();
 
-        public void Emit(Vector2 position)
+        public void Emit(Vector2 position, float scale = 1.0f)
         {
             Note n = new Note();
             n.Position = position;
@@ -103,6 +104,7 @@ namespace BandMaster.Graphics
             n.Velocity.Normalize();
             n.Texture = textures[rand.Next(0,2)];
             n.Time = 1.0;
+            n.Scale = scale;
             lock(notes)
             {
                 notes.Add(n);

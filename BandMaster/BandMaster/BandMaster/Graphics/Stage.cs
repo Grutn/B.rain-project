@@ -152,20 +152,24 @@ namespace BandMaster.Graphics
                             {
                                 Vector2 v;
                                 v.X = rand.Next(0, Game.GraphicsDevice.Viewport.Width);
-                                v.Y = rand.Next(0, Game.GraphicsDevice.Viewport.Height);
-                                notes.Emit(v);
+                                v.Y = rand.Next(0, Game.GraphicsDevice.Viewport.Height-200);
+                                notes.Emit(v, (float)rand.NextDouble()*1.5f + 0.1f);
 
                                 v.X = rand.Next(0, Game.GraphicsDevice.Viewport.Width);
-                                v.Y = rand.Next(0, Game.GraphicsDevice.Viewport.Height);
-                                notes.Emit(v);
+                                v.Y = rand.Next(0, Game.GraphicsDevice.Viewport.Height - 200);
+                                notes.Emit(v, (float)rand.NextDouble() * 1.5f + 0.1f);
 
                                 v.X = rand.Next(0, Game.GraphicsDevice.Viewport.Width);
-                                v.Y = rand.Next(0, Game.GraphicsDevice.Viewport.Height);
-                                notes.Emit(v);
+                                v.Y = rand.Next(0, Game.GraphicsDevice.Viewport.Height - 200);
+                                notes.Emit(v, (float)rand.NextDouble() * 1.0f + 0.1f);
 
                                 v.X = rand.Next(0, Game.GraphicsDevice.Viewport.Width);
-                                v.Y = rand.Next(0, Game.GraphicsDevice.Viewport.Height);
-                                notes.Emit(v);
+                                v.Y = rand.Next(0, Game.GraphicsDevice.Viewport.Height - 200);
+                                notes.Emit(v, (float)rand.NextDouble() * 1.0f + 0.1f);
+
+                                v.X = rand.Next(0, Game.GraphicsDevice.Viewport.Width);
+                                v.Y = rand.Next(0, Game.GraphicsDevice.Viewport.Height - 200);
+                                notes.Emit(v, (float)rand.NextDouble() * 1.0f + 0.1f);
 
                                 if (--ejaculator != 0)
                                     Helpers.Wait(0.001, ejaculate);
@@ -174,7 +178,7 @@ namespace BandMaster.Graphics
                                     // TODO: vis score
                                 }
                             };
-                            Helpers.Wait(0.5, ejaculate);
+                            Helpers.Wait(1.2, ejaculate);
                         });
                     });
                 }
