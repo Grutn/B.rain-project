@@ -67,9 +67,11 @@ namespace BandMaster.Graphics
                 notes.Emit(new Vector2(c.X,c.Y - 100));
             };
 
-            ((BandMaster)Game).SongLoaded += delegate(Object s, EventArgs a)
+            BandMaster bm = (BandMaster)Game;
+
+            bm.SongLoaded += delegate(Object s, EventArgs a)
             {
-                State.Song song = ((BandMaster)Game).Song;
+                State.Song song = bm.Song;
 
                 Band.Clear();
 
@@ -120,13 +122,69 @@ namespace BandMaster.Graphics
                 });
             };
 
-            ((BandMaster)Game).Player.ScoreChanged += delegate(Object s, EventArgs a)
+            bm.Player.ScoreChanged += delegate(Object s, EventArgs a)
             {
                 score = ((BandMaster)Game).Player.Score;
             };
 
+            bm.ModeChanged += delegate(object s, EventArgs a)
+            {
+                if (bm.Mode == bm.HighScore)
+                {
+                    line.Alpha.Lerp(1.0, line.Alpha.Value, 0.0f, delegate()
+                    {
+                        stagePos.EaseOut(1.2, stagePos.Value, 0);
+                        metronomePos.EaseOut(1.2, stagePos.Value, 0);
+                        // TODO: spill jubel
+                        Helpers.Wait(1.0, delegate()
+                        {
+                            // Anti-Deus ex machina effect
+                            for (int i = 0; i < Band.Count; i++)
+                            {
+                                Effector inst = Band[i].OffsetY;
+                                Helpers.Wait(0.4 * i, delegate() { inst.Lerp(0.6, inst.Value, -700.0f); });
+                            }
+                            // KAbal-effekt
+                            ejaculator = 100;
+                            Helpers.SimpleDelegate ejaculate = null;
+                            Random rand = new Random();
+                            ejaculate = delegate()
+                            {
+                                Vector2 v;
+                                v.X = rand.Next(0, Game.GraphicsDevice.Viewport.Width);
+                                v.Y = rand.Next(0, Game.GraphicsDevice.Viewport.Height);
+                                notes.Emit(v);
+
+                                v.X = rand.Next(0, Game.GraphicsDevice.Viewport.Width);
+                                v.Y = rand.Next(0, Game.GraphicsDevice.Viewport.Height);
+                                notes.Emit(v);
+
+                                v.X = rand.Next(0, Game.GraphicsDevice.Viewport.Width);
+                                v.Y = rand.Next(0, Game.GraphicsDevice.Viewport.Height);
+                                notes.Emit(v);
+
+                                v.X = rand.Next(0, Game.GraphicsDevice.Viewport.Width);
+                                v.Y = rand.Next(0, Game.GraphicsDevice.Viewport.Height);
+                                notes.Emit(v);
+
+                                if (--ejaculator != 0)
+                                    Helpers.Wait(0.001, ejaculate);
+                                else
+                                {
+                                    // TODO: vis score
+                                }
+                            };
+                            Helpers.Wait(0.5, ejaculate);
+                        });
+                    });
+                }
+            };
+
             base.Initialize();
         }
+
+        int ejaculator;
+
         /// <summary>
         /// Allows the game component to update itself.
         /// </summary>
@@ -163,7 +221,8 @@ namespace BandMaster.Graphics
             int bgOffset = (int)(stagePos.Value * extraTop);
 
             if (((BandMaster)Game).Mode == ((BandMaster)Game).Play
-                || ((BandMaster)Game).Mode == ((BandMaster)Game).Tutorial)
+                || ((BandMaster)Game).Mode == ((BandMaster)Game).Tutorial
+                || ((BandMaster)Game).Mode == ((BandMaster)Game).HighScore )
             {
                 sprites.Begin();
                 {
@@ -174,7 +233,8 @@ namespace BandMaster.Graphics
                 sprites.End();
             }
 
-            if (((BandMaster)Game).Mode != ((BandMaster)Game).Play) return;
+            if (((BandMaster)Game).Mode != ((BandMaster)Game).Play
+                && ((BandMaster)Game).Mode != ((BandMaster)Game).HighScore ) return;
 
             // Instruments
             foreach (Instrument instrument in Band)

@@ -40,7 +40,7 @@ namespace BandMaster
     {
         public SpriteFont MenuFont, MenuFontHover, SplashFont;
 
-        public IMode Play, Pause, Menu, Tutorial;
+        public IMode Play, Pause, Menu, Tutorial, HighScore;
 
         // Mode and Song holds the state of the game.
         // ModeChanged and SongChanged are events that the graphics components of the system will listen to.
@@ -106,11 +106,13 @@ namespace BandMaster
             Pause = new Logic.PauseMenuMode(this);
             Menu = new Logic.MainMenuMode(this);
             Tutorial = new Logic.TutorialMode(this);
+            HighScore = new Logic.HighScoreMode(this);
 
             Components.Add(Play);
             Components.Add(Pause);
             Components.Add(Menu);
             Components.Add(Tutorial);
+            Components.Add(HighScore);
 
             
             // Graphics

@@ -138,6 +138,7 @@
     <Compile Include="Input\KinectInputManager.cs" />
     <Compile Include="Logic\BandMasterMode.cs" />
     <Compile Include="Logic\Game.cs" />
+    <Compile Include="Logic\HighScoreMode.cs" />
     <Compile Include="Logic\MainMenuMode.cs" />
     <Compile Include="Logic\PauseMenuMode.cs" />
     <Compile Include="Logic\TutorialMode.cs" />

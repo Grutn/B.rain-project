@@ -30,7 +30,7 @@ namespace BandMaster
         }
         public static float EaseIn(float from, float to, float var)
         {
-            return from + (float)(Math.Cos((double)var * Math.PI / 4.0 + Math.PI * 3.0 / 4.0) + 1.0) * (to-from); 
+            return from + (float)(Math.Cos(var * Math.PI / 2.0  + Math.PI ) + 1.0) * (to-from); 
         }
 
         public delegate void SimpleDelegate();
