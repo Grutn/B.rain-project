@@ -309,6 +309,7 @@ namespace BandMaster.Input
                     }
 
                     Vector3 hipLeft = SkeletonPointToVector3(Skeleton, JointType.HipLeft);
+                    /*
                     Vector3 shoulderCenter = SkeletonPointToVector3(Skeleton, JointType.ShoulderCenter);
                     Vector3 head = SkeletonPointToVector3(Skeleton, JointType.Head);
                     Vector3 spine = SkeletonPointToVector3(Skeleton, JointType.Spine);
@@ -326,7 +327,7 @@ namespace BandMaster.Input
                             OnRestart.Invoke(this, null);
                         }
                     }
-
+                    
                     if ((activePos.Y > head.Y))
                     {
                         isExit = true;
@@ -339,7 +340,7 @@ namespace BandMaster.Input
                             OnExit.Invoke(this, null);
                         }
                     }
-
+                    */
                     if (activePos.X < hipLeft.X)
                     {
                         isWipe = true;

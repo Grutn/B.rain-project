@@ -79,13 +79,14 @@ namespace BandMaster
         {
             Content.RootDirectory = "Content";
 
-
             // Services
             
             GraphicsDeviceManager graphics = new GraphicsDeviceManager(this);
 
             graphics.PreferredBackBufferHeight = height;
             graphics.PreferredBackBufferWidth = width;
+
+            graphics.IsFullScreen = true;
 
             IManageInput inputManager;
             try
